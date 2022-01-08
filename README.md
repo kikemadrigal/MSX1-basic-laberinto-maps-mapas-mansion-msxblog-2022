@@ -1,6 +1,7 @@
 # Juego concurso MSXblog
 # Prueba el juego pincando aquí
-http://msx.tipolisto.es/webmsx/standalone/?disk=files/alien.dsk
+
+https://kikemadrigal.github.io/MSX1-basic-laberinto-msxblog-2022/?disk=laberinto.dsk
 
 # Enlace kanbam
 
