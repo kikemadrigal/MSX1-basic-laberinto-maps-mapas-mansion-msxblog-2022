@@ -32,7 +32,7 @@
 340strig(0)on:onstriggosub7100
 350'spriteon:onspritegosub5700
 400ta=tm-time/50
-410ifta<=0thenta=20:time=0:gosub5700
+410ifta<=0thentime=0:gosub5700
 420gosub1000
 430gosub1760
 440gosub1400
@@ -66,7 +66,7 @@
 1770ifa>0anda<8thenifos=2ando2=1thenvpokehl,0:o2=0:gosub3100:re=10:gosub3000elsex=xp:y=yp
 1780'ifa=2thenx=8*16:y=8*18:beep
 1790ifa=8thenre=2:gosub4000:mc=1
-1800ifa=9thentm=ta+tm:time=0:re=5:gosub4000:vpokehl,0
+1800ifa=9thentm=tm+30:time=0:re=5:gosub4000:vpokehl,0
 1810ifpc=1thenpc=0:spriteon
 1900fori=1toen
 1910ifet(i)=0thenex(i)=ex(i)+ev(i)
@@ -155,7 +155,6 @@
     7150 if os=3 and o3=1 then  preset (0,21*8):print #1,"Seleccionada la pala: ":preset (0,22*8):print #1,"Puedes dar palazos"             
     7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques amarillos"
 7170PUTSPRITE10,((22*8)-4,oy),1,9
-7180gosub3300
 7190return
 8000mw=0:ms=0:mc=0:tn=0
 8020return

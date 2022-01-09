@@ -56,7 +56,7 @@
     1 'Actualizamos el timepo'
     400 ta=tm-time/50
     1 'si no queda tiempo reiniciamos y llamamos a la rutina player muere'
-    410 if ta<=0 then ta=20:time=0:gosub 5700 
+    410 if ta<=0 then time=0:gosub 5700 
     1 'Actualizamos el sistema de input'
     420 gosub 1000
     1 'Actualizamos el sistema de fisicas y colisiones'
@@ -175,7 +175,7 @@
     1 ' Si tocado un reloj le sumamos al tiempo el aumento o el maximo'
     1 'Hacemo una música de cogido'
     1' hacemos que desaparzca el reloj
-    1800 if a=9 then tm=ta+tm:time=0:re=5:gosub 4000:vpoke hl,0
+    1800 if a=9 then tm=tm+30:time=0:re=5:gosub 4000:vpoke hl,0
     1 'Colisiones del player con sprites de los enemigos (mirar línea 70 y 2000)'
     1810 if pc=1 then pc=0:sprite on
 
@@ -450,8 +450,6 @@
     7150 if os=3 and o3=1 then  preset (0,21*8):print #1,"!Seleccionada la pala: ":preset (0,22*8):print #1,"Puedes dar palazos"             
     7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques amarillos"
     7170 PUT SPRITE 10,((22*8)-4,oy),1,9
-    1 'debug'
-    7180 gosub 3300
 7190 return
 
 
