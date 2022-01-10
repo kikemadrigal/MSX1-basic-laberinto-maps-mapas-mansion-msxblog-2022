@@ -156,9 +156,13 @@ rem Esta función prepará los archivos fuente pata incluirlos en un dsk, cas
     rem java -jar tools/csv2bin/CSVFenris.jar assets/tilemap0.csv bin/tilemap0.bin
     rem java -jar tools/csv2bin/CSVFenris.jar assets/tilemap1.csv bin/tilemap1.bin
     rem java -jar tools/csv2bin/CSVFenris.jar assets/tilemap2.csv bin/tilemap2.bin
-    rem certutil -encodehex -f assets/word0/level0.csv assets/word0/level0.hex
-    rem java -jar tools\csv2bin\Csv2bin.jar assets\word0\level0.csv assets\word0\level0.bin
-    rem certutil -encodehex -f assets/word0/level0.bin assets/word0/level0.txt
+    cd
+    start /wait java -jar tools\csv2hex\csv2hex.jar assets\world0\level0.tmx assets\world0\level0.txt
+    start /wait java -jar tools\csv2hex\csv2hex.jar assets\world0\level1.tmx assets\world0\level1.txt
+    rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\world0\level2.tmx assets\world0\level2.txt
+    rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\world0\level3.tmx assets\world0\level3.txt
+    rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\world0\level4.tmx assets\world0\level4.txt
+
 
 
     rem necesitamos el .bin de la pantalla de carga y del reproductor de música

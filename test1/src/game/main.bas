@@ -1,62 +1,91 @@
-10 rem ******************************
-20 rem Program:  Mansion Madrigal
-30 rem autor:    MSX Murcia
-40 rem ******************************
-50 print "!Ejecutando instrucciones"
+1 '' ******************************
+1 '' Program:  Mansion Madrigal
+1 '' autor:    MSX Murcia
+1 '' ******************************
 1 'Inicilizamos el juego'
 1 'Inicilizamos dispositivo: 003B, inicilizamos teclado: 003E, inicializamos el psg &h90'
 1 'Enlazamos con las rutinas de apagar y encender la pantalla'
-60 defusr=&h003B:a=usr(0):defusr1=&h003E:a=usr1(0):defusr2=&H90:a=usr2(0):defusr3=&h41:defusr4=&h44
-1 'Esto es necesario para escribir en pantalla'
-80 screen 2,0,0
-90 color 1,15,7:key off
-100 defint a-z:open "grp:" as #1:gosub 3000
-110 print #1,"!Cargando sprites"
-1 ' inicializamos los sprites'
-130 gosub 9000
-1 'Mostramos la pantalla de bienvenida e instrucciones'
-140 cls: preset (60,10):print #1,"!Mansion Madrigal"
-150 preset (60,20):print #1,"!MSX Murcia 2022"
-160 preset (0,50):print #1,"!Debes de ingeniar como salir del laberinto antes de que se te acabe el tiempo"
-170 preset (0,90):print #1,"!Utiliza las herramientas que tienes a ut disposicion, pulsa espacio para elegir una"
-180 preset (0,130):print #1,"!Solo puedes utilizarlas una cez por mundo"
-1 'Pintamos los objetos'
-190 gosub 3100
-200 preset (0,21*8):print #1,"!Pulsa una tecla para continuar"
-210 if inkey$="" then goto 180 else cls
-220 'a=usr3(0)
-1 ' Inicializamos los gráficos'
-230 print "!Cargando graficos"
-240 gosub 10000
-1 ' Pintamos el mapa'
-250 gosub 11000
-260 'a=usr4(0)
-1 ' Mostramos el marcador'
-270 gosub 3000
+20 defusr=&h003B:a=usr(0):defusr1=&h003E:a=usr1(0):defusr2=&H90:a=usr2(0):defusr3=&h41:defusr4=&h44
+1 'Color caracteres, fondo, borde'
+30 color 1,15,7:screen 2,0,0
+40 defint a-z:open "grp:" as #1
+ 1 ' inicializamos los sprites'
+50 gosub 9000
 1 'Inicializamoz los objetos'
-280 gosub 7000
-1 'Pintamos los objetos'
-290 gosub 3100
+60 gosub 7000
 1 ' inicilizamos el personaje'
-300 gosub 5000
+70 'gosub 5000
 1 ' inicilizamos los enemigos'
-310 gosub 6000
-1 'posicionamos al player y enemigos tras cargar el mapa'
-320 gosub 8300
+80 gosub 6000
 1 'Inicializamos las variables del juego
 1 'tm=tiempo maximo'
 1 'ta=timepo actual'
-330 tm=40:time=0:interval on:on interval=50 gosub 3200
+1 'tn=diferencia entre el timepo actual y el que queda'
+100 tm=40:tn=0:time=0
+1 'Gs=game status, si es 0 mostraremos el menu de bienvenida, si es 1 vamos al main loop, y 2, pantalla ganadora'
+110 gs=0
+120 strig(0) on
+
+1 '<<<<<<<<Bucle o máquina de estados>>>>>>>>>>>>>'
+    200 if gs=0 then goto 230 
+    210 if gs=1 then goto 350
+    220 if gs=2 then goto 300
+
+    1 'Mostramos la pantalla de bienvenida e instrucciones'
+    230 screen 2
+    235 preset (60,10):print #1,"!Mansion Madrigal"
+    240 preset (60,20):print #1,"!MSX Murcia 2022"
+    250 preset (0,50):print #1,"!Debes de ingeniar como salir del laberinto antes de que se te acabe el tiempo"
+    260 preset (0,90):print #1,"!Utiliza las herramientas que tienes a ut disposicion, pulsa espacio para elegir una"
+    270 preset (0,130):print #1,"!Solo puedes utilizarlas una cez por mundo"
+    280 preset (0,21*8):print #1,"!Pulsa espacio para continuar"
+    1 '290 if inkey$="" then goto 290 else gs=1:goto 200
+    290 if strig(0)=-1 then gs=1:goto 200 else goto 290
+
+    300 preset (60,10):print #1,"!Has ganado!!!!"
+    310 preset (60,20):print #1,"!MSX Murcia 2022"
+    320 preset (0,50):print #1,"!Desarrolador: Kike Madrigal"
+    330 if inkey$="" then goto 330 else gs=0:goto 200
+1 '<<<<<<<< FInal del bucle de estados>>>>>>>>>>>>>'
+
+
+1 ' inicilizamos el personaje'
+350 gosub 5000
+1 'Apagamos la pantalla'
+355 'a=usr3(0)
+1 ' Inicializamos los gráficos'
+360 gosub 10000
+1 'Borramos los gráficos que han salido'
+370 'line (21*8,0)-(32*8,192),15,bf
+1 'Encendemos la pantalla'
+380 'a=usr4(0)
+1 ' Pintamos el mapa'
+390 gosub 11000
+1 ' Mostramos el marcador'
+392 gosub 3000
+1 'Pintamos los objetos'
+394 gosub 3100
+1 'posicionamos al player y enemigos tras cargar el mapa'
+395 gosub 8300
+1 'Cada segundo repintamos el tiempo'
+396 interval on:on interval=50 gosub 3200
 1 'Cuando se pulse el espacio o el disparo del joystick elegimos una de las herramientas'
-340 strig(0) on:on strig gosub 7100
+398 on strig gosub 7100
 1 'Cuando haya colisión de sprites ir a la subrutina de player muere
-350 'sprite on:on sprite gosub 5700
+399 'sprite on:on sprite gosub 5700
+
+
 
 1 ' <<<<<< Main loop >>>>>'
-    1 'Actualizamos el timepo'
-    400 ta=tm-time/50
+    1'Si al player no le quedan vidas
+        1 'Tenemos que colocar el punturo del mapa en el world0, level0'
+        1 'Desactivamos el repintado y actualización del tiempo'
+        1 'Eliminamos a los enemigos 6700'
+        1 'Sacamos al player de la pantalla'
+        1 'Deseleccionamos los objetos'
+    400 if pe<=0 then restore 10100:interval off:gosub 6700:PUT SPRITE 0,(0,212),1,pp:os=0:gs=0:goto 200
     1 'si no queda tiempo reiniciamos y llamamos a la rutina player muere'
-    410 if ta<=0 then time=0:gosub 5700 
+    410 if ta<=0 then tf=0:time=0:gosub 5700 
     1 'Actualizamos el sistema de input'
     420 gosub 1000
     1 'Actualizamos el sistema de fisicas y colisiones'
@@ -124,7 +153,7 @@
 
 1 '' <<< RENDER SYSTEM >>>>
     1 'Pintamos de nuevo el player con la posición, el color y el plano(dibujitos de izquierda, derecha..)'
-    1400 PUT SPRITE 0,(x,y),15,pp
+    1400 PUT SPRITE 0,(x,y),1,pp
     1410 if en=0 then return
     1 'dibujamos los enemigos, sin el for ser ve más claro'
     1430 for i=1 to en
@@ -133,7 +162,7 @@
         1450 if et(i)=0 then if ec(i)=0 then es(i)=5 else es(i)=6
         1460 if et(i)=1 then if ec(i)=0 then es(i)=7 else es(i)=8
         1 'Nuestros enemigos son el sprite 5 en adelante'
-        1490 PUT SPRITE ep(i),(ex(i),ey(i)),,es(i)
+        1490 PUT SPRITE ep(i),(ex(i),ey(i)),1,es(i)
     1495 next i
 1520 return
 
@@ -167,15 +196,16 @@
     1 '     re=10:gosub 3000 hacemos un sonido'
     1 'Si no está activa la herramienta de romper bloque'
     1'      volvemos a la posición que estábamos
-    1770 if a>0 and a<8 then if os=2 and o2=1 then vpoke hl,0:o2=0:gosub 3100:re=10:gosub 3000 else x=xp: y=yp
+    1770 if a>3 and a<16 then if os=2 and o2=1 then vpoke hl,0:o2=0:gosub 3100:re=10:gosub 3000 else x=xp: y=yp
     1 'Si el valor es un 2, es nuestro punto de fuga lo mandamos a otro sitio '
     1780 'if a=2 then x=8*16: y=8*18:beep
     1 'Si hemos llegado a la casa cambiamos de nivel'
-    1790 if a=8 then re=2:gosub 4000:mc=1
-    1 ' Si tocado un reloj le sumamos al tiempo el aumento o el maximo'
+    1790 if a=19 then re=2:gosub 4000:mc=1
+    1 'Obtenmos lo que falta de tiempo y lo metemos en tf para después sumarlo en el contador de tiempo'
+    1 'Si tocado un reloj le sumamos al tiempo el aumento o el maximo'
     1 'Hacemo una música de cogido'
     1' hacemos que desaparzca el reloj
-    1800 if a=9 then tm=tm+30:time=0:re=5:gosub 4000:vpoke hl,0
+    1800 if a=20 then tf=ta:time=0:re=5:gosub 4000:vpoke hl,0
     1 'Colisiones del player con sprites de los enemigos (mirar línea 70 y 2000)'
     1810 if pc=1 then pc=0:sprite on
 
@@ -188,7 +218,7 @@
         1 'y le volvemos a poner las coordenadas antiuas '
         1 'ev=velocidad x y el velocidad eje y '
         1 'ep coordenada previa x , ei=coordenada previa y'
-        1940 if a>0 and a<8 then if et(i)=0 then ev(i)=-ev(i):ex(i)=ea(i):ey(i)=ei(i) else if et(i)=1 then el(i)=-el(i):ex(i)=ea(i):ey(i)=ei(i)
+        1940 if a>3 and a<16 then if et(i)=0 then ev(i)=-ev(i):ex(i)=ea(i):ey(i)=ei(i) else if et(i)=1 then el(i)=-el(i):ex(i)=ea(i):ey(i)=ei(i)
         
         1 'Conservamos los datos de las posiciones antes de cambiarlos'
         1950 ea(i)=ex(i):ei(i)=ey(i)   
@@ -246,7 +276,7 @@
     3050 preset (26*8,9*8): print #1,ms
     3060 preset (25*8,11*8): print #1,"Live"
     3070 preset (26*8,13*8): print #1,pe
-    3080 preset (24*8,17*8): print #1,fre(0)
+    3080 preset (24*8,21*8): print #1,fre(0)
 3090 return
 
 
@@ -260,8 +290,11 @@
 3190 return
 
 1 'Pintar el tiempo'
-    3200 line (25*8,15*8)-(30*8,15*9),14,bf
+    3200 line (25*8,15*8)-(31*8,17*9),14,bf
+    3210 tu=time/50
+    3220 ta=(tm+tf)-tu
     3230 preset (24*8,15*8): print #1,ta
+    1 '3240 preset (24*8,16*8): print #1,time/50
 3290 return
 1'debug
     1 '3300 preset (0,23*8): print #1,"o1 "o1" o2 "o2" o3 "o3" o4 "o4" oy "oy" os "os
@@ -357,11 +390,13 @@
     1 'Le kitamos 1 vida'
     1 'Actializamos el tiempo'
     5700 pe=pe-1:pa=pa-pm:time=0
-    5710 'if pe<=0 then restore 12000:close:goto 60
     1 'inicializamos objetos
     5720 'gosub 7000
     1 ' llamamos a la tutina reposicionar player y enemigos según el mapa'
     5740 gosub 8300
+    1 'Pintamos el marcador'
+    5750 gosub 3000
+
 5790 return
 
 
@@ -494,6 +529,7 @@
     1 'mw=mapa world, mundo'
     1 'ms=mapa seleccioando, lo hiremos cambiando    
     1 'md=mapa dirección en VRAM, utilizado para meter los datas de tiles
+    1 'mp=mapa posición, utilizada para recorrer los caracteres'
     1 'mc= mapa cambia, lo utilizaremos para cambiar los copys y así cambiar la pantalla
     8000 mw=0:ms=0:mc=0:tn=0
 8020 return
@@ -505,14 +541,20 @@
 1'Rutina posicionar player y enemigos según el mapa
     1 'Eliminamos todos los enemigos si los hay'
     8300 gosub 6700
+    1 'Debug'
+    1 '8310 if ms=0 then x=15*8:y=5*8:gosub 6100:ex(en)=13*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
     8310 if ms=0 then x=5*8:y=8*8:gosub 6100:ex(en)=15*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
     8320 if ms=1 then x=2*8:y=12*8:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
     8330 if ms=2 then x=7*8:y=9*8:gosub 6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
     8340 if ms=3 then x=18*8:y=1*8:gosub 6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=13*8:et(en)=0
     8350 if ms=4 then x=2*8:y=12*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
     1 'Mostramos la información'
-    8380 gosub 3000
+    8380 'gosub 3000
 8390 return
+
+
+
+
 
 1 'Rutina cargar sprites con datas basic'
     1 ' vamos a meter 5 definiciones de sprites nuevos que serán 4 para el personaje y uno para la bola'
@@ -536,6 +578,9 @@
     9180 DATA 07,0E,38,70,0E,1C,70,E0
     9190 DATA 0C,0C,0C,0C,0C,06,0F,0F
     9200 DATA 00,23,33,FB,FB,33,23,00
+
+
+    
 
 9990 return 
 
@@ -563,7 +608,7 @@
     1' Hay que recordar la estructura de la VRAM, en la VRAM están los datos que se reprentan en pantalla
 
     1 'Definiremos a partir de la posición 0 de la VRAM 18 tiles de 8 bytes'
-        10000 FOR I=0 TO (10*8)-1
+        10000 FOR I=0 TO (24*8)-1
         10020 READ A$
         10030 VPOKE I,VAL("&H"+A$)
         10040 VPOKE 2048+I,VAL("&H"+A$)
@@ -571,36 +616,69 @@
     10060 NEXT I
 
 
-    10070 DATA 00,00,00,00,00,00,00,00
-    10080 DATA FF,FF,FF,FF,FF,FF,FF,FF
-    10090 DATA FF,FF,FF,00,00,FF,FF,FF
-    10100 DATA E7,E7,E7,E7,E7,E7,E7,E7
-    10110 DATA 00,F7,F7,F7,00,7F,7F,7F
-    10120 DATA FB,FB,FB,00,BF,BF,BF,00
-    10130 DATA 77,07,77,77,77,70,77,77
-    10140 DATA EE,EE,0E,EE,EE,EE,E0,EE
-    10150 DATA 18,3C,7E,7E,24,7E,7E,7E
-    10160 DATA 18,3C,7E,81,1C,7E,3C,18
+    
+    10100 DATA FF,66,66,00,00,66,66,00
+    10101 DATA FF,66,66,00,00,66,66,00
+    10102 DATA FF,99,99,FF,FF,99,99,FF
+    10103 DATA FF,FF,FF,FF,FF,FF,FF,FF
+    10104 DATA 7E,7E,7E,7E,7E,7E,7E,7E
+    10105 DATA 00,7E,7E,7E,7E,7E,7E,7E
+    10106 DATA 7E,7E,7E,7E,7E,7E,7E,00
+    10107 DATA 00,FF,FF,FF,FF,FF,FF,00
+    10108 DATA 00,FE,FE,FE,FE,FE,FE,00
+    10109 DATA 00,7F,7F,7F,7F,7F,7F,00
+    10110 DATA 7F,7F,7F,7F,7F,7F,7F,00
+    10111 DATA FE,FE,FE,FE,FE,FE,FE,00
+    10112 DATA 00,FE,FE,FE,FE,FE,FE,FE
+    10113 DATA 00,7F,7F,7F,7F,7F,7F,7F
+    10114 DATA 00,F7,F7,F7,00,7F,7F,7F
+    10115 DATA 00,F7,F7,F7,00,7F,7F,7F
+    10116 DATA 00,F7,F7,F7,00,7F,7F,7F
+    10117 DATA 00,18,18,7E,7E,18,18,00
+    10118 DATA 00,7E,7E,7E,7E,7E,7E,7E
+    10119 DATA 5E,5E,7E,7E,7E,7E,7E,00
+    10120 DATA 18,3C,C3,81,1C,C3,3C,18
+    10121 DATA 00,7E,7E,7E,7E,7E,7E,7E
+    10122 DATA 5E,5E,7E,7E,7E,7E,7E,00
+    10123 DATA 18,3C,C3,81,1C,C3,3C,18
+
+
 
     1 'Definición de colores, los colores se definen a partir de la dirección 8192/&h2000'
     1 'Como la memoria se divide en 3 bancos, la parte de arriba en medio y la de abajo hay que ponerlos en 3 partes'
-    10500 FOR I=0 TO (10*8)-1
+    10500 FOR I=0 TO (24*8)-1
         10520 READ A$
         10530 VPOKE 8192+I,VAL("&H"+A$): '&h2000'
         10540 VPOKE 10240+I,VAL("&H"+A$): '&h2800'
         10550 VPOKE 12288+I,VAL("&H"+A$): ' &h3000'
     10560 NEXT I
 
-    10570 DATA 11,11,11,11,11,11,11,11
-    10580 DATA A1,A1,A1,A1,A1,A1,A1,A1
-    10590 DATA A1,A1,E1,E1,E1,E1,A1,A1
-    10600 DATA A1,A1,A1,A1,A1,A1,A1,A1
-    10610 DATA A1,81,81,81,81,81,81,81
-    10620 DATA 81,81,81,81,81,81,81,81
-    10630 DATA 81,81,81,81,81,81,81,81
-    10640 DATA 81,81,81,81,81,81,81,81
-    10650 DATA 41,41,41,91,79,91,91,91
-    10660 DATA 71,51,51,75,85,51,51,71
+
+
+    10600 DATA E1,FE,FE,FE,FE,FE,FE,FE
+    10601 DATA A1,EA,EA,EA,EA,EA,EA,EA
+    10602 DATA F1,FE,FE,FE,FE,FE,FE,FE
+    10603 DATA A1,A1,A1,A1,A1,A1,A1,A1
+    10604 DATA A1,A1,A1,A1,A1,A1,A1,A1
+    10605 DATA A1,E1,A1,A1,A1,A1,A1,A1
+    10606 DATA A1,A1,A1,A1,A1,A1,E1,E1
+    10607 DATA E1,E1,A1,A1,A1,A1,E1,E1
+    10608 DATA E1,E1,A1,A1,A1,A1,E1,E1
+    10609 DATA E1,E1,A1,A1,A1,A1,E1,E1
+    10610 DATA A1,A1,A1,A1,A1,A1,E1,E1
+    10611 DATA A1,A1,A1,A1,A1,A1,E1,E1
+    10612 DATA E1,E1,A1,A1,A1,A1,A1,A1
+    10613 DATA A1,E1,A1,A1,A1,A1,A1,A1
+    10614 DATA A1,81,81,81,81,81,81,81
+    10615 DATA 81,51,51,51,51,51,51,51
+    10616 DATA 51,31,31,31,31,31,31,31
+    10617 DATA 31,B1,B1,B1,B1,B1,B1,B1
+    10618 DATA B1,91,71,71,71,71,91,91
+    10619 DATA 91,91,91,91,91,91,91,91
+    10620 DATA 7F,7F,75,75,85,75,7F,7F
+    10621 DATA 11,91,71,71,71,71,91,91
+    10622 DATA 91,91,91,91,91,91,91,91
+    10623 DATA 7F,7F,75,75,85,75,7F,7F
 
 10690 return
 
@@ -614,144 +692,240 @@
     1 'El mapa se encuentra en la dirección 6144 / &h1800 - 6912 /1b00'
     1 'Eliminamos los enemigos si quedan'
     11000 gosub 6700
-    1 'El +32 es paa bajar el mapa un poco abajo'
     11010 md=6144
-        1 'El mapa lo he dibujado con tilemap con 20x20 tiles de 8 pixeles'
-        11020 for f=0 to 19
-            11030 READ D$
-            1 ' ahora leemos las columnas c
-            11040 for c=0 to 19
-                11050 tn$=mid$(D$,c+1,1)
-                11060 tn=val(tn$)
-                11070 VPOKE md+c,tn
-            11160 next c
-            1 'Bajamos la fila'
-            11170 md=md+32
-        11180 next f
+    1 'Lectora de mapa con un dígito'
+    1 '11020 for f=0 to 19
+    1 '    11030 READ D$
+    1 '    11040 for c=0 to 19
+    1 '        11050 tn$=mid$(D$,c+1,1)
+    1 '        11060 tn=val(tn$)
+    1 '        11070 VPOKE md+c,tn
+    1 '    11160 next c
+    1 '    11170 md=md+32
+    1 '11180 next f
+    1 'Lectura de mapa con 2 dígitos'
+    1 'El mapa lo he dibujado con tilemap con 20x20 tiles de 8 pixeles'
+    11020 for f=0 to 19
+        11030 READ mp$
+        1 ' ahora leemos las columnas c
+        11040 for c=0 to 39 step 2
+            11050 tn$=mid$(mp$,c+1,2)
+            11060 tn=val("&h"+tn$)
+            11070 VPOKE md,tn:md=md+1
+        11160 next c
+        1 'Bajamos la fila'
+        11170 md=md+12
+    11180 next f
 11190 return
 
-
-
 1 'level 0'
+1 '12000 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
+1 '12010 data 0e1704000000000000000000000000000000000e
+1 '12020 data 0e0004000d070707070c000000000d07070c000e
+1 '12030 data 0e0004000400000000040000000004120004000e
+1 '12040 data 0e0004000400000000030708000004130004000e
+1 '12050 data 0e000a070b00000000040000000004000004000e
+1 '12060 data 0e000000000000000004000907070b000004000e
+1 '12070 data 0e0707070707070c00040000000000000004000e
+1 '12080 data 0e00000000000004000a070707070707070b000e
+1 '12090 data 0e0000000000000400000000000000000000000e
+1 '12100 data 0e00000000000004000d0707070707070708000e
+1 '12110 data 0e000d070800000400040000000000000000000e
+1 '12120 data 0e00040000000004000a070707070c000907070e
+1 '12130 data 0e0004000d07070b00000000000004000000000e
+1 '12140 data 0e000400041700000009070c000004000000000e
+1 '12150 data 0e0004000a07070c0000000400000a07070c000e
+1 '12160 data 0e0004000000000400000004000000000004000e
+1 '12170 data 0e000a07070707030707070b000000000004000e
+1 '12180 data 0e0000000000000000000000000000000004170e
+1 '12190 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
 
-12000 data 04444444444444444440
-12010 data 69300000000000000007
-12020 data 60301222210001122107
-12030 data 60303000030000380307
-12040 data 60303000032200300307
-12050 data 60121000030000300307
-12060 data 60000000030222100307
-12070 data 62222221030000000307
-12080 data 60000003012222222107
-12090 data 60000003000000000007
-12100 data 60000003012222222207
-12110 data 60122003030000000007
-12120 data 60300003012222102227
-12130 data 60301221000000300007
-12140 data 60303900022100300007
-12150 data 60301221000300122107
-12160 data 60300003000300000307
-12170 data 60122221222100000307
-12180 data 60000000000000000397
-12190 data 05555555555555555550
+
+ 
+12000 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
+12010 data 0e1404000000000000000000000000000000000e
+12020 data 0e0004000d070707070c000000000d07070c000e
+12030 data 0e0004000400000000040000000004120004000e
+12040 data 0e0004000400000000030708000004130004000e
+12050 data 0e000a070b00000000040000000004000004000e
+12060 data 0e000000000000000004000907070b000004000e
+12070 data 0e0707070707070c00040000000000000004000e
+12080 data 0e00000000000004000a070707070707070b000e
+12090 data 0e0000000000000400000000000000000000000e
+12100 data 0e00000000000004000d0707070707070708000e
+12110 data 0e000d070800000400040000000000000000000e
+12120 data 0e00040000000004000a070707070c000907070e
+12130 data 0e0004000d07070b00000000000004000000000e
+12140 data 0e000400041400000009070c000004000000000e
+12150 data 0e0004000a07070c0000000400000a07070c000e
+12160 data 0e0004000000000400000004000000000004000e
+12170 data 0e000a07070707030707070b000000000004000e
+12180 data 0e0000000000000000000000000000000004140e
+12190 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
+ 
+
 
 1 'level 1'
 
-12200 data 04444444444444444440
-12210 data 60000000022200000007
-12220 data 69122221000000122107
-12230 data 62100001222210000307
-12240 data 60000000000030000307
-12250 data 60012222210030000307
-12260 data 63030000030032210307
-12270 data 63030000030000930307
-12280 data 63030121030012230307
-12290 data 63030303030038000307
-12300 data 63030303030012221107
-12310 data 63030303030000003007
-12320 data 63030303030122203037
-12330 data 63030303030300003007
-12340 data 63030303012222222107
-12350 data 63030003000000000007
-12360 data 60012101222222210307
-12370 data 60000300000000030307
-12380 data 61000000222222012197
-12390 data 05555555555555555550
+
+
+
+
+12200 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
+12210 data 0e0000000000000000090708000000000000000e
+12220 data 0e1409070707070c0000000000000d070708000e
+12230 data 0e0708000000000907070707080004000004000e
+12240 data 0e0000000000000000000000040004000004000e
+12250 data 0e00000907070707070c0000060004000004000e
+12260 data 0e0500040000000000040000001404000004000e
+12270 data 0e04000400000000000400000d0706000004000e
+12280 data 0e0400040005000500040000041200000004000e
+12290 data 0e0400040004000400040000041300000004000e
+12300 data 0e0400040004000400040000090707070706000e
+12310 data 0e0400040004000400040000000000000400000e
+12320 data 0e0400040004000400040009070708000400090e
+12330 data 0e0400040004000400040004000000000400000e
+12340 data 0e0400040006000400060707070707070708000e
+12350 data 0e0600040000000400000000000000000000000e
+12360 data 0e0000060205000907070707070707080000000e
+12370 data 0e0000000004000000000000000000040000000e
+12380 data 0e0000000009070707070707070814040000140e
+12390 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
 
 
 1 'level 2'
+12400 data 0004040404040404040404040404040404040400
+12410 data 0600000000000000000000000000000000000007
+12420 data 0600010202020202010000000102020202010007
+12430 data 0600030000000000000000000000000000030007
+12440 data 0600030000000000000000000000000009030007
+12450 data 0600010202020202020202020202020202010007
+12460 data 0600030000000000000000000000000000030007
+12470 data 0600030000000009010000000100000000000007
+12480 data 0600010202020202010000000102020202020207
+12490 data 0600000000000000030000000308000000000007
+12500 data 0600000000000000030000000300000000000007
+12510 data 0600010202020202010000000102020202010007
+12520 data 0600030000000000010000000100000000030007
+12530 data 0600030000000000000000000000000000030007
+12540 data 0600020202020202020202020202020200020007
+12550 data 0602010000000000000000000000000000030007
+12560 data 0600000000000000010000010900000000030007
+12570 data 0600010202020202010000010202020202010007
+12580 data 0600000000000000000000000000000000000007
+12590 data 0005050505050505050505050505050505050500
 
-12400 data 44444444444444444444
-12410 data 60000000000000000007
-12420 data 60322222300032222307
-12430 data 60300000000000000307
-12440 data 60300000000000009307
-12450 data 60222222222222222207
-12460 data 60300000000000000307
-12470 data 60300009300030000007
-12480 data 60322222200022222327
-12490 data 60000000300038000007
-12500 data 60000000300030000007
-12510 data 60322222200022222307
-12520 data 60300000300030000307
-12530 data 60300000000000000307
-12540 data 60222222222222220207
-12550 data 62300000000000000307
-12560 data 60000000300390000307
-12570 data 60322222200222222307
-12580 data 60000000000000000007
-12590 data 55555555555555555555
+1 '12400 data 44444444444444444444
+1 '12410 data 60000000000000000007
+1 '12420 data 60322222300032222307
+1 '12430 data 60300000000000000307
+1 '12440 data 60300000000000009307
+1 '12450 data 60222222222222222207
+1 '12460 data 60300000000000000307
+1 '12470 data 60300009300030000007
+1 '12480 data 60322222200022222327
+1 '12490 data 60000000300038000007
+1 '12500 data 60000000300030000007
+1 '12510 data 60322222200022222307
+1 '12520 data 60300000300030000307
+1 '12530 data 60300000000000000307
+1 '12540 data 60222222222222220207
+1 '12550 data 62300000000000000307
+1 '12560 data 60000000300390000307
+1 '12570 data 60322222200222222307
+1 '12580 data 60000000000000000007
+1 '12590 data 55555555555555555555
 
 
 
 1 'level 3'
 
-12600 data 04444444444444444440
-12610 data 60000009300030000007
-12620 data 60221222122212201227
-12630 data 60003000300000003007
-12640 data 60000000000030003007
-12650 data 60221222122212221227
-12660 data 60003000300000093007
-12670 data 60000000300030000007
-12680 data 62201202122012201227
-12690 data 60003000300030003007
-12700 data 60003000300030003007
-12710 data 60221222102212221227
-12720 data 60000000300030003007
-12730 data 60003000000000000007
-12740 data 62221220122212221207
-12750 data 60003000300030003007
-12760 data 60000000300000003007
-12770 data 62201222122212221027
-12780 data 60000009300038000007
-12790 data 05555555555555555550
+12600 data 0004040404040404040404040404040404040400
+12610 data 0600000000000009030000000300000000000007
+12620 data 0600020201020202010202020102020001020207
+12630 data 0600000003000000030000000000000003000007
+12640 data 0600000000000000000000000300000003000007
+12650 data 0600020201020202010202020102020201020207
+12660 data 0600000003000000030000000000000903000007
+12670 data 0600000000000000030000000300000000000007
+12680 data 0602020001020002010202000102020001020207
+12690 data 0600000003000000030000000300000003000007
+12700 data 0600000003000000030000000300000003000007
+12710 data 0600020201020202010002020102020201020207
+12720 data 0600000000000000030000000300000003000007
+12730 data 0600000003000000000000000000000000000007
+12740 data 0602020201020200010202020102020201020007
+12750 data 0600000003000000030000000300000003000007
+12760 data 0600000000000000030000000000000003000007
+12770 data 0602020001020202010202020102020201000207
+12780 data 0600000000000009030000000308000000000007
+12790 data 0005050505050505050505050505050505050500
+
+1 '12600 data 04444444444444444440
+1 '12610 data 60000009300030000007
+1 '12620 data 60221222122212201227
+1 '12630 data 60003000300000003007
+1 '12640 data 60000000000030003007
+1 '12650 data 60221222122212221227
+1 '12660 data 60003000300000093007
+1 '12670 data 60000000300030000007
+1 '12680 data 62201202122012201227
+1 '12690 data 60003000300030003007
+1 '12700 data 60003000300030003007
+1 '12710 data 60221222102212221227
+1 '12720 data 60000000300030003007
+1 '12730 data 60003000000000000007
+1 '12740 data 62221220122212221207
+1 '12750 data 60003000300030003007
+1 '12760 data 60000000300000003007
+1 '12770 data 62201222122212221027
+1 '12780 data 60000009300038000007
+1 '12790 data 05555555555555555550
 
 
 
 1 'level 4'
+12800 data 0404040404040404040404040404040404040404
+12810 data 0602000000020000000202090000000000000207
+12820 data 0600020000030000000202000002030000020007
+12830 data 0600000200030002000000000200000002000007
+12840 data 0600000002030000020000020000030000000007
+12850 data 0600020202020200020202020202020202020007
+12860 data 0600020000030200000000000002030000020007
+12870 data 0600000200030002000000000209030002000007
+12880 data 0600000002030000020800020000030200000007
+12890 data 0602020000030000000202000000030000020207
+12900 data 0602020000000000000202000000030000020207
+12910 data 0600000000030000020000020000030200000007
+12920 data 0600000200030002000000000200030000000007
+12930 data 0600020000030200000000000000000002020007
+12940 data 0600020202020200020202020202020202020007
+12950 data 0600000002030000020000020000030200000007
+12960 data 0600000000000002000000000200000002000007
+12970 data 0600020000030200000202000002030000020907
+12980 data 0602000000000000000202000000030000000207
+12990 data 0505050505050505050505050505050505050505
 
-
-12800 data 44444444444444444444
-12810 data 62000200022900000027
-12820 data 60200300022002300207
-12830 data 60020302000020002007
-12840 data 60002300200200300007
-12850 data 60222220222222222207
-12860 data 60200320000002300207
-12870 data 60020302000029302007
-12880 data 60002300280200320007
-12890 data 62200300022000300227
-12900 data 62200000022000300227
-12910 data 60000300200200320007
-12920 data 60020302000020300007
-12930 data 60200320000000002207
-12940 data 60222220222222222207
-12950 data 60002300200200320007
-12960 data 60000002000020002007
-12970 data 60200320022002300297
-12980 data 62000000022000300027
-12990 data 55555555555555555555
+1 '12800 data 44444444444444444444
+1 '12810 data 62000200022900000027
+1 '12820 data 60200300022002300207
+1 '12830 data 60020302000020002007
+1 '12840 data 60002300200200300007
+1 '12850 data 60222220222222222207
+1 '12860 data 60200320000002300207
+1 '12870 data 60020302000029302007
+1 '12880 data 60002300280200320007
+1 '12890 data 62200300022000300227
+1 '12900 data 62200000022000300227
+1 '12910 data 60000300200200320007
+1 '12920 data 60020302000020300007
+1 '12930 data 60200320000000002207
+1 '12940 data 60222220222222222207
+1 '12950 data 60002300200200320007
+1 '12960 data 60000002000020002007
+1 '12970 data 60200320022002300297
+1 '12980 data 62000000022000300027
+1 '12990 data 55555555555555555555
 
 
 1 'world 1'

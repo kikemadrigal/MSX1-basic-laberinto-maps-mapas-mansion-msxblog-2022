@@ -5,6 +5,7 @@ https://kikemadrigal.github.io/MSX1-basic-laberinto-msxblog-2022/?disk=laberinto
 
 # Enlace kanbam
 
+https://github.com/kikemadrigal/MSX1-basic-laberinto-msxblog-2022/projects/1
 
 
 # test1
