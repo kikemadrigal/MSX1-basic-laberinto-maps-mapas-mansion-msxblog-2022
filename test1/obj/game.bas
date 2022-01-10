@@ -2,7 +2,6 @@
 30color1,15,7:screen2,0,0
 40definta-z:open"grp:"as#1
 50gosub9000
-60gosub7000
 70'gosub5000
 80gosub6000
 100tm=40:tn=0:time=0
@@ -19,10 +18,11 @@
     270 preset (0,130):print #1,"Solo puedes utilizarlas una cez por mundo"
     280 preset (0,21*8):print #1,"Pulsa espacio para continuar"
 290ifstrig(0)=-1thengs=1:goto200elsegoto290
-    300 preset (60,10):print #1,"Has ganado"
+300screen2
+    305 preset (60,10):print #1,"Has ganado"
     310 preset (60,20):print #1,"MSX Murcia 2022"
     320 preset (0,50):print #1,"Desarrolador: Kike Madrigal"
-330ifinkey$=""thengoto330elsegs=0:goto200
+330ifstrig(0)=-1thengs=1:goto200elsegoto330
 350gosub5000
 355'a=usr3(0)
 360gosub10000
@@ -30,12 +30,13 @@
 380'a=usr4(0)
 390gosub11000
 392gosub3000
+393gosub7000
 394gosub3100
 395gosub8300
 396intervalon:oninterval=50gosub3200
-398onstriggosub7100
+398ifgs=1thenonstriggosub7100
 399'spriteon:onspritegosub5700
-400ifpe<=0thenrestore10100:intervaloff:gosub6700:PUTSPRITE0,(0,212),1,pp:os=0:gs=0:goto200
+400ifpe<=0thenrestore10100:intervaloff:gosub6700:PUTSPRITE0,(0,212),1,pp:gosub7000:gs=0:goto200
 410ifta<=0thentf=0:time=0:gosub5700
 420gosub1000
 430gosub1760
@@ -50,24 +51,24 @@
 1050ify+ph>192theny=yp
 1060ifx+pw>252thenx=xp
 1090RETURN
-1110y=y-pv:pp=0:re=10:gosub4000:return
+1110y=y-pv:ps=p0:swapp0,p1:re=10:gosub4000:return
 1120return
-1130x=x+pv:pp=2:re=10:gosub4000:return
+1130x=x+pv:ps=p2:swapp2,p3:re=10:gosub4000:return
 1140return
-1150y=y+pv:pp=1:re=10:gosub4000:return
+1150y=y+pv:ps=p4:swapp4,p5:re=10:gosub4000:return
 1160return
-1170x=x-pv:pp=3:re=10:gosub4000:return
-1400PUTSPRITE0,(x,y),1,pp
+1170x=x-pv:ps=p6:swapp6,p7:re=10:gosub4000:return
+1400PUTSPRITE0,(x,y),1,ps
 1410ifen=0thenreturn
 1430fori=1toen
 1440ec(i)=ec(i)+1:ifec(i)>1thenec(i)=0
-1450ifet(i)=0thenifec(i)=0thenes(i)=5elsees(i)=6
-1460ifet(i)=1thenifec(i)=0thenes(i)=7elsees(i)=8
+1450ifet(i)=0thenifec(i)=0thenes(i)=8elsees(i)=9
+1460ifet(i)=1thenifec(i)=0thenes(i)=10elsees(i)=11
 1490PUTSPRITEep(i),(ex(i),ey(i)),1,es(i)
 1495nexti
 1520return
 1760hl=base(5)+(y/8)*32+(x/8):a=vpeek(hl)
-1770ifa>3anda<16thenifos=2ando2=1thenvpokehl,0:o2=0:gosub3100:re=10:gosub3000elsex=xp:y=yp
+1770ifa>3anda<16thenifos=3ando3=1thenvpokehl,0:o3=0:gosub3100:re=10:gosub3000elsex=xp:y=yp
 1780'ifa=2thenx=8*16:y=8*18:beep
 1790ifa=19thenre=2:gosub4000:mc=1
 1800ifa=20thentf=ta:time=0:re=5:gosub4000:vpokehl,0
@@ -78,7 +79,7 @@
 1930hl=base(5)+(ey(i)/8)*32+(ex(i)/8):a=vpeek(hl)
 1940ifa>3anda<16thenifet(i)=0thenev(i)=-ev(i):ex(i)=ea(i):ey(i)=ei(i)elseifet(i)=1thenel(i)=-el(i):ex(i)=ea(i):ey(i)=ei(i)
 1950ea(i)=ex(i):ei(i)=ey(i)
-1960ifx<ex(i)+ew(i)andx+pw>ex(i)andy<ey(i)+eh(i)andy+ph>ey(i)thenifos=1ando1=1thenre=3:gosub4000:o1=0:ed=i:gosub6600:gosub3100elsebeep:gosub5700
+1960ifx<ex(i)+ew(i)andx+pw>ex(i)andy<ey(i)+eh(i)andy+ph>ey(i)thenifos=2ando2=1thenre=3:gosub4000:o2=0:ed=i:gosub6600:gosub3100elsebeep:gosub5700
 1970nexti
 1990return
 2000ifpe=0thengosub5000
@@ -94,10 +95,12 @@
 3070preset(26*8,13*8):print#1,pe
 3080preset(24*8,21*8):print#1,fre(0)
 3090return
-3100ifo1thenPUTSPRITE11,((22*8)-4,5*8),6,10elsePUTSPRITE11,((22*8)-4,5*8),15,10
-3120ifo2thenPUTSPRITE12,((22*8)-4,7*8),6,11elsePUTSPRITE12,((22*8)-4,7*8),15,11
-3130ifo3thenPUTSPRITE13,((22*8)-4,9*8),6,12elsePUTSPRITE13,((22*8)-4,9*8),15,12
-3140ifo4thenPUTSPRITE14,((22*8)-4,11*8),6,13elsePUTSPRITE14,((22*8)-4,11*8),15,13
+3100ifo1thenPUTSPRITE21,((22*8)-4,5*8),6,13elsePUTSPRITE21,((22*8)-4,5*8),15,13
+3110ifo2thenPUTSPRITE22,((22*8)-4,7*8),6,14elsePUTSPRITE22,((22*8)-4,7*8),15,14
+3120ifo3thenPUTSPRITE23,((22*8)-4,9*8),6,15elsePUTSPRITE23,((22*8)-4,9*8),15,15
+3130ifo4thenPUTSPRITE24,((22*8)-4,11*8),6,16elsePUTSPRITE24,((22*8)-4,11*8),15,16
+3140ifo5thenPUTSPRITE25,((22*8)-4,13*8),6,17elsePUTSPRITE25,((22*8)-4,13*8),15,17
+3150ifo6thenPUTSPRITE26,((22*8)-4,15*8),6,18elsePUTSPRITE26,((22*8)-4,15*8),15,18
 3190return
 3200line(25*8,15*8)-(31*8,17*9),14,bf
 3210tu=time/50
@@ -118,6 +121,7 @@
 4070ifre=11thensound1,0:sound6,25:sound8,16:sound12,4:sound13,9
 4090return
 5000x=0:y=0:xp=0:yp=0:pw=8:ph=8:pv=8:pe=3:pc=0
+5010p0=0:p1=1:p2=2:p3=3:p4=4:p5=5:p6=6:p7=7
 5020return
 5700pe=pe-1:pa=pa-pm:time=0
 5720'gosub7000
@@ -134,7 +138,7 @@
 6100en=en+1
 6105ex(en)=0:ey(en)=0:ea(en)=0:ei(en)=0
 6110ev(en)=8:el(en)=8
-6130ew(en)=8:eh(en)=8:es(en)=5:ep(en)=4+en
+6130ew(en)=8:eh(en)=8:es(en)=8:ep(en)=10+en
 6140ee(en)=100
 6150et(en)=0
 6160ec(en)=0
@@ -149,49 +153,55 @@
 6720nexti
 6780en=0
 6790return
-7000os=0
-7010ox=0:oy=24
-7020o1=1:o2=1:o3=1:o4=1
+7000os=0:oy=3*8
+7020o1=1:o2=1:o3=1:o4=1:o5=1:o6=1
 7090return
-7100beep:os=os+1:ifos>4thenos=1
+7100beep:os=os+1:ifos>6thenos=1
+7105oy=oy+16:ifoy>15*8thenoy=5*8
 7110line(0,21*8)-(247,24*8),15,bf
-7120oy=oy+16:ifoy>88thenoy=5*8
-    7130 if os=1 and o1=1 then  preset (0,21*8):print #1,"Seleccionada la espada: ":preset (0,22*8):print #1,"Puedes matar enemigos"
-    7140 if os=2 and o2=1 then  preset (0,21*8):print #1,"Seleccionada el rayo:":preset (0,22*8):print #1,"Puedes romper los muros"
-    7150 if os=3 and o3=1 then  preset (0,21*8):print #1,"Seleccionada la pala: ":preset (0,22*8):print #1,"Puedes dar palazos"             
-    7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques amarillos"
-7170PUTSPRITE10,((22*8)-4,oy),1,9
+    7120 if os=1 and o1=1 then  preset (0,21*8):print #1,"Seleccion eliminada":preset (0,22*8)
+    7130 if os=2 and o2=1 then  preset (0,21*8):print #1,"Seleccionada la espada: ":preset (0,22*8):print #1,"Puedes matar enemigos"
+    7140 if os=3 and o3=1 then  preset (0,21*8):print #1,"Seleccionada el rayo:":preset (0,22*8):print #1,"Puedes romper los muros"
+    7150 if os=4 and o4=1 then  preset (0,21*8):print #1,"Seleccionada la pala: ":preset (0,22*8):print #1,"Puedes pasar por debajo de los muros"             
+    7160 if os=5 and o5=1 then  preset (0,21*8):print #1,"Seleccionada la escalera: ":preset (0,22*8):print #1,"Puedes pasar por encima de los muros"             
+    7170 if os=6 and o6=1 then  preset (0,21*8):print #1,"Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques amarillos"
+7175PUTSPRITE20,((22*8)-4,oy),1,12
 7190return
 8000mw=0:ms=0:mc=0:tn=0
 8020return
 8300gosub6700
-8310ifms=0thenx=5*8:y=8*8:gosub6100:ex(en)=15*8:ey(en)=1*8:et(en)=0:gosub6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
+8310ifms=0thenx=5*8:y=10*8:gosub6100:ex(en)=15*8:ey(en)=1*8:et(en)=0:gosub6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
 8320ifms=1thenx=2*8:y=12*8:gosub6100:ex(en)=10*8:ey(en)=10*8:et(en)=0:gosub6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
 8330ifms=2thenx=7*8:y=9*8:gosub6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
 8340ifms=3thenx=18*8:y=1*8:gosub6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub6100:ex(en)=10*8:ey(en)=13*8:et(en)=0
 8350ifms=4thenx=2*8:y=12*8:gosub6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
 8380'gosub3000
 8390return
-9000FORI=0TO13:SP$=""
+9000FORI=0TO18:SP$=""
 9020FORJ=1TO8:READA$
 9030SP$=SP$+CHR$(VAL("&H"+A$))
 9040NEXTJ
 9050SPRITE$(I)=SP$
 9060NEXTI
-9070DATA18,18,66,5A,5A,24,24,66
-9080DATA18,18,24,3C,3C,18,18,3C
-9090DATA18,18,10,18,1C,18,18,1C
-9100DATA18,18,08,18,38,18,18,38
-9110DATAE3,E3,E3,3E,3E,3E,F9,F9
-9120DATA18,3C,66,42,C3,C3,C3,FF
-9130DATA00,00,00,3C,42,FF,FF,FF
-9140DATA81,DB,3C,18,18,66,42,C3
-9150DATA00,18,7E,5A,18,24,24,66
-9160DATAFF,81,81,81,81,81,81,FF
-9170DATA01,02,04,88,50,20,D0,C8
-9180DATA07,0E,38,70,0E,1C,70,E0
-9190DATA0C,0C,0C,0C,0C,06,0F,0F
-9200DATA00,23,33,FB,FB,33,23,00
+9090DATA03,C3,D8,3C,BD,DB,E7,7E
+9100DATAC0,C3,1B,3C,BD,DB,E7,7E
+9110DATA76,E6,D8,BC,BC,D8,E3,73
+9120DATA73,E3,D8,BC,BC,D8,E6,76
+9130DATA7E,E7,DB,BD,3C,1B,C3,C0
+9140DATA7E,E7,DB,BD,3C,D8,C3,03
+9150DATACE,C7,1B,3D,3D,1B,67,6E
+9160DATA6E,67,1B,3D,3D,1B,C7,CE
+9170DATA18,3C,66,C3,C3,66,3C,18
+9180DATA3C,7E,FF,E7,E7,FF,7E,3C
+9190DATA81,C3,24,3C,3C,24,42,C3
+9200DATA00,42,66,3C,3C,24,66,00
+9210DATAFF,81,81,81,81,81,81,FF
+9220DATA81,42,24,18,18,24,42,81
+9230DATA01,02,04,88,50,20,D0,C8
+9240DATA07,0E,38,70,0E,1C,70,E0
+9250DATA0C,0C,0C,0C,0C,06,0F,0F
+9260DATA24,24,3C,24,24,3C,24,24
+9270DATA00,23,33,FB,FB,33,23,00
 9990return
 10000FORI=0TO(24*8)-1
 10020READA$

@@ -11,8 +11,6 @@
 40 defint a-z:open "grp:" as #1
  1 ' inicializamos los sprites'
 50 gosub 9000
-1 'Inicializamoz los objetos'
-60 gosub 7000
 1 ' inicilizamos el personaje'
 70 'gosub 5000
 1 ' inicilizamos los enemigos'
@@ -42,10 +40,11 @@
     1 '290 if inkey$="" then goto 290 else gs=1:goto 200
     290 if strig(0)=-1 then gs=1:goto 200 else goto 290
 
-    300 preset (60,10):print #1,"!Has ganado!!!!"
+    300 screen 2
+    305 preset (60,10):print #1,"!Has ganado!!!!"
     310 preset (60,20):print #1,"!MSX Murcia 2022"
     320 preset (0,50):print #1,"!Desarrolador: Kike Madrigal"
-    330 if inkey$="" then goto 330 else gs=0:goto 200
+    330 if strig(0)=-1 then gs=1:goto 200 else goto 330
 1 '<<<<<<<< FInal del bucle de estados>>>>>>>>>>>>>'
 
 
@@ -63,6 +62,8 @@
 390 gosub 11000
 1 ' Mostramos el marcador'
 392 gosub 3000
+1 'Inicializamoz los objetos'
+393 gosub 7000
 1 'Pintamos los objetos'
 394 gosub 3100
 1 'posicionamos al player y enemigos tras cargar el mapa'
@@ -70,7 +71,7 @@
 1 'Cada segundo repintamos el tiempo'
 396 interval on:on interval=50 gosub 3200
 1 'Cuando se pulse el espacio o el disparo del joystick elegimos una de las herramientas'
-398 on strig gosub 7100
+398 if gs=1 then on strig gosub 7100
 1 'Cuando haya colisión de sprites ir a la subrutina de player muere
 399 'sprite on:on sprite gosub 5700
 
@@ -83,7 +84,7 @@
         1 'Eliminamos a los enemigos 6700'
         1 'Sacamos al player de la pantalla'
         1 'Deseleccionamos los objetos'
-    400 if pe<=0 then restore 10100:interval off:gosub 6700:PUT SPRITE 0,(0,212),1,pp:os=0:gs=0:goto 200
+    400 if pe<=0 then restore 10100:interval off:gosub 6700:PUT SPRITE 0,(0,212),1,pp:gosub 7000:gs=0:goto 200
     1 'si no queda tiempo reiniciamos y llamamos a la rutina player muere'
     410 if ta<=0 then tf=0:time=0:gosub 5700 
     1 'Actualizamos el sistema de input'
@@ -120,19 +121,19 @@
     1060 if x+pw>252 then x=xp
 1090 RETURN
 1 '1 arriba'
-1110 y=y-pv:pp=0:re=10:gosub 4000:return
+1110 y=y-pv:ps=p0:swap p0,p1:re=10:gosub 4000:return
 1 '2'
 1120 return
 1 '3 derecha'
-1130 x=x+pv:pp=2:re=10:gosub 4000:return
+1130 x=x+pv:ps=p2:swap p2,p3:re=10:gosub 4000:return
 1 '4'
 1140 return
 1 '5 abajo'
-1150 y=y+pv:pp=1:re=10:gosub 4000:return
+1150 y=y+pv:ps=p4:swap p4, p5:re=10:gosub 4000:return
 1 '6 abajo derecha'
 1160 return
 1 '7 izquierda'
-1170 x=x-pv:pp=3:re=10:gosub 4000:return
+1170 x=x-pv:ps=p6:swap p6,p7:re=10:gosub 4000:return
 
 
 
@@ -153,15 +154,14 @@
 
 1 '' <<< RENDER SYSTEM >>>>
     1 'Pintamos de nuevo el player con la posición, el color y el plano(dibujitos de izquierda, derecha..)'
-    1400 PUT SPRITE 0,(x,y),1,pp
+    1400 PUT SPRITE 0,(x,y),1,ps
     1410 if en=0 then return
     1 'dibujamos los enemigos, sin el for ser ve más claro'
     1430 for i=1 to en
         1 'Esto es para animar los muñegotes'
         1440 ec(i)=ec(i)+1:if ec(i)>1 then ec(i)=0
-        1450 if et(i)=0 then if ec(i)=0 then es(i)=5 else es(i)=6
-        1460 if et(i)=1 then if ec(i)=0 then es(i)=7 else es(i)=8
-        1 'Nuestros enemigos son el sprite 5 en adelante'
+        1450 if et(i)=0 then if ec(i)=0 then es(i)=8 else es(i)=9
+        1460 if et(i)=1 then if ec(i)=0 then es(i)=10 else es(i)=11
         1490 PUT SPRITE ep(i),(ex(i),ey(i)),1,es(i)
     1495 next i
 1520 return
@@ -196,7 +196,7 @@
     1 '     re=10:gosub 3000 hacemos un sonido'
     1 'Si no está activa la herramienta de romper bloque'
     1'      volvemos a la posición que estábamos
-    1770 if a>3 and a<16 then if os=2 and o2=1 then vpoke hl,0:o2=0:gosub 3100:re=10:gosub 3000 else x=xp: y=yp
+    1770 if a>3 and a<16 then if os=3 and o3=1 then vpoke hl,0:o3=0:gosub 3100:re=10:gosub 3000 else x=xp: y=yp
     1 'Si el valor es un 2, es nuestro punto de fuga lo mandamos a otro sitio '
     1780 'if a=2 then x=8*16: y=8*18:beep
     1 'Si hemos llegado a la casa cambiamos de nivel'
@@ -224,13 +224,13 @@
         1950 ea(i)=ex(i):ei(i)=ey(i)   
 
         1 'Si hat Colisión del player con el enemigo'
-        1 '     Si está acitvado el objto 1 y habilitado'
+        1 '     Si está acitvado el objeto 2 de matar enemigos y habilitado'
         1 '         hacemos un sonido (re=6:4000)'
         1 '         Eliminamos al enemigo (ed=i:6600)'
         1 '         Repintamos los objetos
         1 '     Si no está activado o habilitado el objeto 1'
         1 '         Matamos al player'
-        1960 if x < ex(i) + ew(i) and x + pw > ex(i) and y < ey(i) + eh(i) and y + ph > ey(i) then if os=1 and o1=1 then re=3:gosub 4000:o1=0:ed=i:gosub 6600:gosub 3100 else beep:gosub 5700
+        1960 if x < ex(i) + ew(i) and x + pw > ex(i) and y < ey(i) + eh(i) and y + ph > ey(i) then if os=2 and o2=1 then re=3:gosub 4000:o2=0:ed=i:gosub 6600:gosub 3100 else beep:gosub 5700
     1970 next i
 1990 return
 
@@ -283,10 +283,19 @@
 
 
 1 'pintar objetos
-    3100 if o1 then PUT SPRITE 11,((22*8)-4,5*8),6,10 else PUT SPRITE 11,((22*8)-4,5*8),15,10
-    3120 if o2 then PUT SPRITE 12,((22*8)-4,7*8),6,11 else PUT SPRITE 12,((22*8)-4,7*8),15,11
-    3130 if o3 then PUT SPRITE 13,((22*8)-4,9*8),6,12 else PUT SPRITE 13,((22*8)-4,9*8),15,12
-    3140 if o4 then PUT SPRITE 14,((22*8)-4,11*8),6,13 else PUT SPRITE 14,((22*8)-4,11*8),15,13
+    1 'el plano 20 es el marco de selección'
+    1 'el plano 21 la cruz'
+    3100 if o1 then PUT SPRITE 21,((22*8)-4,5*8),6,13 else PUT SPRITE 21,((22*8)-4,5*8),15,13
+    1 '2 La espada'
+    3110 if o2 then PUT SPRITE 22,((22*8)-4,7*8),6,14 else PUT SPRITE 22,((22*8)-4,7*8),15,14
+    1 'El rayo rompe muros'
+    3120 if o3 then PUT SPRITE 23,((22*8)-4,9*8),6,15 else PUT SPRITE 23,((22*8)-4,9*8),15,15
+    1 'La pala'
+    3130 if o4 then PUT SPRITE 24,((22*8)-4,11*8),6,16 else PUT SPRITE 24,((22*8)-4,11*8),15,16
+    1 'La escalera'
+    3140 if o5 then PUT SPRITE 25,((22*8)-4,13*8),6,17 else PUT SPRITE 25,((22*8)-4,13*8),15,17
+    1 'Emupjar bloque'
+    3150 if o6 then PUT SPRITE 26,((22*8)-4,15*8),6,18 else PUT SPRITE 26,((22*8)-4,15*8),15,18
 3190 return
 
 1 'Pintar el tiempo'
@@ -294,7 +303,7 @@
     3210 tu=time/50
     3220 ta=(tm+tf)-tu
     3230 preset (24*8,15*8): print #1,ta
-    1 '3240 preset (24*8,16*8): print #1,time/50
+    1 '3240 preset (24*8,16*8): print #1,os" "oy
 3290 return
 1'debug
     1 '3300 preset (0,23*8): print #1,"o1 "o1" o2 "o2" o3 "o3" o4 "o4" oy "oy" os "os
@@ -385,6 +394,11 @@
     1 'pa=player time actual'
     1 'pm=time maximo'
     5000 x=0:y=0:xp=0:yp=0:pw=8:ph=8:pv=8:pe=3:pc=0
+    1 'p0 y p1=sprites arriba: contedrá 0 o 1 intercambiados con swap que son los sprites de la animación de arriba'
+    1 'p2 y p3=sprite derecha: determina si está el sprite 2 o 3''
+    1 'p4 y p5=sprites abajo 
+    1 'p6 y p7=sprites izquierda: 6 o 7'
+    5010 p0=0:p1=1:p2=2:p3=3:p4=4:p5=5:p6=6:p7=7
 5020 return
 1' Player muere
     1 'Le kitamos 1 vida'
@@ -430,19 +444,11 @@
 6099 return
 
 1 ' Crear enemigo'
-    1 'Como el espacio en la memoria lo creamos en el loader, ahora rellenamos, 
-    1 'el dibujado lo hacemos en el render '
-    1 'Aqui le asignamos el sprite que será el definido en el lodaer '
-    1 'En lugar de ponerles valores le copiamos los valores de la entidad creada en el init'
-    1 'la siguiente vez que llamemos a crear enemigo se creará en la siguiente posición del array'
-    1 'Al sumarle un enemigo cuando volvamos a llamar a esta subrrutina
-    1 'Creará el enemigo en la siguiente posición, pero antes fíjate en las dimensiones 
-    1 'Que le reservaste en el loader.bas'
-
     6100 en=en+1
     6105 ex(en)=0:ey(en)=0:ea(en)=0:ei(en)=0
     6110 ev(en)=8:el(en)=8
-    6130 ew(en)=8:eh(en)=8:es(en)=5:ep(en)=4+en
+    1 'los planos del enemigo serán de 10 en adelante'
+    6130 ew(en)=8:eh(en)=8:es(en)=8:ep(en)=10+en
     6140 ee(en)=100
     6150 et(en)=0
     6160 ec(en)=0
@@ -469,22 +475,31 @@
 1 '------------------------Objetos------------------'
 1 '---------------------------------------------------------'
 1 'Init'
-1 'os=objeto seleccionado'
-7000 os=0
-7010 ox=0:oy=24
-7020 o1=1:o2=1:o3=1:o4=1
+    1 'os=objeto seleccionado'
+    7000 os=0:oy=3*8
+    1 'Habilitamos los objetos, ponemos su valor a 1'
+    1 'Objeto 1: la cruz de eliminar selección'
+    1 'Objeto 2: la espada para matar enemigos'
+    1 'Objeto 3: el rayo para romper muros'
+    1 'Objeto 4:La pala para pasar por debajo'
+    1 'Obejto 5: la escalera, para subir muros'
+    1 'Objeto 6: la fuerza para empujar muros'
+    7020 o1=1:o2=1:o3=1:o4=1:o5=1:o6=1
 7090 return
 
 1 'Rutina seleccion al pulsar espacio'
-    7100 beep:os=os+1:if os>4 then os=1
+    7100 beep:os=os+1:if os>6 then os=1 
+    7105 oy=oy+16:if oy>15*8 then oy=5*8 
     1 'Borramos el mensaje anterior'
     7110 line (0,21*8)-(247,24*8),15,bf
-    7120 oy=oy+16:if oy>88 then oy=5*8 
-    7130 if os=1 and o1=1 then  preset (0,21*8):print #1,"!Seleccionada la espada: ":preset (0,22*8):print #1,"Puedes matar enemigos"
-    7140 if os=2 and o2=1 then  preset (0,21*8):print #1,"!Seleccionada el rayo:":preset (0,22*8):print #1,"Puedes romper los muros"
-    7150 if os=3 and o3=1 then  preset (0,21*8):print #1,"!Seleccionada la pala: ":preset (0,22*8):print #1,"Puedes dar palazos"             
-    7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques amarillos"
-    7170 PUT SPRITE 10,((22*8)-4,oy),1,9
+    7120 if os=1 and o1=1 then  preset (0,21*8):print #1,"!Seleccion eliminada":preset (0,22*8)
+    7130 if os=2 and o2=1 then  preset (0,21*8):print #1,"!Seleccionada la espada: ":preset (0,22*8):print #1,"Puedes matar enemigos"
+    7140 if os=3 and o3=1 then  preset (0,21*8):print #1,"!Seleccionada el rayo:":preset (0,22*8):print #1,"Puedes romper los muros"
+    7150 if os=4 and o4=1 then  preset (0,21*8):print #1,"!Seleccionada la pala: ":preset (0,22*8):print #1,"Puedes pasar por debajo de los muros"             
+    7160 if os=5 and o5=1 then  preset (0,21*8):print #1,"!Seleccionada la escalera: ":preset (0,22*8):print #1,"Puedes pasar por encima de los muros"             
+    7170 if os=6 and o6=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques amarillos"
+    1 'Este es el marco que sale junto al objeto para decir que está seleccionado'
+    7175 PUT SPRITE 20,((22*8)-4,oy),1,12
 7190 return
 
 
@@ -543,7 +558,7 @@
     8300 gosub 6700
     1 'Debug'
     1 '8310 if ms=0 then x=15*8:y=5*8:gosub 6100:ex(en)=13*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
-    8310 if ms=0 then x=5*8:y=8*8:gosub 6100:ex(en)=15*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
+    8310 if ms=0 then x=5*8:y=10*8:gosub 6100:ex(en)=15*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
     8320 if ms=1 then x=2*8:y=12*8:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
     8330 if ms=2 then x=7*8:y=9*8:gosub 6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
     8340 if ms=3 then x=18*8:y=1*8:gosub 6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=13*8:et(en)=0
@@ -558,26 +573,32 @@
 
 1 'Rutina cargar sprites con datas basic'
     1 ' vamos a meter 5 definiciones de sprites nuevos que serán 4 para el personaje y uno para la bola'
-    9000 FOR I=0 TO 13:SP$=""
+    9000 FOR I=0 TO 18:SP$=""
         9020 FOR J=1 TO 8:READ A$
             9030 SP$=SP$+CHR$(VAL("&H"+A$))
         9040 NEXT J
         9050 SPRITE$(I)=SP$
     9060 NEXT I
-    9070 DATA 18,18,66,5A,5A,24,24,66
-    9080 DATA 18,18,24,3C,3C,18,18,3C
-    9090 DATA 18,18,10,18,1C,18,18,1C
-    9100 DATA 18,18,08,18,38,18,18,38
-    9110 DATA E3,E3,E3,3E,3E,3E,F9,F9
-    9120 DATA 18,3C,66,42,C3,C3,C3,FF
-    9130 DATA 00,00,00,3C,42,FF,FF,FF
-    9140 DATA 81,DB,3C,18,18,66,42,C3
-    9150 DATA 00,18,7E,5A,18,24,24,66
-    9160 DATA FF,81,81,81,81,81,81,FF
-    9170 DATA 01,02,04,88,50,20,D0,C8
-    9180 DATA 07,0E,38,70,0E,1C,70,E0
-    9190 DATA 0C,0C,0C,0C,0C,06,0F,0F
-    9200 DATA 00,23,33,FB,FB,33,23,00
+    9090 DATA 03,C3,D8,3C,BD,DB,E7,7E
+    9100 DATA C0,C3,1B,3C,BD,DB,E7,7E
+    9110 DATA 76,E6,D8,BC,BC,D8,E3,73
+    9120 DATA 73,E3,D8,BC,BC,D8,E6,76
+    9130 DATA 7E,E7,DB,BD,3C,1B,C3,C0
+    9140 DATA 7E,E7,DB,BD,3C,D8,C3,03
+    9150 DATA CE,C7,1B,3D,3D,1B,67,6E
+    9160 DATA 6E,67,1B,3D,3D,1B,C7,CE
+    9170 DATA 18,3C,66,C3,C3,66,3C,18
+    9180 DATA 3C,7E,FF,E7,E7,FF,7E,3C
+    9190 DATA 81,C3,24,3C,3C,24,42,C3
+    9200 DATA 00,42,66,3C,3C,24,66,00
+    9210 DATA FF,81,81,81,81,81,81,FF
+    9220 DATA 81,42,24,18,18,24,42,81
+    9230 DATA 01,02,04,88,50,20,D0,C8
+    9240 DATA 07,0E,38,70,0E,1C,70,E0
+    9250 DATA 0C,0C,0C,0C,0C,06,0F,0F
+    9260 DATA 24,24,3C,24,24,3C,24,24
+    9270 DATA 00,23,33,FB,FB,33,23,00
+
 
 
     
