@@ -20,49 +20,13 @@
   <sprites name="sc1test" version="" group="" author="" startDate="637346016000000000" lastUpdate="637773696000000000" mode="2" type="1">
     <description>
     </description>
-    <item name="" order="6" type="1" mode="2" InkColor="13" BGcolor="0">
-      <gfxData>206,199,27,61,61,27,103,110</gfxData>
+    <item name="" order="5" type="1" mode="2" InkColor="13" BGcolor="0">
+      <gfxData>126,231,219,189,60,216,195,3</gfxData>
       <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
-    </item>
-    <item name="" order="2" type="1" mode="2" InkColor="13" BGcolor="0">
-      <gfxData>118,230,216,188,188,216,227,115</gfxData>
-      <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
-    </item>
-    <item name="" order="16" type="1" mode="2" InkColor="10" BGcolor="0">
-      <gfxData>12,12,12,12,12,6,15,15</gfxData>
-      <colorData>10,10,10,10,10,10,10,10,0,0,0,0,0,0,0,0</colorData>
-    </item>
-    <item name="" order="13" type="1" mode="2" InkColor="9" BGcolor="0">
-      <gfxData>129,66,36,24,24,36,66,129</gfxData>
-      <colorData>9,9,9,9,9,9,9,9,0,0,0,0,0,0,0,0</colorData>
-    </item>
-    <item name="" order="15" type="1" mode="2" InkColor="10" BGcolor="0">
-      <gfxData>7,14,56,112,14,28,112,224</gfxData>
-      <colorData>10,10,10,10,10,10,10,10,0,0,0,0,0,0,0,0</colorData>
-    </item>
-    <item name="" order="10" type="1" mode="2" InkColor="15" BGcolor="0">
-      <gfxData>129,195,36,60,60,36,66,195</gfxData>
-      <colorData>9,9,3,3,3,2,9,9,0,0,0,0,0,0,0,0</colorData>
-    </item>
-    <item name="" order="9" type="1" mode="2" InkColor="10" BGcolor="0">
-      <gfxData>60,126,255,231,231,255,126,60</gfxData>
-      <colorData>10,10,10,10,10,10,10,10,0,0,0,0,0,0,0,0</colorData>
-    </item>
-    <item name="" order="1" type="1" mode="2" InkColor="13" BGcolor="0">
-      <gfxData>192,195,27,60,189,219,231,126</gfxData>
-      <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
-    </item>
-    <item name="" order="8" type="1" mode="2" InkColor="10" BGcolor="0">
-      <gfxData>24,60,102,195,195,102,60,24</gfxData>
-      <colorData>10,10,10,10,10,10,10,10,0,0,0,0,0,0,0,0</colorData>
     </item>
     <item name="" order="14" type="1" mode="2" InkColor="10" BGcolor="0">
       <gfxData>1,2,4,136,80,32,208,200</gfxData>
       <colorData>10,10,10,10,10,10,10,10,0,0,0,0,0,0,0,0</colorData>
-    </item>
-    <item name="" order="5" type="1" mode="2" InkColor="13" BGcolor="0">
-      <gfxData>126,231,219,189,60,216,195,3</gfxData>
-      <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
     </item>
     <item name="" order="0" type="1" mode="2" InkColor="13" BGcolor="0">
       <gfxData>3,195,216,60,189,219,231,126</gfxData>
@@ -72,29 +36,61 @@
       <gfxData>0,66,102,60,60,36,102,0</gfxData>
       <colorData>9,9,3,3,3,2,9,9,0,0,0,0,0,0,0,0</colorData>
     </item>
-    <item name="" order="3" type="1" mode="2" InkColor="13" BGcolor="0">
-      <gfxData>115,227,216,188,188,216,230,118</gfxData>
-      <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
-    </item>
-    <item name="" order="18" type="1" mode="2" InkColor="10" BGcolor="0">
-      <gfxData>0,35,51,251,251,51,35,0</gfxData>
+    <item name="" order="9" type="1" mode="2" InkColor="10" BGcolor="0">
+      <gfxData>60,126,255,231,231,255,126,60</gfxData>
       <colorData>10,10,10,10,10,10,10,10,0,0,0,0,0,0,0,0</colorData>
-    </item>
-    <item name="" order="4" type="1" mode="2" InkColor="13" BGcolor="0">
-      <gfxData>126,231,219,189,60,27,195,192</gfxData>
-      <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
     </item>
     <item name="" order="12" type="1" mode="2" InkColor="10" BGcolor="0">
       <gfxData>255,129,129,129,129,129,129,255</gfxData>
       <colorData>10,10,10,10,10,10,10,10,0,0,0,0,0,0,0,0</colorData>
     </item>
+    <item name="" order="15" type="1" mode="2" InkColor="10" BGcolor="0">
+      <gfxData>7,14,56,112,14,28,112,224</gfxData>
+      <colorData>10,10,10,10,10,10,10,10,0,0,0,0,0,0,0,0</colorData>
+    </item>
+    <item name="" order="3" type="1" mode="2" InkColor="13" BGcolor="0">
+      <gfxData>115,227,216,188,188,216,230,118</gfxData>
+      <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
+    </item>
+    <item name="" order="6" type="1" mode="2" InkColor="13" BGcolor="0">
+      <gfxData>206,199,27,61,61,27,103,110</gfxData>
+      <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
+    </item>
     <item name="" order="7" type="1" mode="2" InkColor="13" BGcolor="0">
       <gfxData>110,103,27,61,61,27,199,206</gfxData>
       <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
     </item>
-    <item name="" order="17" type="1" mode="2" InkColor="9" BGcolor="0">
+    <item name="" order="10" type="1" mode="2" InkColor="15" BGcolor="0">
+      <gfxData>129,195,36,60,60,36,66,195</gfxData>
+      <colorData>9,9,3,3,3,2,9,9,0,0,0,0,0,0,0,0</colorData>
+    </item>
+    <item name="" order="4" type="1" mode="2" InkColor="13" BGcolor="0">
+      <gfxData>126,231,219,189,60,27,195,192</gfxData>
+      <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
+    </item>
+    <item name="" order="13" type="1" mode="2" InkColor="9" BGcolor="0">
+      <gfxData>129,66,36,24,24,36,66,129</gfxData>
+      <colorData>9,9,9,9,9,9,9,9,0,0,0,0,0,0,0,0</colorData>
+    </item>
+    <item name="" order="2" type="1" mode="2" InkColor="13" BGcolor="0">
+      <gfxData>118,230,216,188,188,216,227,115</gfxData>
+      <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
+    </item>
+    <item name="" order="16" type="1" mode="2" InkColor="9" BGcolor="0">
       <gfxData>36,36,60,36,36,60,36,36</gfxData>
       <colorData>9,9,9,9,9,9,9,9,0,0,0,0,0,0,0,0</colorData>
+    </item>
+    <item name="" order="17" type="1" mode="2" InkColor="10" BGcolor="0">
+      <gfxData>0,35,51,251,251,51,35,0</gfxData>
+      <colorData>10,10,10,10,10,10,10,10,0,0,0,0,0,0,0,0</colorData>
+    </item>
+    <item name="" order="1" type="1" mode="2" InkColor="13" BGcolor="0">
+      <gfxData>192,195,27,60,189,219,231,126</gfxData>
+      <colorData>13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0</colorData>
+    </item>
+    <item name="" order="8" type="1" mode="2" InkColor="10" BGcolor="0">
+      <gfxData>24,60,102,195,195,102,60,24</gfxData>
+      <colorData>10,10,10,10,10,10,10,10,0,0,0,0,0,0,0,0</colorData>
     </item>
   </sprites>
 </msxdevtools>

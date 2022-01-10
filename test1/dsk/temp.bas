@@ -54,36 +54,35 @@
 355 'a=usr3(0)
 1 ' Inicializamos los gráficos'
 360 gosub 10000
-1 'Borramos los gráficos que han salido'
-370 'line (21*8,0)-(32*8,192),15,bf
+1 'Borramos los gráficos que han salido en la pantalla'
+370 for i=0 to 19:vpoke (6144+20)+i*32,3:vpoke (6144+21)+i*32,3:vpoke (6144+22)+i*32,3:vpoke (6144+23)+i*32,3:next i
 1 'Encendemos la pantalla'
-380 'a=usr4(0)
+375 'a=usr4(0)
 1 ' Pintamos el mapa'
-390 gosub 11000
-1 ' Mostramos el marcador'
-392 gosub 3000
+380 gosub 11000
 1 'Inicializamoz los objetos'
-393 gosub 7000
+385 gosub 7000
 1 'Pintamos los objetos'
-394 gosub 3100
+390 gosub 3100
 1 'posicionamos al player y enemigos tras cargar el mapa'
-395 gosub 8300
+391 gosub 8300
 1 'Cada segundo repintamos el tiempo'
-396 interval on:on interval=50 gosub 3200
+392 interval on:on interval=50 gosub 3200
 1 'Cuando se pulse el espacio o el disparo del joystick elegimos una de las herramientas'
-398 if gs=1 then on strig gosub 7100
+393 if gs=1 then on strig gosub 7100
 1 'Cuando haya colisión de sprites ir a la subrutina de player muere
-399 'sprite on:on sprite gosub 5700
-
+394 'sprite on:on sprite gosub 5700
+1 ' Mostramos el marcador'
+395 gosub 3000
 
 
 1 ' <<<<<< Main loop >>>>>'
     1'Si al player no le quedan vidas
         1 'Tenemos que colocar el punturo del mapa en el world0, level0'
         1 'Desactivamos el repintado y actualización del tiempo'
-        1 'Eliminamos a los enemigos 6700'
+        1 'Eliminamos a los enemigos (6700)'
         1 'Sacamos al player de la pantalla'
-        1 'Deseleccionamos los objetos'
+        1 'Volvemos los objetos a su configuración inicial (7000)'
     400 if pe<=0 then restore 10100:interval off:gosub 6700:PUT SPRITE 0,(0,212),1,pp:gosub 7000:gs=0:goto 200
     1 'si no queda tiempo reiniciamos y llamamos a la rutina player muere'
     410 if ta<=0 then tf=0:time=0:gosub 5700 
@@ -112,28 +111,30 @@
     1 'xp= posicion x previa player, yp=posición y previaplayer'
     1 'Conservamos la posición previa para las colisiones'
     1010 xp=x:yp=y
-    1 'pv=player velocidad, pp=plano player
+    1 'pv=player velocidad
     1020 on st gosub 1110,1120,1130,1140,1150,1160,1170
     1 'Colisones con los extremos de la pantalla'
+    1 'xp, yp posición x previa, posición y previa'
     1030 if x<=0 then x=xp
     1040 if y<=0 then y=yp
     1050 if y+ph>192 then y=yp
     1060 if x+pw>252 then x=xp
 1090 RETURN
+1 'ps=plyer sprite'
 1 '1 arriba'
-1110 y=y-pv:ps=p0:swap p0,p1:re=10:gosub 4000:return
+1110 y=y-pv:ps=p0:swap p0,p1:pd=1:re=10:gosub 4000:return
 1 '2'
 1120 return
 1 '3 derecha'
-1130 x=x+pv:ps=p2:swap p2,p3:re=10:gosub 4000:return
+1130 x=x+pv:ps=p2:swap p2,p3:pd=3:re=10:gosub 4000:return
 1 '4'
 1140 return
 1 '5 abajo'
-1150 y=y+pv:ps=p4:swap p4, p5:re=10:gosub 4000:return
+1150 y=y+pv:ps=p4:swap p4, p5:pd=5:re=10:gosub 4000:return
 1 '6 abajo derecha'
 1160 return
 1 '7 izquierda'
-1170 x=x-pv:ps=p6:swap p6,p7:re=10:gosub 4000:return
+1170 x=x-pv:ps=p6:swap p6,p7:pd=7:re=10:gosub 4000:return
 
 
 
@@ -187,39 +188,51 @@
     1 'Para detectar la colisión vemos el valor que hay en la tabla de nombres de la VRAM
     1 'En la posición x e y de nuestro player con la formula: '
     1 'Si hay una colision le dejamos la posicion que guardamos antes de cambiarla por pulsar una tecla'
-    1760 hl=base(5)+(y/8)*32+(x/8):a=vpeek(hl)
-    1 'Si es un tile sólido 
+    1760 hl=6144+(y/8)*32+(x/8):a=vpeek(hl)
+    1 'Si es un tile sólido o un bloque empujable
     1 'Si está activa la herramienta de romper bloque'
     1 '     Rompemos el bloque piendo vpoke en esa dirección'
     1 '     deshabilitamos para que no se vuelva a utilizar'
-    1 '     Repintamos los objetos'
-    1 '     re=10:gosub 3000 hacemos un sonido'
+    1 '     Repintamos los objetos para que aparezca de color blando el seleccionado (3100)'
+    1 '     Hacemos un sonido (re,4000)'
     1 'Si no está activa la herramienta de romper bloque'
     1'      volvemos a la posición que estábamos
-    1770 if a>3 and a<16 then if os=3 and o3=1 then vpoke hl,0:o3=0:gosub 3100:re=10:gosub 3000 else x=xp: y=yp
-    1 'Si el valor es un 2, es nuestro punto de fuga lo mandamos a otro sitio '
-    1780 'if a=2 then x=8*16: y=8*18:beep
+    1 '1770 if a>3 and a<16 then if os=3 and o3=1 then vpoke hl,0:o3=0:gosub 3100:re=10:gosub 3000 else x=xp: y=yp
+    1770 if a>3 and a<16 then if os=3 and o3=1 then vpoke hl,0:o3=0:gosub 3100:re=10:gosub 4000 else if os=4 and o4=1 then o4=0:gosub 3100:re=2:gosub 3000 else x=xp: y=yp
+    1 'Si ha tocado un objeto empujable'
+    1 '     Desactivamos para que no se pueda elegir
+    1 '     repintamos los objetos para que salga en blanco el selecionado (3100)''
+    1 '     Hacemnos un música (re, 4000)'
+    1 '     Le ponemos un 0 para borrarlo'
+    1 '1780 if a=22 and os=5 and o5=1 then o5=0:gosub 3100:re=8:gosub 4000:vpoke hl, 0:if pd=1 then vpoke 6144+((y/8)-1)*32+(x/8), 22 else if pd=3 then vpoke 6144+((y/8)*32)+1+(x/8),22 else if pd=5 then vpoke 6144+(((y/8)+1)*32)+(x/8),22 else if pd=7 then vpoke 6144+((y/8)*32)+(x/8)-1,22
+    
+    1775 if a=22 and os=5 and o5=1 then o5=0:gosub 3100:re=8:gosub 4000:vpoke hl, 0:if pd=1 then vpoke 6144+((y/8)-1)*32+(x/8), 22 else if pd=3 then vpoke 6144+((y/8)*32)+1+(x/8),22 else if pd=5 then vpoke 6144+(((y/8)+1)*32)+(x/8),22 else if pd=7 then vpoke 6144+((y/8)*32)+(x/8)-1,22
+    1780 if a=22 then x=xp: y=yp
+    1 'Si ha tocado monedas o dolares le sumamos 10puntos'
+    1 '     Lo borramos on vpoke dirección,0'
+    1 '     Sumamos 10 puntos al pp=player points'    
+    1 '     Repitamos el marcador para que se vean los puntos (3000)'
+    1781 if a=21 then re=11:gosub 4000:vpoke hl,0:pp=pp+10:gosub 3100:gosub 3000
     1 'Si hemos llegado a la casa cambiamos de nivel'
-    1790 if a=19 then re=2:gosub 4000:mc=1
-    1 'Obtenmos lo que falta de tiempo y lo metemos en tf para después sumarlo en el contador de tiempo'
+    1785 if a=19 then re=2:gosub 4000:mc=1
     1 'Si tocado un reloj le sumamos al tiempo el aumento o el maximo'
-    1 'Hacemo una música de cogido'
-    1' hacemos que desaparzca el reloj
-    1800 if a=20 then tf=ta:time=0:re=5:gosub 4000:vpoke hl,0
-    1 'Colisiones del player con sprites de los enemigos (mirar línea 70 y 2000)'
-    1810 if pc=1 then pc=0:sprite on
+        1 'Obtenmos lo que falta de tiempo y lo metemos en tf para después sumarlo en el contador de tiempo'
+        1 'Hacemo una música de cogido'
+        1' hacemos que desapaezca el reloj
+    1790 if a=20 then tf=ta:time=0:re=5:gosub 4000:vpoke hl,0
+
 
     1 'Fisica y Colisiones de ememigos con el mapa'
     1900 for i=1 to en
         1910 if et(i)=0 then ex(i)=ex(i)+ev(i)
         1920 if et(i)=1 then ey(i)=ey(i)+el(i)
         1930 hl=base(5)+(ey(i)/8)*32+(ex(i)/8):a=vpeek(hl)
-        1 'Si es una pared le invertimos la velocidad del eje x y del eje y'
-        1 'y le volvemos a poner las coordenadas antiuas '
-        1 'ev=velocidad x y el velocidad eje y '
-        1 'ep coordenada previa x , ei=coordenada previa y'
-        1940 if a>3 and a<16 then if et(i)=0 then ev(i)=-ev(i):ex(i)=ea(i):ey(i)=ei(i) else if et(i)=1 then el(i)=-el(i):ex(i)=ea(i):ey(i)=ei(i)
-        
+        1 'Si es una pared o un bloque empujable 
+            1 'le invertimos la velocidad del eje x y del eje y'
+            1 'y le volvemos a poner las coordenadas antiuas '
+            1 'ev=velocidad x y el velocidad eje y '
+            1 'ep coordenada previa x , ei=coordenada previa y'
+        1940 if a>3 and a<16 or a=22 then if et(i)=0 then ev(i)=-ev(i):ex(i)=ea(i):ey(i)=ei(i) else if et(i)=1 then el(i)=-el(i):ex(i)=ea(i):ey(i)=ei(i)
         1 'Conservamos los datos de las posiciones antes de cambiarlos'
         1950 ea(i)=ex(i):ei(i)=ey(i)   
 
@@ -247,37 +260,20 @@
 
 
 
-
-1 'Cuando 2 sprites colisionan...'
-1 'Si no tiene vidas salimos del juego'
-    2000 if pe=0 then gosub 5000
-    1 'Por ultimo volvemos a poner nuestro personaje en la posición del mapa inicial'
-    1 'Actualizamos la variable player colision que nos ayuda a activar la colisiones (linea 1800)'
-    2010 sprite off:pe=pe-1:gosub 3000:beep:pc=1
-2090 return
-
-
-
-
-
-
-
-
-
-
-
-
 1 'informacion del juego que aparece en l aparte superior'
-    3000 line (21*8,0)-(23*8,20*8),14,bf
-    3010 line (24*8,0)-(247,20*8),14,bf
-    3020 preset (25*8,3*8): print #1,"World"
-    3030 preset (26*8,5*8): print #1,mw
-    3040 preset (25*8,7*8): print #1,"Level"
-    3050 preset (26*8,9*8): print #1,ms
-    3060 preset (25*8,11*8): print #1,"Live"
-    3070 preset (26*8,13*8): print #1,pe
-    3080 preset (24*8,21*8): print #1,fre(0)
-3090 return
+    3000 'line (21*8,4*8)-(23*8,5*8),14,bf
+    3010 line (24*8,0)-(256,20*8),14,bf
+    3020 preset (26*8,1*8): print #1,"World"
+    3030 preset (27*8,3*8): print #1,mw
+    3040 preset (26*8,5*8): print #1,"Level"
+    3050 preset (27*8,7*8): print #1,ms
+    3060 preset (26*8,9*8): print #1,"Live"
+    3070 preset (27*8,11*8): print #1,pe
+    3075 preset (26*8,13*8): print #1,"Score"
+    3080 preset (27*8,15*8): print #1,pp
+    3085 preset (26*8,17*8): print #1,"Time"
+    3090 preset (24*8,21*8): print #1,fre(0)
+3099 return
 
 
 
@@ -290,19 +286,17 @@
     3110 if o2 then PUT SPRITE 22,((22*8)-4,7*8),6,14 else PUT SPRITE 22,((22*8)-4,7*8),15,14
     1 'El rayo rompe muros'
     3120 if o3 then PUT SPRITE 23,((22*8)-4,9*8),6,15 else PUT SPRITE 23,((22*8)-4,9*8),15,15
-    1 'La pala'
-    3130 if o4 then PUT SPRITE 24,((22*8)-4,11*8),6,16 else PUT SPRITE 24,((22*8)-4,11*8),15,16
     1 'La escalera'
-    3140 if o5 then PUT SPRITE 25,((22*8)-4,13*8),6,17 else PUT SPRITE 25,((22*8)-4,13*8),15,17
+    3140 if o4 then PUT SPRITE 24,((22*8)-4,11*8),6,16 else PUT SPRITE 24,((22*8)-4,11*8),15,16
     1 'Emupjar bloque'
-    3150 if o6 then PUT SPRITE 26,((22*8)-4,15*8),6,18 else PUT SPRITE 26,((22*8)-4,15*8),15,18
+    3150 if o5 then PUT SPRITE 26,((22*8)-4,13*8),6,17 else PUT SPRITE 26,((22*8)-4,13*8),15,17
 3190 return
 
 1 'Pintar el tiempo'
-    3200 line (25*8,15*8)-(31*8,17*9),14,bf
+    3200 line (27*8,18*8)-(30*8,20*8),14,bf
     3210 tu=time/50
     3220 ta=(tm+tf)-tu
-    3230 preset (24*8,15*8): print #1,ta
+    3230 preset (26*8,(19*8)-4): print #1,ta
     1 '3240 preset (24*8,16*8): print #1,os" "oy
 3290 return
 1'debug
@@ -324,19 +318,19 @@
     1 'Sn, siendo n la forma de la enfolvente de 0-15, sirve para que vaya desapareciendo el sonido
     1 'Melodía completa'
     1 '2300 if re=1 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A D E F G E F D C D G R8 O5 A2 A2 A8"
-    1 'Inicializamos el psg para que no se quede con el úlyimo sonido'
-    4000 a=usr2(0)
-    4010 if re=1 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8","o1 v4 c r8 o2 c r8 o1 v6 c r8 o2 v4 c r8 o1 c r8 o2 v6 c r8"
+    1 'Comienzo juego'
+    4000 if re=1 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8","o1 v4 c r8 o2 c r8 o1 v6 c r8 o2 v4 c r8 o1 c r8 o2 v6 c r8"
+    1 'Level pasado'
     4020 if re=2 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8"
-    1 'Tirando el paquete'
+    1 'Emupjando bloque'
     4030 if re=5 then play "l10 o4 v4 g c"
     1 'Paquete cogido'
     4040 if re=6 then play"t250 o5 v12 d v9 e" 
     1 'Pitido normal'
     4050 if re=7 then play "O5 L8 V4 M8000 A A D F G2 A A A A"
-    1 'Toque fino'
-    4060 if re=8 then PLAY"S1M2000T150O7C32"
-   
+    1 'Cogidos puntos'
+    1 '4060 if re=8 then PLAY"S1M2000T150O7C32"
+    4060 if re=8 then sound 3,2:sound 8,16:sound 12,5:sound 13,9
     1 'Pasos'
     4070 if re=9 then PLAY"o2 l64 t255 v4 m6500 c"
     1 'Sound puerto, valor, para ver las notas ir a https://www.msx.org/wiki/SOUND, recuerda que el d5dh=3421 es el 34 para el tono canal a puerto 1 y en puerto 0 21'
@@ -351,6 +345,8 @@
     1 'Pasos'
     4060 if re=10 then sound 1,2:sound 6,25:sound 8,16:sound 12,1:sound 13,9
     4070 if re=11 then sound 1,0:sound 6,25:sound 8,16:sound 12,4:sound 13,9
+    1 'Inicializamos el psg para que no se quede con el úlyimo sonido'
+    4080 'a=usr2(0)
 4090 return
 
 
@@ -392,8 +388,9 @@
     1 ' pe=player energy o vida
     1 'Player colision, se utiliza para habilitar el sprite on cuando hay una colision'
     1 'pa=player time actual'
-    1 'pm=time maximo'
-    5000 x=0:y=0:xp=0:yp=0:pw=8:ph=8:pv=8:pe=3:pc=0
+    1 'pd=player direccion'
+    1 'pp=player puntos'
+    5000 x=0:y=0:xp=0:yp=0:pw=8:ph=8:pv=8:pe=3:pd=0:pp=0
     1 'p0 y p1=sprites arriba: contedrá 0 o 1 intercambiados con swap que son los sprites de la animación de arriba'
     1 'p2 y p3=sprite derecha: determina si está el sprite 2 o 3''
     1 'p4 y p5=sprites abajo 
@@ -481,25 +478,24 @@
     1 'Objeto 1: la cruz de eliminar selección'
     1 'Objeto 2: la espada para matar enemigos'
     1 'Objeto 3: el rayo para romper muros'
-    1 'Objeto 4:La pala para pasar por debajo'
-    1 'Obejto 5: la escalera, para subir muros'
-    1 'Objeto 6: la fuerza para empujar muros'
-    7020 o1=1:o2=1:o3=1:o4=1:o5=1:o6=1
+    1 'Obejto 4: la escalera, para subir muros'
+    1 'Objeto 5: la fuerza para empujar muros'
+    7020 o1=1:o2=1:o3=1:o4=1:o5=1
 7090 return
 
 1 'Rutina seleccion al pulsar espacio'
-    7100 beep:os=os+1:if os>6 then os=1 
-    7105 oy=oy+16:if oy>15*8 then oy=5*8 
+    7100 beep:os=os+1:if os>5 then os=1 
+    7105 oy=oy+16:if oy>13*8 then oy=5*8 
     1 'Borramos el mensaje anterior'
-    7110 line (0,21*8)-(247,24*8),15,bf
+    7110 line (0,21*8)-(256,24*8),15,bf
     7120 if os=1 and o1=1 then  preset (0,21*8):print #1,"!Seleccion eliminada":preset (0,22*8)
     7130 if os=2 and o2=1 then  preset (0,21*8):print #1,"!Seleccionada la espada: ":preset (0,22*8):print #1,"Puedes matar enemigos"
     7140 if os=3 and o3=1 then  preset (0,21*8):print #1,"!Seleccionada el rayo:":preset (0,22*8):print #1,"Puedes romper los muros"
-    7150 if os=4 and o4=1 then  preset (0,21*8):print #1,"!Seleccionada la pala: ":preset (0,22*8):print #1,"Puedes pasar por debajo de los muros"             
-    7160 if os=5 and o5=1 then  preset (0,21*8):print #1,"!Seleccionada la escalera: ":preset (0,22*8):print #1,"Puedes pasar por encima de los muros"             
-    7170 if os=6 and o6=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques amarillos"
+    7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"!Seleccionada la escalera: ":preset (0,22*8):print #1,"Puedes pasar por encima de los muros"             
+    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques amarillos"
     1 'Este es el marco que sale junto al objeto para decir que está seleccionado'
     7175 PUT SPRITE 20,((22*8)-4,oy),1,12
+
 7190 return
 
 
@@ -573,7 +569,7 @@
 
 1 'Rutina cargar sprites con datas basic'
     1 ' vamos a meter 5 definiciones de sprites nuevos que serán 4 para el personaje y uno para la bola'
-    9000 FOR I=0 TO 18:SP$=""
+    9000 FOR I=0 TO 17:SP$=""
         9020 FOR J=1 TO 8:READ A$
             9030 SP$=SP$+CHR$(VAL("&H"+A$))
         9040 NEXT J
@@ -595,9 +591,8 @@
     9220 DATA 81,42,24,18,18,24,42,81
     9230 DATA 01,02,04,88,50,20,D0,C8
     9240 DATA 07,0E,38,70,0E,1C,70,E0
-    9250 DATA 0C,0C,0C,0C,0C,06,0F,0F
-    9260 DATA 24,24,3C,24,24,3C,24,24
-    9270 DATA 00,23,33,FB,FB,33,23,00
+    9250 DATA 24,24,3C,24,24,3C,24,24
+    9260 DATA 00,23,33,FB,FB,33,23,00
 
 
 
@@ -627,7 +622,7 @@
 
     1 'En screen 2'
     1' Hay que recordar la estructura de la VRAM, en la VRAM están los datos que se reprentan en pantalla
-
+    1 'Nuestro tileset son 24 tiles o de 0 hasta el 23'
     1 'Definiremos a partir de la posición 0 de la VRAM 18 tiles de 8 bytes'
         10000 FOR I=0 TO (24*8)-1
         10020 READ A$
@@ -637,7 +632,6 @@
     10060 NEXT I
 
 
-    
     10100 DATA FF,66,66,00,00,66,66,00
     10101 DATA FF,66,66,00,00,66,66,00
     10102 DATA FF,99,99,FF,FF,99,99,FF
@@ -655,13 +649,13 @@
     10114 DATA 00,F7,F7,F7,00,7F,7F,7F
     10115 DATA 00,F7,F7,F7,00,7F,7F,7F
     10116 DATA 00,F7,F7,F7,00,7F,7F,7F
-    10117 DATA 00,18,18,7E,7E,18,18,00
+    10117 DATA FF,18,18,7E,7E,18,18,00
     10118 DATA 00,7E,7E,7E,7E,7E,7E,7E
     10119 DATA 5E,5E,7E,7E,7E,7E,7E,00
     10120 DATA 18,3C,C3,81,1C,C3,3C,18
-    10121 DATA 00,7E,7E,7E,7E,7E,7E,7E
-    10122 DATA 5E,5E,7E,7E,7E,7E,7E,00
-    10123 DATA 18,3C,C3,81,1C,C3,3C,18
+    10121 DATA 14,3F,54,3E,15,15,7E,14
+    10122 DATA FF,A5,FF,A5,A5,FF,A5,FF
+    10123 DATA FF,5A,00,5A,5A,00,5A,00
 
 
 
@@ -673,7 +667,6 @@
         10540 VPOKE 10240+I,VAL("&H"+A$): '&h2800'
         10550 VPOKE 12288+I,VAL("&H"+A$): ' &h3000'
     10560 NEXT I
-
 
 
     10600 DATA E1,FE,FE,FE,FE,FE,FE,FE
@@ -693,13 +686,13 @@
     10614 DATA A1,81,81,81,81,81,81,81
     10615 DATA 81,51,51,51,51,51,51,51
     10616 DATA 51,31,31,31,31,31,31,31
-    10617 DATA 31,B1,B1,B1,B1,B1,B1,B1
-    10618 DATA B1,91,71,71,71,71,91,91
+    10617 DATA F1,BF,BF,BF,BF,BF,BF,BF
+    10618 DATA 11,91,71,71,71,71,91,91
     10619 DATA 91,91,91,91,91,91,91,91
     10620 DATA 7F,7F,75,75,85,75,7F,7F
-    10621 DATA 11,91,71,71,71,71,91,91
-    10622 DATA 91,91,91,91,91,91,91,91
-    10623 DATA 7F,7F,75,75,85,75,7F,7F
+    10621 DATA A1,A1,A1,A1,A1,A1,A1,A1
+    10622 DATA D1,D9,D9,D9,D9,D9,D9,D9
+    10623 DATA 61,D6,D6,D6,D6,D6,D6,D6
 
 10690 return
 
@@ -740,39 +733,19 @@
 11190 return
 
 1 'level 0'
-1 '12000 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
-1 '12010 data 0e1704000000000000000000000000000000000e
-1 '12020 data 0e0004000d070707070c000000000d07070c000e
-1 '12030 data 0e0004000400000000040000000004120004000e
-1 '12040 data 0e0004000400000000030708000004130004000e
-1 '12050 data 0e000a070b00000000040000000004000004000e
-1 '12060 data 0e000000000000000004000907070b000004000e
-1 '12070 data 0e0707070707070c00040000000000000004000e
-1 '12080 data 0e00000000000004000a070707070707070b000e
-1 '12090 data 0e0000000000000400000000000000000000000e
-1 '12100 data 0e00000000000004000d0707070707070708000e
-1 '12110 data 0e000d070800000400040000000000000000000e
-1 '12120 data 0e00040000000004000a070707070c000907070e
-1 '12130 data 0e0004000d07070b00000000000004000000000e
-1 '12140 data 0e000400041700000009070c000004000000000e
-1 '12150 data 0e0004000a07070c0000000400000a07070c000e
-1 '12160 data 0e0004000000000400000004000000000004000e
-1 '12170 data 0e000a07070707030707070b000000000004000e
-1 '12180 data 0e0000000000000000000000000000000004170e
-1 '12190 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
 
 
- 
+
 12000 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
 12010 data 0e1404000000000000000000000000000000000e
-12020 data 0e0004000d070707070c000000000d07070c000e
+12020 data 0e0004000d070707070c000000160d07070c000e
 12030 data 0e0004000400000000040000000004120004000e
-12040 data 0e0004000400000000030708000004130004000e
+12040 data 0e0004000400001500030708000004130004000e
 12050 data 0e000a070b00000000040000000004000004000e
 12060 data 0e000000000000000004000907070b000004000e
 12070 data 0e0707070707070c00040000000000000004000e
 12080 data 0e00000000000004000a070707070707070b000e
-12090 data 0e0000000000000400000000000000000000000e
+12090 data 0e0015000016000400000000000000000000000e
 12100 data 0e00000000000004000d0707070707070708000e
 12110 data 0e000d070800000400040000000000000000000e
 12120 data 0e00040000000004000a070707070c000907070e
@@ -780,10 +753,10 @@
 12140 data 0e000400041400000009070c000004000000000e
 12150 data 0e0004000a07070c0000000400000a07070c000e
 12160 data 0e0004000000000400000004000000000004000e
-12170 data 0e000a07070707030707070b000000000004000e
+12170 data 0e000a07070707030707070b001600000004000e
 12180 data 0e0000000000000000000000000000000004140e
 12190 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
- 
+
 
 
 1 'level 1'
