@@ -28,7 +28,7 @@
     270 preset (0,140):print #1,"Solo puedes utilizarlas una vez por mundo."
     275 preset (0,160):print #1,"Pulsa stop para terminar la partida."
     280 preset (0,180):print #1,"Pulsa espacio para continuar"
-290ifstrig(0)=-1thengs=1:goto200elsegoto290
+290ifstrig(0)=-1thencls:gs=1:goto200elsegoto290
 300screen2
     305 preset (60,10):print #1,"Has ganado"
     310 preset (60,20):print #1,"MSX Murcia 2022"
@@ -175,7 +175,7 @@
     7130 if os=2 and o2=1 then  preset (0,21*8):print #1,"Seleccionada la espada: ":preset (0,22*8):print #1,"Puedes matar enemigos"
     7140 if os=3 and o3=1 then  preset (0,21*8):print #1,"Seleccionada el rayo:":preset (0,22*8):print #1,"Puedes romper los muros"
     7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"Seleccionada la escalera: ":preset (0,22*8):print #1,"Puedes pasar por encima de los muros"             
-    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques pero solo 1 posicion."
+    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques rosas pero solo 1 posicion."
 7175PUTSPRITE20,((22*8)-4,oy),1,12
 7190return
 8000mw=1:ms=0:mc=0:md=0:mp=0:tn=0

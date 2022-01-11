@@ -81,7 +81,7 @@
     1 'Adorno'
     1 '285 c=c+1:LINE(0,70)-(256,75),c,bf:color 1,15,16-c:if c > 14 then c=0
     1 '288 for i=0 to 1000:next i
-    290 if strig(0)=-1 then gs=1:goto 200 else goto 290
+    290 if strig(0)=-1 then cls:gs=1:goto 200 else goto 290
 
     300 screen 2
     305 preset (60,10):print #1,"!Has ganado!!!!"
@@ -555,7 +555,7 @@
     7130 if os=2 and o2=1 then  preset (0,21*8):print #1,"!Seleccionada la espada: ":preset (0,22*8):print #1,"Puedes matar enemigos"
     7140 if os=3 and o3=1 then  preset (0,21*8):print #1,"!Seleccionada el rayo:":preset (0,22*8):print #1,"Puedes romper los muros"
     7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"!Seleccionada la escalera: ":preset (0,22*8):print #1,"Puedes pasar por encima de los muros"             
-    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques pero solo 1 posicion."
+    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques rosas pero solo 1 posicion."
     1 'Este es el marco que sale junto al objeto para decir que está seleccionado'
     7175 PUT SPRITE 20,((22*8)-4,oy),1,12
 
