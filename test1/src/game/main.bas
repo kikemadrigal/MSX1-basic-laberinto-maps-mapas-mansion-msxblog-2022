@@ -58,13 +58,18 @@
     1 'c= le ponemos el valor negro=1'
     1 'u= arriBa,d= abajo,l izquierda,r= derecha,e= diagonal arriba derecha, f= diagonal abajo derecha,g= diagonal abajo izquierda,h=diagonal arriba izquierda'
     1 'u=up,le decimos que dibuje 100 pixeles hacia arriba'
-    1 'Dibujamos el techo'
-    231 draw ("bm20,40 c4 e10 f10 r20 e10 f10 r20 e10 r40 f10 r20 e10 f10 r20 e10 f10 r5 h10 l210 g10 r230 l10 d20 l210 u20")
+    1 'Dibujamos el cielo y la tierra'
+    231 draw("bm0,50 c9 r14 d11 r219 u11 r23 d20 l256 u20 c7 u50 r260 d27 l260")
+    1 'Dibujamos la casa'
+    232 draw ("bm20,40 c4 e10 f10 r20 e10 f10 r20 e10 r40 f10 r20 e10 f10 r20 e10 f10 r5 h12 l210 g12 r230 l10 c11 d20 l210 u19 r210")
     1 'Dibujamos las ventanas'
-    232 a$="r5d5l5u5":draw("bm30,45xa$;"):draw("bm60,45xa$;"):draw("bm90,45xa$;"):draw("bm120,45xa$;"):draw("bm150,45xa$;"):draw("bm180,45xa$;"):draw("bm210,45xa$;")
+    233 a$="r5d5l5u5":draw("bm30,45xa$;"):draw("bm60,45xa$;"):draw("bm90,45xa$;"):draw("bm120,45xa$;"):draw("bm150,45xa$;"):draw("bm180,45xa$;"):draw("bm210,45xa$;")
     1 'Dibujamos la puerta'
-    233 draw("bm120,50r5d10l5u10")
-    242 'paint (10,10),7,1:paint (70,50),11,1
+    234 draw("bm120,50r5d10l5u10")
+    1 'Paint (coordenada_x, coordenada_y), color_interior, color_borde'
+    1 'Pintamos el cielo y la tierra'
+    241 paint (2,2),7,7:paint (2,65),9,9
+    242 paint (100,35),4,4:paint (23,55),11,11
     243 preset (60,10):print #1,"!Madrigal mansion"
     244 preset (60,20):print #1,"!MSX Murcia 2022"
     250 preset (0,80):print #1,"!Debes de ingeniar como salir del laberinto antes de que se te acabe el tiempo"
@@ -162,7 +167,6 @@
     1 'xp= posicion x previa player, yp=posición y previaplayer'
     1 'Conservamos la posición previa para las colisiones'
     1010 xp=x:yp=y
-    1 'pv=player velocidad
     1020 on st gosub 1110,1120,1130,1140,1150,1160,1170
     1 'Colisones con los extremos de la pantalla'
     1 'xp, yp posición x previa, posición y previa'
@@ -172,6 +176,8 @@
     1060 if x+pw>252 then x=xp
 1090 RETURN
 1 'ps=plyer sprite'
+1 'pv=player velocidad
+1 'pd=player dirección'
 1 '1 arriba'
 1110 y=y-pv:ps=p0:swap p0,p1:pd=1:re=10:gosub 4000:return
 1 '2'
@@ -549,7 +555,7 @@
     7130 if os=2 and o2=1 then  preset (0,21*8):print #1,"!Seleccionada la espada: ":preset (0,22*8):print #1,"Puedes matar enemigos"
     7140 if os=3 and o3=1 then  preset (0,21*8):print #1,"!Seleccionada el rayo:":preset (0,22*8):print #1,"Puedes romper los muros"
     7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"!Seleccionada la escalera: ":preset (0,22*8):print #1,"Puedes pasar por encima de los muros"             
-    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques amarillos"
+    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques pero solo 1 posicion."
     1 'Este es el marco que sale junto al objeto para decir que está seleccionado'
     7175 PUT SPRITE 20,((22*8)-4,oy),1,12
 
@@ -611,7 +617,7 @@
     8300 gosub 6700
     1 'Debug'
     1 '8310 if mw=0 and ms=0 then x=15*8:y=5*8:gosub 6100:ex(en)=13*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
-    8310 if mw=0 and ms=0 then x=5*8:y=10*8:gosub 6100:ex(en)=15*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
+    8310 if mw=0 and ms=0 then x=5*8:y=10*8:gosub 6100:ex(en)=8*8:ey(en)=2*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
     1' Debug
     1 '8320 if mw=0 and ms=1 then x=15*8:y=9*8:gosub 6100:ex(en)=10*8:ey(en)=15*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
     8320 if mw=0 and ms=1 then x=18*8:y=15*8:gosub 6100:ex(en)=10*8:ey(en)=15*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
@@ -824,14 +830,14 @@
 
 1 'level 0'
 12000 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
-12010 data 0e1404000d070707070c0000000000000000000e
-12020 data 0e00040004150000000a081605000907070c000e
-12030 data 0e0004000400000000000000040000120004000e
-12040 data 0e00040004000000000d07070b0000130004000e
-12050 data 0e000a070b00000000040000000000000004000e
-12060 data 0e0000000000000000040016000000000004000e
-12070 data 0e0707070707070c00040000000000000004000e
-12080 data 0e00000000000004000a070707070707070b000e
+12010 data 0e1404000d07070708000000090307070707080e
+12020 data 0e0004000415000000000016000400000000000e
+12030 data 0e00040004000d0707030800000a0707070c000e
+12040 data 0e0004000400040000040000000000120004000e
+12050 data 0e000a070b000a0707030707070c00130004000e
+12060 data 0e0000000000000000040000000400000004000e
+12070 data 0e0707070707070c00040000000400000004000e
+12080 data 0e00000000000004000a070707030707070b000e
 12090 data 0e0015000016000400000000000000000000000e
 12100 data 0e00000000000004000d0707070707070708000e
 12110 data 0e000d070800000400040000000000000000000e
@@ -843,6 +849,7 @@
 12170 data 0e000a07070707030707070b001600000004000e
 12180 data 0e0000000000000000000000000000000004140e
 12190 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
+
 1 'level 1'
 12200 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
 12210 data 0e00000000000000000d0708000000000000000e

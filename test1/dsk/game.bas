@@ -15,10 +15,12 @@
 210ifgs=1thengoto350
 220ifgs=2thengoto300
 230screen2:re=1:gosub4000
-231draw("bm20,40c4e10f10r20e10f10r20e10r40f10r20e10f10r20e10f10r5h10l210g10r230l10d20l210u20")
-232a$="r5d5l5u5":draw("bm30,45xa$;"):draw("bm60,45xa$;"):draw("bm90,45xa$;"):draw("bm120,45xa$;"):draw("bm150,45xa$;"):draw("bm180,45xa$;"):draw("bm210,45xa$;")
-233draw("bm120,50r5d10l5u10")
-242'paint(10,10),7,1:paint(70,50),11,1
+231draw("bm0,50c9r14d11r219u11r23d20l256u20c7u50r260d27l260")
+232draw("bm20,40c4e10f10r20e10f10r20e10r40f10r20e10f10r20e10f10r5h12l210g12r230l10c11d20l210u19r210")
+233a$="r5d5l5u5":draw("bm30,45xa$;"):draw("bm60,45xa$;"):draw("bm90,45xa$;"):draw("bm120,45xa$;"):draw("bm150,45xa$;"):draw("bm180,45xa$;"):draw("bm210,45xa$;")
+234draw("bm120,50r5d10l5u10")
+241paint(2,2),7,7:paint(2,65),9,9
+242paint(100,35),4,4:paint(23,55),11,11
     243 preset (60,10):print #1,"Madrigal mansion"
     244 preset (60,20):print #1,"MSX Murcia 2022"
     250 preset (0,80):print #1,"Debes de ingeniar como salir del laberinto antes de que se te acabe el tiempo"
@@ -173,13 +175,13 @@
     7130 if os=2 and o2=1 then  preset (0,21*8):print #1,"Seleccionada la espada: ":preset (0,22*8):print #1,"Puedes matar enemigos"
     7140 if os=3 and o3=1 then  preset (0,21*8):print #1,"Seleccionada el rayo:":preset (0,22*8):print #1,"Puedes romper los muros"
     7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"Seleccionada la escalera: ":preset (0,22*8):print #1,"Puedes pasar por encima de los muros"             
-    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques amarillos"
+    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques pero solo 1 posicion."
 7175PUTSPRITE20,((22*8)-4,oy),1,12
 7190return
 8000mw=1:ms=0:mc=0:md=0:mp=0:tn=0
 8020return
 8300gosub6700
-8310ifmw=0andms=0thenx=5*8:y=10*8:gosub6100:ex(en)=15*8:ey(en)=1*8:et(en)=0:gosub6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
+8310ifmw=0andms=0thenx=5*8:y=10*8:gosub6100:ex(en)=8*8:ey(en)=2*8:et(en)=0:gosub6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
 8320ifmw=0andms=1thenx=18*8:y=15*8:gosub6100:ex(en)=10*8:ey(en)=15*8:et(en)=0:gosub6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
 8330ifmw=0andms=2thenx=1*8:y=14*8:gosub6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
 8340ifmw=1andms=0thenx=18*8:y=10*8:gosub6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub6100:ex(en)=10*8:ey(en)=13*8:et(en)=0
@@ -289,14 +291,14 @@
 11180nextf
 11190return
 12000data000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
-12010data0e1404000d070707070c0000000000000000000e
-12020data0e00040004150000000a081605000907070c000e
-12030data0e0004000400000000000000040000120004000e
-12040data0e00040004000000000d07070b0000130004000e
-12050data0e000a070b00000000040000000000000004000e
-12060data0e0000000000000000040016000000000004000e
-12070data0e0707070707070c00040000000000000004000e
-12080data0e00000000000004000a070707070707070b000e
+12010data0e1404000d07070708000000090307070707080e
+12020data0e0004000415000000000016000400000000000e
+12030data0e00040004000d0707030800000a0707070c000e
+12040data0e0004000400040000040000000000120004000e
+12050data0e000a070b000a0707030707070c00130004000e
+12060data0e0000000000000000040000000400000004000e
+12070data0e0707070707070c00040000000400000004000e
+12080data0e00000000000004000a070707030707070b000e
 12090data0e0015000016000400000000000000000000000e
 12100data0e00000000000004000d0707070707070708000e
 12110data0e000d070800000400040000000000000000000e
