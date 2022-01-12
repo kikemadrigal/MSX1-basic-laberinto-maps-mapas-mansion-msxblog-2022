@@ -41,8 +41,8 @@
 110 strig(0) on
 1 ' Al pulsar la tecla Stop (mayuscula o shift izquierdo + F8 en openMSX o Mayúscula + suprimir en BlueMSX) se termina el juego'
 120 stop on:on stop gosub 140
-1 'Restablecemo sel punture del mapa, quitamos la actualización del tiempo, sacamos el sprite del player y eliminamos a los enemigos'
-140 restore 10100:interval off:gosub 6700:PUT SPRITE 0,(0,212),1,pp:gosub 7000
+1 'Rutina reiniciar parida'
+140 gosub 600
 150 gs=0:goto 200
 160 return
 
@@ -70,12 +70,12 @@
     1 'Pintamos el cielo y la tierra'
     241 paint (2,2),7,7:paint (2,65),9,9
     242 paint (100,35),4,4:paint (23,55),11,11
-    243 preset (60,10):print #1,"!Madrigal mansion"
+    243 preset (60,10):print #1,"!MSX mansion"
     244 preset (60,20):print #1,"!MSX Murcia 2022"
-    250 preset (0,80):print #1,"!Debes de ingeniar como salir del laberinto antes de que se te acabe el tiempo"
-    260 preset (0,110):print #1,"!Utiliza las herramientas que tienes a tu disposicion, pulsa espacio para elegir una."
+    250 preset (0,80):print #1,"!Debes de ingeniar como salir de la mansion antes de que se te   acabe el tiempo"
+    260 preset (0,110):print #1,"!Utiliza las herramientas que    tienes a tu disposicion, pulsa  espacio para elegir una."
     270 preset (0,140):print #1,"!Solo puedes utilizarlas una vez por mundo."
-    275 preset (0,160):print #1,"!Pulsa stop para terminar la partida."
+    275 preset (0,160):print #1,"!Pulsa stop para terminar la     partida."
     280 preset (0,180):print #1,"!Pulsa espacio para continuar"
     1 '281 c=0
     1 'Adorno'
@@ -84,10 +84,14 @@
     290 if strig(0)=-1 then cls:gs=1:goto 200 else goto 290
 
     300 screen 2
+    301 gosub 600
     305 preset (60,10):print #1,"!Has ganado!!!!"
     310 preset (60,20):print #1,"!MSX Murcia 2022"
     320 preset (0,50):print #1,"!Desarrolador: Kike Madrigal"
-    330 if strig(0)=-1 then gs=1:goto 200 else goto 330
+    325 preset (0,70):print #1,"!Email: Kikemadrigal@hotmail.com"
+    327 preset (0,90):print #1,"!Muchas gracias por probar       nuestro juego     :)"
+    330 preset (0,180):print #1,"!Pulsa espacio para continuar"
+    340 if strig(0)=-1 then gs=0:goto 200 else goto 340
 1 '<<<<<<<< FInal del bucle de estados>>>>>>>>>>>>>'
 
 
@@ -113,7 +117,7 @@
 1 'Cada segundo repintamos el tiempo'
 392 interval on:on interval=50 gosub 3200
 1 'Cuando se pulse el espacio o el disparo del joystick elegimos una de las herramientas'
-393 if gs=1 then on strig gosub 7100
+393 on strig gosub 7100
 1 ' Mostramos el marcador'
 395 gosub 3000
 396 time=0:ta=1
@@ -123,14 +127,11 @@
 
 
 1 ' <<<<<< Main loop >>>>>'
+    1 'Si llegamos pasamos la pantalla final mostramos la pantalla ganadora'
+
     1'Si al player no le quedan vidas
-        1 'Tenemos que colocar el punturo del mapa en el world0, level0'
-        1 'Desactivamos el repintado y actualización del tiempo'
-        1 'Eliminamos a los enemigos (6700)'
-        1 'Sacamos al player de la pantalla'
-        1 'sacamos el sprite de selección de objetos'
-        1 'Volvemos los objetos a su configuración inicial (7000)'
-    400 if pe<=0 then restore 10100:interval off:gosub 6700:PUT SPRITE 0,(0,212),1,0:PUT SPRITE 20,(0,212),1,0:gosub 7000:gs=0:goto 200
+        1 'Llamamos a la rutina reiniciar partida'
+    400 if pe<=0 then gosub 600:gs=0:goto 200
     1 'si no queda tiempo reiniciamos y llamamos a la rutina player muere'
     410 if ta<=0 then tf=0:time=0:gosub 5700 
     1 'Actualizamos el sistema de input'
@@ -139,8 +140,6 @@
     430 gosub 1760
     1 'Actualizamos sistema del render
     440 gosub 1400
-    1 'Si llegamos pasamos la pantalla final mostramos la pantalla ganadora'
-    470 if mw=2 and ms=3 then gs=2:goto 200
     1 'Si el mapa cambia:
     1 '     Aumentamos el ms=mapa screen'
     1 '     hacemos un sonido (re,4000)'
@@ -154,13 +153,22 @@
     1 ''             Reiniciaos los objetos para porder volver a utilizarlos (7000)'
     1 '              Pintamos la información del nivel, mundo,etc (3000)'
     1 '              Repintamos los objetos (3100)'
-
-    480 if mc then ms=ms+1:tf=ta:time=0:gosub 11000:mc=0:if ms=3 then mw=mw+1:ms=0:gosub 7000:gosub 3000:gosub 3100:gosub 8300 else gosub 3000:gosub 8300
+    1 '480 if mc then ms=ms+1:tf=ta:time=0:gosub 11000:mc=0:if ms=3 then mw=mw+1:ms=0:gosub 7000:gosub 3000:gosub 3100:gosub 8300 else gosub 3000:gosub 8300
+    480 if mc then ms=ms+1:tf=ta:time=0:mc=0:if mw=2 and ms=3 then gs=2:goto 200 else gosub 11000 :if ms=3 then mw=mw+1:ms=0:gosub 7000:gosub 3000:gosub 3100:gosub 8300 else gosub 3000:gosub 8300
 
 500 goto 400 
 1 ' <<<<<< Final del Main loop >>>>>'
 
-
+1 'Rutina terminar partida'
+1 'Tenemos que colocar el punturo del mapa en el world0, level0'
+1 'Desactivamos el repintado y actualización del tiempo'
+1 'Eliminamos a los enemigos (6700)'
+1 'Sacamos al player de la pantalla'
+1 'sacamos el sprite de selección de objetos'
+1 'Volvemos los objetos a su configuración inicial (7000)'
+1 'Ponemos el mundo y el nivel a 0'
+600 restore 10100:interval off:gosub 6700:PUT SPRITE 0,(0,212),1,0:PUT SPRITE 20,(0,212),1,0:gosub 7000:mw=0:ms=0
+610 return
 
 1' <<<< INPUT SYSTEM >>>>
     1000 st=STICK(0) OR STICK(1) OR STICK(2)
@@ -168,12 +176,6 @@
     1 'Conservamos la posición previa para las colisiones'
     1010 xp=x:yp=y
     1020 on st gosub 1110,1120,1130,1140,1150,1160,1170
-    1 'Colisones con los extremos de la pantalla'
-    1 'xp, yp posición x previa, posición y previa'
-    1030 if x<=0 then x=xp
-    1040 if y<=0 then y=yp
-    1050 if y+ph>192 then y=yp
-    1060 if x+pw>252 then x=xp
 1090 RETURN
 1 'ps=plyer sprite'
 1 'pv=player velocidad
@@ -241,11 +243,17 @@
 
 
 1' '' <<< PHYSICS & COLLISION SYSTEM >>>>
+    1760 if x<=0 then x=xp
+    1761 if y<=0 then y=yp
+    1762 if y+ph>160 then y=yp
+    1763 if x+pw>160 then x=xp
     1 'Colisiones del player con el mapa'
     1 'Para detectar la colisión vemos el valor que hay en la tabla de nombres de la VRAM
     1 'En la posición x e y de nuestro player con la formula: '
     1 'Si hay una colision le dejamos la posicion que guardamos antes de cambiarla por pulsar una tecla'
-    1760 md=6144+(y/8)*32+(x/8):a=vpeek(md)
+        1 'Colisones con los extremos o bordes de la pantalla'
+    1 'xp, yp posición x previa, posición y previa'
+    1764 md=6144+(y/8)*32+(x/8):a=vpeek(md)
     1 'Si es un tile sólido
     1 'Si está activa la herramienta de romper bloque'
     1 '     Rompemos el bloque piendo vpoke en esa dirección'
@@ -254,8 +262,8 @@
     1 '     Hacemos un sonido (re,4000)'
     1 'Si no está activa la herramienta de romper bloque'
     1'      volvemos a la posición que estábamos
-    1 '1770 if a>3 and a<16 then if os=3 and o3=1 then vpoke md,0:o3=0:gosub 3100:re=10:gosub 3000 else x=xp: y=yp
-    1770 if a>3 and a<16 then if os=3 and o3=1 then vpoke md,0:o3=0:gosub 3100:re=10:gosub 4000 else if os=4 and o4=1 then o4=0:gosub 3100:re=2:gosub 3000 else x=xp: y=yp
+    1 '1770 if a>3 and a<17 then if os=3 and o3=1 then vpoke md,0:o3=0:gosub 3100:re=10:gosub 3000 else x=xp: y=yp
+    1770 if a>3 and a<17 then if os=3 and o3=1 then vpoke md,0:o3=0:gosub 3100:re=10:gosub 4000 else if os=4 and o4=1 then o4=0:gosub 3100:re=2:gosub 3000 else x=xp: y=yp
     1 'Si ha tocado un objeto empujable'
     1 '     Desactivamos para que no se pueda elegir
     1 '     repintamos los objetos para que salga en blanco el selecionado (3100)''
@@ -272,7 +280,7 @@
     1 '     Repitamos solo los puntos (3300)'
     1781 if a=21 then re=11:gosub 4000:vpoke md,0:pp=pp+10:gosub 3100:gosub 3300
     1 'Si hemos llegado a la casa cambiamos de nivel'
-    1785 if a=19 then re=2:gosub 4000:mc=1
+    1785 if a=18 or a=19 then re=2:gosub 4000:mc=1
     1 'Si tocado un reloj le sumamos al tiempo el aumento o el maximo'
         1 'Obtenmos lo que falta de tiempo y lo metemos en tf para después sumarlo en el contador de tiempo'
         1 'Hacemo una música de cogido'
@@ -290,7 +298,9 @@
             1 'y le volvemos a poner las coordenadas antiuas '
             1 'ev=velocidad x y el velocidad eje y '
             1 'ep coordenada previa x , ei=coordenada previa y'
-        1940 if a>3 and a<16 or a=22 then if et(i)=0 then ev(i)=-ev(i):ex(i)=ea(i):ey(i)=ei(i) else if et(i)=1 then el(i)=-el(i):ex(i)=ea(i):ey(i)=ei(i)
+        1940 if a>3 and a<17 or a=22 then if et(i)=0 then ev(i)=-ev(i):ex(i)=ea(i):ey(i)=ei(i) else if et(i)=1 then el(i)=-el(i):ex(i)=ea(i):ey(i)=ei(i)
+        1 'Si el enemigo ha salido de la pantalla lo eliminamos'
+        1945 if ex(i)>160 or ex(i)<=0 or ey(i)>160 or ey(i)<=0 then gosub 6600
         1 'Conservamos los datos de las posiciones antes de cambiarlos'
         1950 ea(i)=ex(i):ei(i)=ey(i)   
 
@@ -551,13 +561,13 @@
     7105 oy=oy+16:if oy>13*8 then oy=5*8 
     1 'Borramos el mensaje anterior'
     7110 line (0,20*8)-(256,24*8),15,bf
-    7120 if os=1 and o1=1 then  preset (0,21*8):print #1,"!Seleccion eliminada":preset (0,22*8)
+    1 '7120 if os=1 and o1=1 then  preset (0,21*8):print #1,"!Seleccion eliminada":preset (0,22*8)
     7130 if os=2 and o2=1 then  preset (0,21*8):print #1,"!Seleccionada la espada: ":preset (0,22*8):print #1,"Puedes matar enemigos"
     7140 if os=3 and o3=1 then  preset (0,21*8):print #1,"!Seleccionada el rayo:":preset (0,22*8):print #1,"Puedes romper los muros"
     7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"!Seleccionada la escalera: ":preset (0,22*8):print #1,"Puedes pasar por encima de los muros"             
-    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques rosas pero solo 1 posicion."
+    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques rosas  pero solo 1 posicion."
     1 'Este es el marco que sale junto al objeto para decir que está seleccionado'
-    7175 PUT SPRITE 20,((22*8)-4,oy),1,12
+    7175 if gs=1 then PUT SPRITE 20,((22*8)-4,oy),1,12
 
 7190 return
 
@@ -616,42 +626,43 @@
     1 'Eliminamos todos los enemigos si los hay'
     8300 gosub 6700
     1 'Debug'
-    1 '8310 if mw=0 and ms=0 then x=15*8:y=5*8:gosub 6100:ex(en)=13*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
+    1 '8310 if mw=0 and ms=0 then x=14*8:y=5*8:gosub 6100:ex(en)=8*8:ey(en)=2*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
     8310 if mw=0 and ms=0 then x=5*8:y=10*8:gosub 6100:ex(en)=8*8:ey(en)=2*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
+
+
     1' Debug
-    1 '8320 if mw=0 and ms=1 then x=15*8:y=9*8:gosub 6100:ex(en)=10*8:ey(en)=15*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
+    1 '8320 if mw=0 and ms=1 then x=13*8:y=9*8:gosub 6100:ex(en)=10*8:ey(en)=15*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
     8320 if mw=0 and ms=1 then x=1*8:y=18*8:gosub 6100:ex(en)=10*8:ey(en)=15*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
     1 'Debug'
-    1 '8330 if mw=0 and ms=2 then x=15*8:y=10*8:gosub 6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
+    1 '8330 if mw=0 and ms=2 then x=13*8:y=10*8:gosub 6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
     8330 if mw=0 and ms=2 then x=1*8:y=14*8:gosub 6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
     
     
     1 'LEVEL 3 O 1-0'
     1 'Debug
-    8340 if mw=1 and ms=0 then x=2*8:y=18*8:gosub 6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=13*8:et(en)=0 
-    1 '8340 if mw=1 and ms=0 then x=18*8:y=10*8:gosub 6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=13*8:et(en)=0 
+    1 '8340 if mw=1 and ms=0 then x=1*8:y=18*8:gosub 6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub 6100:ex(en)=17*8:ey(en)=13*8:et(en)=0 
+    8340 if mw=1 and ms=0 then x=14*8:y=7*8:gosub 6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub 6100:ex(en)=17*8:ey(en)=13*8:et(en)=0 
     1 'LEVEL 4 O 1-1'
     1 'debug'
-    8350 if mw=1 and ms=1 then x=9*8:y=7*8:gosub 6100:ex(en)=3*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=1*8:ey(en)=5*8:et(en)=0
-    1 '8350 if mw=1 and ms=1 then x=2*8:y=12*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
+    1 '8350 if mw=1 and ms=1 then x=11*8:y=7*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=15*8:ey(en)=12*8:et(en)=0
+    8350 if mw=1 and ms=1 then x=4*8:y=13*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=15*8:ey(en)=12*8:et(en)=0
     1 'LEVEL 5 O 1-2'
     1 'Debug'
-    1 '8360 if mw=1 and ms=2 then x=9*8:y=9*8:gosub 6100:ex(en)=3*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=1
+    1 '8360 if mw=1 and ms=2 then x=10*8:y=9*8:gosub 6100:ex(en)=3*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=1
     8360 if mw=1 and ms=2 then x=1*8:y=1*8:gosub 6100:ex(en)=3*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=1
     
-    
+           
     1 'LEVEL 6 O 2-0'
     1 'Debug'
-    1 '8370 if mw=2 and ms=0 then x=17*8:y=18*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
-    8370 if mw=2 and ms=0 then x=2*8:y=12*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
+    1 '8370 if mw=2 and ms=0 then x=14*8:y=17*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
+    8370 if mw=2 and ms=0 then x=12*8:y=6*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
     1 'debug'
-    1 '8380 if mw=2 and ms=1 then x=1*8:y=16*8:gosub 6100:ex(en)=16*8:ey(en)=7*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
-    8380 if mw=2 and ms=1 then x=1*8:y=1*8:gosub 6100:ex(en)=16*8:ey(en)=7*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
-    
-    8390 if mw=2 and ms=2 then x=2*8:y=12*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
-    1 'Mostramos la información'
-    8380 'gosub 3000
-8390 return
+    1 '8380 if mw=2 and ms=1 then x=16*8:y=12*8:gosub 6100:ex(en)=16*8:ey(en)=7*8:et(en)=1:gosub 6100:ex(en)=7*8:ey(en)=15*8:et(en)=0
+    8380 if mw=2 and ms=1 then x=1*8:y=1*8:gosub 6100:ex(en)=16*8:ey(en)=7*8:et(en)=1:gosub 6100:ex(en)=7*8:ey(en)=15*8:et(en)=0
+    1 'debug'    
+    1 '8390 if mw=2 and ms=2 then x=10*8:y=10*8:gosub 6100:ex(en)=5*8:ey(en)=8*8:et(en)=1:gosub 6100:ex(en)=1*8:ey(en)=10*8:et(en)=0
+    8390 if mw=2 and ms=2 then x=5*8:y=1*8:gosub 6100:ex(en)=5*8:ey(en)=8*8:et(en)=1:gosub 6100:ex(en)=1*8:ey(en)=10*8:et(en)=0
+8399 return
 
 
 
@@ -870,12 +881,10 @@
 12370 data 0e0000000004000000000000000000000400000e
 12380 data 0e000000000a070707070707070708140415140e
 12390 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
-
-
 1 'level 2'
 12400 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
 12410 data 0e0000000000000000000000000000000000000e
-12420 data 0e000d07070707070816000009070707070c000e
+12420 data 0e000d07070707070708160009070707070c000e
 12430 data 0e0004000000000000000000000000000004000e
 12440 data 0e0004150000000000000000000000001404000e
 12450 data 0e000307070707070707070707070707070b000e
@@ -884,9 +893,9 @@
 12480 data 0e000a07070707070300000e0e0e0e0e0e0e0e0e
 12490 data 0e000000000000000400000e0e1200000000000e
 12500 data 0e000000000000150400000e0e1300000000000e
-12510 data 0e000507070707070300000e0e0e07070708000e
-12520 data 0e00040000000000060000160e0000000004000e
-12530 data 0e00040000000000000000000e0000000004000e
+12510 data 0e000d07070707070300000e0e0e0e0e0e0e000e
+12520 data 0e0004000000000006000016000000000005000e
+12530 data 0e000400000000000000000e000000000004000e
 12540 data 0e0003070707070707070707070707080004000e
 12550 data 0e070b000000000000000000000000000004000e
 12560 data 0e0000000000000005000005140000000004000e
@@ -912,64 +921,64 @@
 1 '--------------------------------------------------------------------------------------'
 1 '-------------------------------------Mundo 1------------------------------------------'
 1 '--------------------------------------------------------------------------------------'
-1 '1-level 3'
+1 '1-0 o level 3'
 12600 data 0d0707070707070707070707070707070707070c
-12610 data 04020202020202140f0202020f02020202021504
-12620 data 04020f0f0f0f0f0f0f0f0f0f0f0f0f020f0f0f04
-12630 data 04020f020f020f020f020f020f020f020f020f04
+12610 data 04020202020202140f1502020202020202021504
+12620 data 04020f0f0f0f020f0f0f020f0f020f020f0f0f04
+12630 data 04020f020f0f0f0f0f0f0f0f0f0f0f020f020f04
 12640 data 0402020202020202020202020202020202020204
 12650 data 04020f0f0f0f0f0f0f0f0f0f0f0f0f0f0f020f04
-12660 data 04020f020f020f020f020f150f020f150f020204
+12660 data 04020f020f020f020f020f150f020f020f020204
 12670 data 0402020202020202020202020f02020202020204
-12680 data 040f0f0f0f0f0f0f0f0f0f020f0f0f0f0f0f0204
-12690 data 04020f150f0202020f020f020f020f020f020204
-12700 data 040202020f0216020f0202020f02020202020204
-12710 data 04020f0f0f020f020f020f0f0f0f0f0f0f0f0f04
-12720 data 04020f020f020f020f020f020f020f020f020f04
-12730 data 0402020202020f02020202020202020202020204
-12740 data 040f0f0f0f0f0f020f0f0f0f0f0f0f0f0f0f1604
-12750 data 04020f020f020f020f020f020f020f020f020204
+12680 data 040f0f0f0f020f0f0f0f0f020f0f0f0f0f0f0f04
+12690 data 04020f020202020202020f020f020f020f021504
+12700 data 040202020f0f160f0f020f020f020f0202020204
+12710 data 04020f0f0f020f150f020f02020202020f0f0f04
+12720 data 04020f020f020f020f020f0f0f0f0f020f020f04
+12730 data 0402020202020f020f02020202140f0202020204
+12740 data 040f0f0f0f0f0f020f0f0f0f0f0f0f0f0f0f0204
+12750 data 04020f020f020f020f020f020f020f020f021604
 12760 data 0402020216020202020202020202020202020204
 12770 data 04120202020f0f0f0f020f0f0f0f0f0f0f0f0f04
-12780 data 041302020f150202020202020202020202021404
+12780 data 0413020200150202020202020202020202021404
 12790 data 0a0707070707070707070707070707070707070b
-1 '1-level 4'
-12800 data 0404040404040404040404040404040404040404
-12810 data 060f0202140f0202020f0f140202020202020f07
-12820 data 06020202020f0202020f0f02020f0202020f0207
-12830 data 0602020f020f020f020202020f0202160f020207
-12840 data 060202150f0f02020f02020f02020f0202020207
-12850 data 06020f0f0f0f0f020f0f0f0f0f0f0f0f0f0f0207
-12860 data 06020f02020f0f0202020212020f0f02150f0207
-12870 data 06020202020f020f020202130f140f0202020207
-12880 data 060202020f0f02020f16020f02020f0f02020207
-12890 data 060f0f02020f0202020f0f0202020f02020f0f07
-12900 data 06020f0202160202020f0f0202020f02020f0f07
-12910 data 06020202020f02020f02020f02020f0f02020207
-12920 data 0602020f020f020f020202020f020f0202020207
-12930 data 06020f15020f0f0202020202020202020f0f0207
-12940 data 06020f0f0f0f0f020f0f0f0f0f0f0f0f0f0f0207
-12950 data 060202020f0f02020f02020f0202140f02020207
-12960 data 060202020202020f020202020f0202020f020207
-12970 data 06020f0202160f02020f0f02020f0f02020f0907
-12980 data 060f020202020202020f0f0202020f0202150f07
-12990 data 0505050505050505050505050505050505050505
-1 '1-level 5'
+1 '1-1 o level 4'
+12800 data 0d0707070707070707070707070707070707070c
+12810 data 040f0202140f0202020f0f1402020202020f0f04
+12820 data 04020202020f1502020f0f02020f02020f0f0204
+12830 data 0402020f020f020f020202020f02020f16020204
+12840 data 040202150f0f02020f02020f02020f0202020204
+12850 data 04020f0f0f0f0f020f0f0f0f0f0f0f0f0f0f1504
+12860 data 04020f02020f0f0202020212020f0f02020f0204
+12870 data 04020202020f0216020202130f0f0f0202020204
+12880 data 040202020f0f02020f02020f0f140f0f02020204
+12890 data 040f0f02020f0202020f0f0f02020f02020f0f04
+12900 data 04020f0202160202020f0f0202020f02020f0204
+12910 data 04020202020f02020f02020f02020f0f02020204
+12920 data 04020f0f020f150f020202020f020f02020f0204
+12930 data 04020f15020f0f020202020202020202020f0204
+12940 data 04020f0f0f0f0f020f0f0f0f0f0f0f0f0f0f0204
+12950 data 040202020f0f02020f02020f0202150f02020204
+12960 data 040202020202020f020202020f0202020f020204
+12970 data 04020f0f02160f02020f0f02020f0f02020f0204
+12980 data 040f0f0202020202020f0f0202150f0202021504
+12990 data 0a0707070707070707070707070707070707070b
+1 '1-2 o level 5'
 13000 data 0d0707070707070707070707070707070707070c
-13010 data 040202020f0f0f0216020202020f0f0f02020204
-13020 data 04020f020f140f020f02020f020f0202160f1504
-13030 data 040f0f020f020f020f02020f020f0202020f0f04
-13040 data 040202020f020f020f02150f020f020f020f0204
-13050 data 040f0f020f020f020f0f0f0f020f020f020f0f04
-13060 data 04020f020f020f0202020202020f020f020f0204
-13070 data 040f0f020f0202020f0f0f0f0202020f020f0f04
-13080 data 04020f020f020f0f0f02120f0f0f160f020f0204
+13010 data 040202020f0f0f0f0f0f0202020f0f0202021404
+13020 data 04150f020f021602020f020f020f0202160f1504
+13030 data 040f0f020f020f02020f020f020f0202020f0f04
+13040 data 040202020f0215020202150f020f020f020f0204
+13050 data 040f0f020f020f0f0f0f0f0f020f020f020f0f04
+13060 data 04020f020f020f1502020202020f020f020f0204
+13070 data 040f0f0216020f0f0f0f0f0f0202020f020f0f04
+13080 data 04020f020f0215020f02120f0f0f160f020f0204
 13090 data 040f0f020f020f020f02130f150f020f020f0f04
 13100 data 040202020f020f020f02020f020f020f020f0204
 13110 data 040f0f020f020f020f02020f020f020f020f0204
-13120 data 04020f020f0202020202020f0202020f020f0204
-13130 data 04150f020f0f0f020f0f0f020f0f0f0f020f1504
-13140 data 040f0f0202020f0f0f0f0f0f0f020202020f0204
+13120 data 04020f020f020f02020202020202020f020f0204
+13130 data 04150f020f0f0f0f0f0f0f0f0f0f0f0f020f1504
+13140 data 040f0f02020f0f0f0f0f0f0f0f0f0f02020f0204
 13150 data 0402020202020202020202020202020202020204
 13160 data 0402160f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f04
 13170 data 0402020202020202020202020202020202020f04
@@ -995,78 +1004,73 @@
 
 
 
+
 1 '--------------------------------------------------------------------------------------'
 1 '-------------------------------------Mundo 2------------------------------------------'
 1 '--------------------------------------------------------------------------------------'
 1 'level 6'
-
 13200 data 0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f
 13210 data 0f1010101010101010101010101010101010100f
-13220 data 0f0202020202020202020202020202051502020f
-13230 data 0f0210100410101010100210101010041010020f
-13240 data 0f0202020415020202020202020214040202020f
-13250 data 0f1010020410101002101010101010041010100f
-13260 data 0f0202020402020202020202020202040202020f
-13270 data 0f0210100410101602021010101010041010100f
-13280 data 0f0202020402020202020202020202040202020f
-13290 data 0f1010020402101010101010020210041610100f
-13300 data 0f0202020402150502020202020502040202020f
-13310 data 0f0210100410100402020210100410041010020f
-13320 data 0f0202020602020402020202020402060202140f
-13330 data 0f1010101002020410101010020410101010100f
-13340 data 0f0202020202020402020202020402020202020f
-13350 data 0f0216101010100402020202160410101010020f
-13360 data 0f0202020202020402101010100412020202020f
-13370 data 0f0202020202140602020202150613020202020f
+13220 data 0f0000001500000000000000001600150000000f
+13230 data 0f0010100510101010100010101000051010000f
+13240 data 0f0000000415100000000000001000040000000f
+13250 data 0f1010000400101000101010101000040010100f
+13260 data 0f0000000400100000000000001000040000000f
+13270 data 0f0000100400101610101010101000041010000f
+13280 data 0f1000000400000000000000000000040000000f
+13290 data 0f0000000400101010101010101000041510100f
+13300 data 0f0000000400000500000000150500040000000f
+13310 data 0f0010100416150400000010100400041010000f
+13320 data 0f0000000400000400000000000400041400000f
+13330 data 0f1010140600000410101010000416061010100f
+13340 data 0f0000000000000400000000000400000000000f
+13350 data 0f0016101010100400000000160410101010000f
+13360 data 0f0000000000000600101010100412000000000f
+13370 data 0f0000000000000000000000150613000000000f
 13380 data 0f1010101010101010101010101010101010100f
 13390 data 0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f
 1 'level 7'
-
-
 13400 data 1010101010101010101010101010101010101010
-13410 data 1002020202020202020210100202020202021410
-13420 data 1002020707070707070210101607070707040210
-13430 data 1002020202021602020210100202020202040210
-13440 data 1002020202020202020210100202020202040210
-13450 data 1002021010101010101010100210100202040210
-13460 data 1002021010101010101010101510100202040210
-13470 data 1002020202020202020202020210100202040210
-13480 data 1010101010101010101010101010100202040210
-13490 data 1010101010101010101010101010100202040210
-13500 data 100202020202020202020402020204150f160210
-13510 data 100204021602020202020402020204020f0f0210
-13520 data 100204020f0f0f0f0f020402021504020f020210
-13530 data 100204020f0f0f0f0f020407070704020f020210
-13540 data 100204020f0f020202020202020202020f020210
-13550 data 100204020f0f02020f0f0f0f0f0f0f0f0f020210
-13560 data 100204020f0f02020f0f0f0f0f0f0f0f0f020210
-13570 data 101204020f0f02020f1402020202020202020210
-13580 data 101315020f0f0202070707070707070707070210
+13410 data 1000000000000000001000001000000000000010
+13420 data 1010151010101015101010101010151010101510
+13430 data 1000000000001600000000000000001000000010
+13440 data 1010101010151010101010151015101010151010
+13450 data 1000000000000000000000001000001000000010
+13460 data 1010171010151010171010101015101015101010
+13470 data 1000001000000000001000000000001000000010
+13480 data 1015101010101010151010151010101015101010
+13490 data 1014000000000000001000001000000000160010
+13500 data 1010151017101010101010151015101010101010
+13510 data 1000000000000000000000001000001012000010
+13520 data 1010101010101010171010101015101013000010
+13530 data 1000000000000000001010101000141000000010
+13540 data 1010151010151010151015101015101010101510
+13550 data 1000001000001000000000000000001000000010
+13560 data 1010151010101010151010101010101015101010
+13570 data 1000000000001000160000000000001000000010
+13580 data 1000001000001000001000001000000000000010
 13590 data 1010101010101010101010101010101010101010
 1 'level 8'
-
 13600 data 1010101010101010101010101010101010101010
-13610 data 100f020202020202020202020202020202020f10
-13620 data 100f0202020f020e0202020e0202020202020f10
-13630 data 100f0202150f02020e020e020202020202020f10
-13640 data 100f0f0f0f0f0202020e0202160f0f0f0f0f0f10
-13650 data 100202020202020e0e0e0e0e0202020202020210
-13660 data 10020f0202020e02020202020e0202020f020210
-13670 data 10020f16020e020e0202020e020e02020f160210
-13680 data 10020f160e020e0e020e020e0e020e150f160210
-13690 data 10020f0e02020202020e02020202020e0f020210
-13700 data 1002020e020f0f0f020e020f0f0f020e02020210
-13710 data 1002020e020f0f020e0e0e020f0f020e020f0210
-13720 data 1002020e02020202021602020202020e020f0210
-13730 data 10020f020e02020e0202020e02020e02020f0210
-13740 data 10020f02020e0202020e1215020e0202020f1410
-13750 data 10020f0202020e0e0202130e0202020f0f0f0f10
-13760 data 10020f0f0f0202020e0e0e020202020f02020210
-13770 data 100202020f0202160f0f0f160202020f02020210
-13780 data 100214150f020f0f0f0f0f0f0f0f020202020210
+13610 data 1000000000001000000000001410000016000010
+13620 data 1000101010101015101010101010101510100010
+13630 data 1000100000001600160000100000000000100010
+13640 data 1000100000001000000000101010101000100010
+13650 data 1000100010101010101015100000001000100010
+13660 data 1000100010000000000000160000001000160010
+13670 data 1000100010001010101010101000001010101510
+13680 data 1000100010001000000000001010101000000010
+13690 data 1000171010001000001012001000001500101010
+13700 data 1000150010001016001013001000161000101410
+13710 data 1000100010001500001010001000001000100010
+13720 data 1000100010101010150000001000001000100010
+13730 data 1000100010000010101010101000001000100010
+13740 data 1000100010000000000000000000001000100010
+13750 data 1000100010101010101010101010101000150010
+13760 data 1000100010000000000010000000000000100010
+13770 data 1000101010101010101710101010101010100010
+13780 data 1000000000000000000000000000000000000010
 13790 data 1010101010101010101010101010101010101010
-
-
 
 
 
