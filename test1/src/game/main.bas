@@ -14,7 +14,8 @@
 1 ''
 1 ''
 1 ''
-
+10 cls:color 1,15,7:key off
+20 locate 5,10:print "MSX mansion by MSX Murcia"
 
 
 1 'Inicilizamos el juego'
@@ -22,7 +23,7 @@
 1 'Enlazamos con las rutinas de apagar y encender la pantalla'
 20 defusr=&h003B:a=usr(0):defusr1=&h003E:a=usr1(0):defusr2=&H90:a=usr2(0):defusr3=&h41:defusr4=&h44
 1 'Color caracteres, fondo, borde'
-30 color 1,15,7:screen 2,0,0
+30 screen 2,0,0
 1 'Todas las variables serán enteras'
 40 defint a-z
 1 'Definimos un canal necesario para poder mostrar texto, habrá que poner en el print o input #1'
@@ -171,7 +172,7 @@
 610 return
 
 1' <<<< INPUT SYSTEM >>>>
-    1000 st=STICK(0) OR STICK(1) OR STICK(2)
+    1000 st=stick(0) or stick(1) or stick(2)
     1 'xp= posicion x previa player, yp=posición y previaplayer'
     1 'Conservamos la posición previa para las colisiones'
     1010 xp=x:yp=y
@@ -181,19 +182,19 @@
 1 'pv=player velocidad
 1 'pd=player dirección'
 1 '1 arriba'
-1110 y=y-pv:ps=p0:swap p0,p1:pd=1:re=10:gosub 4000:return
+1110 y=y-pv:ps=p(0):swap p(0),p(1):pd=1:re=10:gosub 4000:return
 1 '2'
 1120 return
 1 '3 derecha'
-1130 x=x+pv:ps=p2:swap p2,p3:pd=3:re=10:gosub 4000:return
+1130 x=x+pv:ps=p(2):swap p(2),p(3):pd=3:re=10:gosub 4000:return
 1 '4'
 1140 return
 1 '5 abajo'
-1150 y=y+pv:ps=p4:swap p4, p5:pd=5:re=10:gosub 4000:return
+1150 y=y+pv:ps=p(4):swap p(4),p(5):pd=5:re=10:gosub 4000:return
 1 '6 abajo derecha'
 1160 return
 1 '7 izquierda'
-1170 x=x-pv:ps=p6:swap p6,p7:pd=7:re=10:gosub 4000:return
+1170 x=x-pv:ps=p(6):swap p(6),p(7):pd=7:re=10:gosub 4000:return
 
 
 
@@ -222,7 +223,7 @@
         1440 ec(i)=ec(i)+1:if ec(i)>1 then ec(i)=0
         1450 if et(i)=0 then if ec(i)=0 then es(i)=8 else es(i)=9
         1460 if et(i)=1 then if ec(i)=0 then es(i)=10 else es(i)=11
-        1490 PUT SPRITE ep(i),(ex(i),ey(i)),1,es(i)
+        1490 PUT SPRITE ep(i),(ex(i),ey(i)),eo(i),es(i)
     1495 next i
 1520 return
 
@@ -470,7 +471,8 @@
     1 'p2 y p3=sprite derecha: determina si está el sprite 2 o 3''
     1 'p4 y p5=sprites abajo 
     1 'p6 y p7=sprites izquierda: 6 o 7'
-    5010 p0=0:p1=1:p2=2:p3=3:p4=4:p5=5:p6=6:p7=7
+    1 '5010 p0=0:p1=1:p2=2:p3=3:p4=4:p5=5:p6=6:p7=7
+    5010 dim p(7):p(0)=0:p(1)=1:p(2)=2:p(3)=3:p(4)=4:p(5)=5:p(6)=6:p(7)=7
 5020 return
 1' Player muere
     1 'Le kitamos 1 vida'
@@ -503,13 +505,14 @@
     1 'ew=ancho enemigo, eh= alto enemigo, es=enemigo sprite, ec=enemigo contador, utlizado para hacer la animación'
 1 'Componente RPG'
     1 'ee=enemigo energia,et=enemigo tipo, determina su comportamiento '
+    1 'eo=enemigo color'
     6000 em=5
     1 ' Component position'
     6010 DIM ex(em),ey(em),ea(em),ei(em)
     1 ' Compenent phisics'
     6020 DIM ev(em),el(em)
     1 ' Component render'
-    6030 DIM ew(em),eh(em),es(em),ec(em),ep(em),et(em)
+    6030 DIM ew(em),eh(em),es(em),ec(em),ep(em),et(em),eo(em)
     6050 en=0
 6099 return
 
@@ -522,6 +525,7 @@
     6140 ee(en)=100
     6150 et(en)=0
     6160 ec(en)=0
+    6170 eo(en)=rnd(1)*(15-4)+4
 6190 return
 
 1 ' Rutina eliminar enemigo'
@@ -628,8 +632,6 @@
     1 'Debug'
     1 '8310 if mw=0 and ms=0 then x=14*8:y=5*8:gosub 6100:ex(en)=8*8:ey(en)=2*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
     8310 if mw=0 and ms=0 then x=5*8:y=10*8:gosub 6100:ex(en)=8*8:ey(en)=2*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
-
-
     1' Debug
     1 '8320 if mw=0 and ms=1 then x=13*8:y=9*8:gosub 6100:ex(en)=10*8:ey(en)=15*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
     8320 if mw=0 and ms=1 then x=1*8:y=18*8:gosub 6100:ex(en)=10*8:ey(en)=15*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0

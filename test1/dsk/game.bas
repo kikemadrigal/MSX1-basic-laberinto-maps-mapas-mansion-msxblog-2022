@@ -1,5 +1,7 @@
+10cls:color1,15,7:keyoff
+20locate5,10:print"MSXmansionbyMSXMurcia"
 20defusr=&h003B:a=usr(0):defusr1=&h003E:a=usr1(0):defusr2=&H90:a=usr2(0):defusr3=&h41:defusr4=&h44
-30color1,15,7:screen2,0,0
+30screen2,0,0
 40definta-z
 50open"grp:"as#1
 60gosub9000
@@ -60,24 +62,24 @@
 500goto400
 600restore10100:intervaloff:gosub6700:PUTSPRITE0,(0,212),1,0:PUTSPRITE20,(0,212),1,0:gosub7000:mw=0:ms=0
 610return
-1000st=STICK(0)ORSTICK(1)ORSTICK(2)
+1000st=stick(0)orstick(1)orstick(2)
 1010xp=x:yp=y
 1020onstgosub1110,1120,1130,1140,1150,1160,1170
 1090RETURN
-1110y=y-pv:ps=p0:swapp0,p1:pd=1:re=10:gosub4000:return
+1110y=y-pv:ps=p(0):swapp(0),p(1):pd=1:re=10:gosub4000:return
 1120return
-1130x=x+pv:ps=p2:swapp2,p3:pd=3:re=10:gosub4000:return
+1130x=x+pv:ps=p(2):swapp(2),p(3):pd=3:re=10:gosub4000:return
 1140return
-1150y=y+pv:ps=p4:swapp4,p5:pd=5:re=10:gosub4000:return
+1150y=y+pv:ps=p(4):swapp(4),p(5):pd=5:re=10:gosub4000:return
 1160return
-1170x=x-pv:ps=p6:swapp6,p7:pd=7:re=10:gosub4000:return
+1170x=x-pv:ps=p(6):swapp(6),p(7):pd=7:re=10:gosub4000:return
 1400PUTSPRITE0,(x,y),1,ps
 1410ifen=0thenreturn
 1430fori=1toen
 1440ec(i)=ec(i)+1:ifec(i)>1thenec(i)=0
 1450ifet(i)=0thenifec(i)=0thenes(i)=8elsees(i)=9
 1460ifet(i)=1thenifec(i)=0thenes(i)=10elsees(i)=11
-1490PUTSPRITEep(i),(ex(i),ey(i)),1,es(i)
+1490PUTSPRITEep(i),(ex(i),ey(i)),eo(i),es(i)
 1495nexti
 1520return
 1760ifx<=0thenx=xp
@@ -140,7 +142,7 @@
 4070ifre=11thensound1,0:sound6,25:sound8,16:sound12,4:sound13,9
 4090return
 5000x=0:y=0:xp=0:yp=0:pw=8:ph=8:pv=8:pe=3:pd=0:pp=0
-5010p0=0:p1=1:p2=2:p3=3:p4=4:p5=5:p6=6:p7=7
+5010dimp(7):p(0)=0:p(1)=1:p(2)=2:p(3)=3:p(4)=4:p(5)=5:p(6)=6:p(7)=7
 5020return
 5700pe=pe-1:pa=pa-pm:time=0
 5720'gosub7000
@@ -150,7 +152,7 @@
 6000em=5
 6010DIMex(em),ey(em),ea(em),ei(em)
 6020DIMev(em),el(em)
-6030DIMew(em),eh(em),es(em),ec(em),ep(em),et(em)
+6030DIMew(em),eh(em),es(em),ec(em),ep(em),et(em),eo(em)
 6050en=0
 6099return
 6100en=en+1
@@ -160,6 +162,7 @@
 6140ee(en)=100
 6150et(en)=0
 6160ec(en)=0
+6170eo(en)=rnd(1)*(15-4)+4
 6190return
 6600ifen<=0thenreturn
 6610ex(ed)=ex(en):ey(ed)=ey(en):ev(ed)=ev(en):el(ed)=el(en):ec(ed)=ec(en):ee(ed)=ee(en):ep(ed)=ep(en):et(ed)=et(en)
@@ -180,7 +183,7 @@
     7130 if os=2 and o2=1 then  preset (0,21*8):print #1,"Seleccionada la espada: ":preset (0,22*8):print #1,"Puedes matar enemigos"
     7140 if os=3 and o3=1 then  preset (0,21*8):print #1,"Seleccionada el rayo:":preset (0,22*8):print #1,"Puedes romper los muros"
     7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"Seleccionada la escalera: ":preset (0,22*8):print #1,"Puedes pasar por encima de los muros"             
-    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques rosas pero solo 1 posicion."
+    7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques rosas  pero solo 1 posicion."
 7175ifgs=1thenPUTSPRITE20,((22*8)-4,oy),1,12
 7190return
 8000mw=1:ms=0:mc=0:md=0:mp=0:tn=0

@@ -1,14 +1,35 @@
-# Juego concurso MSXblog MSX mansion
+# MSX mansion
+
+Este juego tan solo está destinado a participar el concurso de MSXblog
+https://www.msxblog.es/concurso-msx-basic-9o-edicion/
+https://www.msxblog.es/category/concurso-msx-basic-9a-edicion/
+
+
 # Prueba el juego pincando aquí
 
 https://kikemadrigal.github.io/MSX1-basic-laberinto-msxblog-2022/?disk=laberinto.dsk
+
+<img src=docs/caratula.png width=200px>
+
+# Instrucciones
+
+Debes de ingeniar la forma de salir del laberinto utilizando las herramientas de:
+
+    1 La espada: te permite matar a los espíritus errantes.
+
+    2 El rayo:   te permite romper bloques que no sean rosas.
+
+    3 La escalera: te permite escalar por los muros.
+
+    4 El empujador: te permite mover los bloques rosas solo 1 paso.
+
+Si el contador llega a cero te quitan 1 vida, si te atrapa un enemigo también te mata.
+Suerte.:)
 
 # Enlace kanbam
 
 https://github.com/kikemadrigal/MSX1-basic-laberinto-msxblog-2022/projects/1
 
-
-# Laberinto
 
 # Tileset
 
@@ -48,7 +69,7 @@ En el nivel 2 utiliza el rayo para romper la pared
 
 ### Level 3 1-0
 
-En el 1-0 se han reiniciado las herramientas y puedes seleccioar de nuevo el empujador:
+En el 1-0 se han reiniciado las herramientas y puedes seleccionar de nuevo el empujador.
 
 <img src=docs/1-0.PNG width=400px>
 
@@ -60,10 +81,10 @@ En el level 4 tendrás que romper o utilizar la escalera en algún muro.
 
 ### Level 5 o 1-2
 
-En el 5 tendrás que matar a algún enemigo
+En el 5 tendrás que matar a un enemigo y depues romper el muro.
 
 <img src=docs/1-2.PNG width=400px>
-
+<img src=docs/1-3.PNG width=400px>
 
 
 ## World 2
