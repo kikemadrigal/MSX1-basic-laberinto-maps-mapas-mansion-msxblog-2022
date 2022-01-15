@@ -7,7 +7,7 @@ https://www.msxblog.es/category/concurso-msx-basic-9a-edicion/
 
 # Prueba el juego pincando aquí
 
-https://kikemadrigal.github.io/MSX1-basic-laberinto-msxblog-2022/?disk=laberinto.dsk
+https://kikemadrigal.github.io/MSX1-basic-laberinto-maps-mapas-mansion-msxblog-2022/?disk=laberinto.dsk
 
 <img src=docs/caratula.png width=200px>
 
