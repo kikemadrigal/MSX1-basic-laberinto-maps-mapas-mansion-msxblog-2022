@@ -1,39 +1,13 @@
-10 screen 1
-        11020 for f=0 to 1
-            11030 READ mp$
-            1 ' ahora leemos las columnas c
-            11040 for c=0 to 39 step 2
-                11050 tn$=mid$(mp$,c+1,2)
-                11060 tn=val("&h"+tn$)
-                11070 print tn;
-            11160 next c
-            11170 print
-            11171 print
-            1 'Bajamos la fila'
-            11175 md=md+32
-        11180 next f
-
-
-
-
-1 'level 0'
-12000 data 0105050505050505050505050505050505050501
-12010 data 070a040101010101010101010101010101010108
-12020 data 0701040102030303030201010102020303020108
-12030 data 0701040104010101010401010101040901040108
-12040 data 0701040104010101010403030101040101040108
-12050 data 0701020302010101010401010101040101040108
-12060 data 0701010101010101010401030303020101040108
-12070 data 0703030303030302010401010101010101040108
-12080 data 0701010101010104010203030303030303020108
-12090 data 0701010101010104010101010101010101010108
-12100 data 0701010101010104010203030303030303030108
-12110 data 0701020303010104010401010101010101010108
-12120 data 0701040101010104010203030303020103030308
-12130 data 0701040102030302010101010101040101010108
-12140 data 07010401040a0101010303020101040101010108
-12150 data 0701040102030302010101040101020303020108
-12160 data 0701040101010104010101040101010101040108
-12170 data 0701020303030302030303020101010101040108
-12180 data 0701010101010101010101010101010101040a08
-12190 data 0106060606060606060606060606060606060601
+10  PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8"
+    1 'play, c=do, d=re, e=mi, f=fa, g=sol, a=la, b=si
+    1 'xvariable$, ejecuta el string que contiene variable$'
+    1 'nx, número nota musical del do al si,siendo x un número entre 0-96, de la 0 octava (0-12) a la 8 octava (80-92), por defecto está la 4 octava (36-47) '
+    1 'on, siedo n la octava entre 0-8'
+    1 'ln, siendo n la duración de 0-64, 64 la más corta'
+    1 'rn, siendo n la pausa entre 1-64, 64 las más corta'
+    1 'tn, siendo n la velocidad de ejecución entre 32-255 (ni caso)'
+    1 'Vn, siendo v el volumen entre 0-15'
+    1 'Mn, sindo n la modulación de la envolvente entre 0-6535 (ni caso)'
+    1 'Sn, siendo n la forma de la enfolvente de 0-15, sirve para que vaya desapareciendo el sonido
+    1 'Melodía completa'
+    1 '2300 if re=1 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A D E F G E F D C D G R8 O5 A2 A2 A8"

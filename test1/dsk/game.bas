@@ -1,89 +1,80 @@
 10cls:color1,15,7:keyoff
-20locate5,10:print"MSXmansionbyMSXMurcia"
 20defusr=&h003B:a=usr(0):defusr1=&h003E:a=usr1(0):defusr2=&H90:a=usr2(0):defusr3=&h41:defusr4=&h44
 30screen2,0,0
 40definta-z
 50open"grp:"as#1
-60gosub9000
-70gosub6000
+60gosub5000
+70gosub9000
+80gosub6000
 90tm=40:tf=0
 100gs=0
-110strig(0)on
+110'spriteon:onspritegosub2000
 120stopon:onstopgosub140
-140gosub600
+140gosub900
 150gs=0:goto200
 160return
-200ifgs=0thengoto230
-210ifgs=1thengoto350
-220ifgs=2thengoto300
-230screen2:re=1:gosub4000
-231draw("bm0,50c9r14d11r219u11r23d20l256u20c7u50r260d27l260")
-232draw("bm20,40c4e10f10r20e10f10r20e10r40f10r20e10f10r20e10f10r5h12l210g12r230l10c11d20l210u19r210")
-233a$="r5d5l5u5":draw("bm30,45xa$;"):draw("bm60,45xa$;"):draw("bm90,45xa$;"):draw("bm120,45xa$;"):draw("bm150,45xa$;"):draw("bm180,45xa$;"):draw("bm210,45xa$;")
-234draw("bm120,50r5d10l5u10")
-241paint(2,2),7,7:paint(2,65),9,9
-242paint(100,35),4,4:paint(23,55),11,11
-    243 preset (60,10):print #1,"MSX mansion"
-    244 preset (60,20):print #1,"MSX Murcia 2022"
-    250 preset (0,80):print #1,"Debes de ingeniar como salir de la mansion antes de que se te   acabe el tiempo"
-    260 preset (0,110):print #1,"Utiliza las herramientas que    tienes a tu disposicion, pulsa  espacio para elegir una."
-    270 preset (0,140):print #1,"Solo puedes utilizarlas una vez por mundo."
-    275 preset (0,160):print #1,"Pulsa stop para terminar la     partida."
-    280 preset (0,180):print #1,"Pulsa espacio para continuar"
-290ifstrig(0)=-1thencls:gs=1:goto200elsegoto290
-300screen2
-301gosub600
-    305 preset (60,10):print #1,"Has ganado"
-    310 preset (60,20):print #1,"MSX Murcia 2022"
-    320 preset (0,50):print #1,"Desarrolador: Kike Madrigal"
-    325 preset (0,70):print #1,"Email: Kikemadrigal@hotmail.com"
-    327 preset (0,90):print #1,"Muchas gracias por probar       nuestro juego     :)"
-    330 preset (0,180):print #1,"Pulsa espacio para continuar"
-340ifstrig(0)=-1thengs=0:goto200elsegoto340
-350gosub5000
-355'a=usr3(0)
-360gosub10000
-370fori=0to19:vpoke(6144+20)+i*32,3:vpoke(6144+21)+i*32,3:vpoke(6144+22)+i*32,3:vpoke(6144+23)+i*32,3:nexti
-375'a=usr4(0)
-380gosub11000
-385gosub7000
-390gosub3100
-391gosub8300
-392intervalon:oninterval=50gosub3200
-393onstriggosub7100
-395gosub3000
-396time=0:ta=1
-400ifpe<=0thengosub600:gs=0:goto200
-410ifta<=0thentf=0:time=0:gosub5700
-420gosub1000
-430gosub1760
-440gosub1400
-480ifmcthenms=ms+1:tf=ta:time=0:mc=0:ifmw=2andms=3thengs=2:goto200elsegosub11000:ifms=3thenmw=mw+1:ms=0:gosub7000:gosub3000:gosub3100:gosub8300elsegosub3000:gosub8300
-500goto400
-600restore10100:intervaloff:gosub6700:PUTSPRITE0,(0,212),1,0:PUTSPRITE20,(0,212),1,0:gosub7000:mw=0:ms=0
-610return
-1000st=stick(0)orstick(1)orstick(2)
-1010xp=x:yp=y
-1020onstgosub1110,1120,1130,1140,1150,1160,1170
-1090RETURN
-1110y=y-pv:ps=p(0):swapp(0),p(1):pd=1:re=10:gosub4000:return
-1120return
-1130x=x+pv:ps=p(2):swapp(2),p(3):pd=3:re=10:gosub4000:return
-1140return
-1150y=y+pv:ps=p(4):swapp(4),p(5):pd=5:re=10:gosub4000:return
-1160return
-1170x=x-pv:ps=p(6):swapp(6),p(7):pd=7:re=10:gosub4000:return
-1400PUTSPRITE0,(x,y),1,ps
-1410ifen=0thenreturn
-1430fori=1toen
-1440ec(i)=ec(i)+1:ifec(i)>1thenec(i)=0
-1450ifet(i)=0thenifec(i)=0thenes(i)=8elsees(i)=9
-1460ifet(i)=1thenifec(i)=0thenes(i)=10elsees(i)=11
-1490PUTSPRITEep(i),(ex(i),ey(i)),eo(i),es(i)
-1495nexti
-1520return
-1760ifx<=0thenx=xp
-1761ify<=0theny=yp
+200ifgs=0thengoto300
+210ifgs=1thengoto600
+220ifgs=2thengoto500
+300screen2:re=1:gosub4000
+310draw("bm0,50c9r14d11r219u11r23d20l256u20c7u50r260d27l260")
+320draw("bm20,40c4e10f10r20e10f10r20e10r40f10r20e10f10r20e10f10r5h12l210g12r230l10c11d20l210u19r210")
+330a$="r5d5l5u5":draw("bm30,45xa$;"):draw("bm60,45xa$;"):draw("bm90,45xa$;"):draw("bm120,45xa$;"):draw("bm150,45xa$;"):draw("bm180,45xa$;"):draw("bm210,45xa$;")
+340draw("bm120,50r5d10l5u10")
+350paint(2,2),7,7:paint(2,65),9,9
+360paint(100,35),4,4:paint(23,55),11,11
+    370 preset (60,10):print #1,"MSX mansion"
+    380 preset (60,20):print #1,"MSX Murcia 2022"
+    390 preset (0,80):print #1,"Debes de ingeniar como salir de la mansion antes de que se te   acabe el tiempo"
+    400 preset (0,110):print #1,"Utiliza las herramientas que    tienes a tu disposicion, pulsa  espacio para elegir una."
+    440 preset (0,140):print #1,"Solo puedes utilizarlas una vez por mundo."
+    450 preset (0,160):print #1,"Pulsa stop para terminar la     partida."
+    460 preset (0,180):print #1,"Pulsa espacio para continuar"
+470ifstrig(0)=-1thencls:gs=1:goto200elsegoto470
+500screen2
+510gosub900
+    520 preset (60,10):print #1,"Has ganado"
+    530 preset (60,20):print #1,"MSX Murcia 2022"
+    540 preset (0,50):print #1,"Desarrolador: Kike Madrigal"
+    550 preset (0,70):print #1,"Email: Kikemadrigal@hotmail.com"
+    560 preset (0,90):print #1,"Muchas gracias por probar       nuestro juego     :)"
+    570 preset (0,180):print #1,"Pulsa espacio para continuar"
+580ifstrig(0)=-1thengs=0:goto200elsegoto580
+600a=usr3(0)
+610pe=3
+620gosub10000
+630fori=0to19:vpoke(6144+20)+i*32,3:vpoke(6144+21)+i*32,3:vpoke(6144+22)+i*32,3:vpoke(6144+23)+i*32,3:nexti
+640gosub11000
+650gosub7000
+660gosub3100
+680gosub8300
+690intervalon:oninterval=100gosub3200
+700strig(0)on:onstriggosub7100
+710gosub3000
+720time=0:ta=1
+730a=usr4(0)
+800ifpe<=0thengosub900:gs=0:goto200
+810ifta<=0thentf=0:time=0:gosub5700
+820'gosub1000
+821st=stick(0)orstick(1)orstick(2)
+822ifstick(0)>0thenxp=x:yp=y
+823onstgoto825,826,827,828,829,830,831,832
+824goto834
+825y=y-pv:ps=p(0):swapp(0),p(1):pd=1:goto833
+826y=y-pv:x=x+pv:ps=p(0):swapp(0),p(1):pd=1:goto833
+827x=x+pv:ps=p(2):swapp(2),p(3):pd=3:goto833
+828y=y+pv:x=x+pv:ps=p(4):swapp(4),p(5):pd=5:goto833
+829y=y+pv:ps=p(4):swapp(4),p(5):pd=5:goto833
+830x=x-pv:y=y+pv:ps=p(4):swapp(4),p(5):pd=5:goto833
+831x=x-pv:ps=p(6):swapp(6),p(7):pd=7:goto833
+832x=x-pv:y=y-pv:ps=p(0):swapp(0),p(1):pd=1:goto833
+833re=10:gosub4000
+834gosub1760
+840ifmcthenms=ms+1:tf=ta:time=0:mc=0:ifmw=2andms=3thengs=2:goto200elsegosub11000:ifms=3thenmw=mw+1:ms=0:gosub7000:gosub3000:gosub3100:gosub8300elsegosub3000:gosub8300
+890goto800
+900restore10100:intervaloff:gosub6700:PUTSPRITE0,(0,212),1,0:PUTSPRITE20,(0,212),1,0:gosub7000:mw=0:ms=0
+910return
+1760ifx<=0thenx=xp:ify<=0theny=yp
 1762ify+ph>160theny=yp
 1763ifx+pw>160thenx=xp
 1764md=6144+(y/8)*32+(x/8):a=vpeek(md)
@@ -93,6 +84,8 @@
 1781ifa=21thenre=11:gosub4000:vpokemd,0:pp=pp+10:gosub3100:gosub3300
 1785ifa=18ora=19thenre=2:gosub4000:mc=1
 1790ifa=20thentf=ta:time=0:re=5:gosub4000:vpokemd,0
+1800putsprite0,(x,y),1,ps
+1885ifen=0thenreturn
 1900fori=1toen
 1910ifet(i)=0thenex(i)=ex(i)+ev(i)
 1920ifet(i)=1theney(i)=ey(i)+el(i)
@@ -100,9 +93,17 @@
 1940ifa>3anda<17ora=22thenifet(i)=0thenev(i)=-ev(i):ex(i)=ea(i):ey(i)=ei(i)elseifet(i)=1thenel(i)=-el(i):ex(i)=ea(i):ey(i)=ei(i)
 1945ifex(i)>160orex(i)<=0orey(i)>160orey(i)<=0thengosub6600
 1950ea(i)=ex(i):ei(i)=ey(i)
-1960ifx<ex(i)+ew(i)andx+pw>ex(i)andy<ey(i)+eh(i)andy+ph>ey(i)thenre=6:gosub4000:ifos=2ando2=1thenre=3:gosub4000:o2=0:ed=i:gosub6600:gosub3100elsebeep:gosub5700
-1970nexti
-1990return
+1960ifx<ex(i)+ew(i)andx+pw>ex(i)andy<ey(i)+eh(i)andy+ph>ey(i)thenre=6:gosub4000:ifos=2ando2=1thenre=3:gosub4000:o2=0:ed=i:gosub6600:gosub3100:returnelsebeep:gosub5700:return
+1965ec(i)=ec(i)+1:ifec(i)>1thenec(i)=0
+1970ifet(i)=0thenifec(i)=0thenes(i)=8elsees(i)=9
+1980ifet(i)=1thenifec(i)=0thenes(i)=10elsees(i)=11
+1990PUTSPRITEep(i),(ex(i),ey(i)),eo(i),es(i)
+1995nexti
+1999return
+2000spriteoff:pc=1
+2030ifos=2ando2=1thenre=6:gosub4000:o2=0:gosub3100:ed=i:gosub6600elsere=6:gosub4000:gosub5700
+2040spriteon
+2090return
 3000line(24*8,0)-(256,20*8),14,bf
 3020preset(26*8,1*8):print#1,"World"
 3030preset(27*8,3*8):print#1,mw
@@ -141,7 +142,7 @@
 4060ifre=10thensound1,2:sound6,25:sound8,16:sound12,1:sound13,9
 4070ifre=11thensound1,0:sound6,25:sound8,16:sound12,4:sound13,9
 4090return
-5000x=0:y=0:xp=0:yp=0:pw=8:ph=8:pv=8:pe=3:pd=0:pp=0
+5000x=0:y=0:xp=0:yp=0:pw=8:ph=8:pv=8:pe=3:pd=0:pp=0:pc=0
 5010dimp(7):p(0)=0:p(1)=1:p(2)=2:p(3)=3:p(4)=4:p(5)=5:p(6)=6:p(7)=7
 5020return
 5700pe=pe-1:pa=pa-pm:time=0
@@ -162,7 +163,7 @@
 6140ee(en)=100
 6150et(en)=0
 6160ec(en)=0
-6170eo(en)=rnd(1)*(15-4)+4
+6170eo(en)=rnd(1)*(6-4)+4
 6190return
 6600ifen<=0thenreturn
 6610ex(ed)=ex(en):ey(ed)=ey(en):ev(ed)=ev(en):el(ed)=el(en):ec(ed)=ec(en):ee(ed)=ee(en):ep(ed)=ep(en):et(ed)=et(en)
