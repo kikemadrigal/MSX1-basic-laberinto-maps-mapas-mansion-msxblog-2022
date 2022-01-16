@@ -698,7 +698,7 @@
 
 1 ' inicializar_mapa
     1 'mw=mapa world, mundo'
-    1 'ms=mapa seleccioando, lo hiremos cambiando    
+    1 'ms=mapa seleccioando, lo iremos cambiando    
     1 'md=mapa dirección en VRAM, utilizado para meter los datas de tiles
     1 'mp=mapa posición, utilizada para recorrer los caracteres'
     1 'mc= mapa cambia, lo utilizaremos para cambiar los copys y así cambiar la pantalla
