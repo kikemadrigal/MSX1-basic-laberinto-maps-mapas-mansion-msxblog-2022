@@ -33,7 +33,7 @@
 1 'Cargamos los sprites en VRAM'
 70 gosub 9000
 1 'Inicilizamos el array y las variables de los enemigos'
-80 gosub 6000
+80 'gosub 6000
 
 1 'Inicializamos las variables del juego
 1 'tm=tiempo maximo'
@@ -188,12 +188,12 @@
 1 'Rutina terminar partida, llamada cuando no quedan vidas, con la tecla stop o cuando se ha ganado el juego'
 1 'Tenemos que colocar el punturo del mapa en el world0, level0'
 1 'Desactivamos el repintado y actualización del tiempo'
-1 'Eliminamos a los enemigos (6700)'
+1 'Eliminamos a los enemigos (6600)'
 1 'Sacamos al player de la pantalla'
 1 'sacamos el sprite de selección de objetos'
 1 'Volvemos los objetos a su configuración inicial (7000)'
 1 'Ponemos el mundo y el nivel a 0'
-    900 restore 10100:interval off:gosub 6700:PUT SPRITE 0,(0,212),1,0:PUT SPRITE 20,(0,212),1,0:gosub 7000:mw=0:ms=0
+    900 restore 10100:interval off:gosub 6600:PUT SPRITE 0,(0,212),1,0:PUT SPRITE 20,(0,212),1,0:gosub 7000:mw=0:ms=0
 910 return
 
 1 '1' <<<< INPUT SYSTEM con gosub>>>>
@@ -331,7 +331,9 @@
         1 'Hacemo una música de cogido'
         1' hacemos que desapaezca el reloj
     1790 if a=20 then tf=ta:time=0:re=5:gosub 4000:vpoke md,0
-
+    1 'Si ha tocado un tile de muerte
+        1 'Eliminamos al player
+    1795 if a=24 then beep:gosub 5700
     1 '' Render system player
     1 ' ---------------------'
     1800 put sprite 0,(x,y),1,ps
@@ -340,25 +342,32 @@
 
 
     1 '<<<<<<<<< Enemies >>>>>>>>>>>'
-    1885 if en=0 then return
-    1900 for i=1 to en
+
+
         1 'Physics enemies'
         1 '---------------'
-        1910 if et(i)=0 then ex(i)=ex(i)+ev(i)
-        1920 if et(i)=1 then ey(i)=ey(i)+el(i)
+        1910 ex=ex+ev
+        1920 if bt=0 then by=by+bl else bx=bx+bv
         1 ' Collisions enemies with the map'
         1 '-------------------------------'
-        1930 md=base(5)+(ey(i)/8)*32+(ex(i)/8):a=vpeek(md)
+        1 'Enemigo 1'
+        1930 md=base(5)+(ey/8)*32+(ex/8):a=vpeek(md)
         1 'Si es una pared o un bloque empujable 
             1 'le invertimos la velocidad del eje x y del eje y'
             1 'y le volvemos a poner las coordenadas antiuas '
             1 'ev=velocidad x y el velocidad eje y '
             1 'ep coordenada previa x , ei=coordenada previa y'
-        1940 if a>3 and a<17 or a=22 then if et(i)=0 then ev(i)=-ev(i):ex(i)=ea(i):ey(i)=ei(i) else if et(i)=1 then el(i)=-el(i):ex(i)=ea(i):ey(i)=ei(i)
+        1940 if a>3 and a<17 or a=22 then ev=-ev:ex=ea:ey=ei
         1 'Si el enemigo ha salido de la pantalla lo eliminamos'
-        1945 if ex(i)>160 or ex(i)<=0 or ey(i)>160 or ey(i)<=0 then gosub 6600
+        1945 if ex>160 or ex<=0 or ey>160 or ey<=0 then gosub 6600
         1 'Conservamos los datos de las posiciones antes de cambiarlos'
-        1950 ea(i)=ex(i):ei(i)=ey(i)
+        1950 ea=ex:ei=ey
+        
+        1 'Enemigo 2'
+        1951 md=base(5)+(by/8)*32+(bx/8):a=vpeek(md)
+        1952 if a>3 and a<17 or a=22 then bl=-bl:bv=-bv:bx=ba:by=bi
+        1953 if ex>160 or ex<=0 or ey>160 or ey<=0 then gosub 6600
+        1954 ba=bx:bi=by
 
         1 'collisions enemies with the player'
         1 '-----------------------------------'
@@ -370,18 +379,20 @@
         1 '         Repintamos los objetos
         1 '     Si no está activado o habilitado el objeto 1'
         1 '         Matamos al player'
-        1960 if x < ex(i) + ew(i) and x + pw > ex(i) and y < ey(i) + eh(i) and y + ph > ey(i) then re=6:gosub 4000:if os=2 and o2=1 then re=3:gosub 4000:o2=0:ed=i:gosub 6600:gosub 3100:return else beep:gosub 5700:return
-        1 '1960 if x < ex(i) + ew(i) and x + pw > ex(i) and y < ey(i) + eh(i) and y + ph > ey(i) then gosub 2000:return
+        1 '1960 if x < ex + ew and x + pw > ex and y < ey + eh and y + ph > ey then re=6:gosub 4000:if os=2 and o2=1 then re=3:gosub 4000:o2=0:ed=i:gosub 6600:gosub 3100:return else beep:gosub 5700:return
+        1960 if x < ex + ew and x + pw > ex and y < ey + eh and y + ph > ey then em=0:gosub 2000:return
+        1961 if x < bx + bw and x + pw > bx and y < by + bh and y + ph > by then bm=0:gosub 2000:return
         
     
         1 ' Render enemies'
         1 '------------------'
         1 'Esto es para animar los muñegotes, revuerda hacer un return cuando los elemines'
-        1965 ec(i)=ec(i)+1:if ec(i)>1 then ec(i)=0
-        1970 if et(i)=0 then if ec(i)=0 then es(i)=8 else es(i)=9
-        1980 if et(i)=1 then if ec(i)=0 then es(i)=10 else es(i)=11
-        1990 PUT SPRITE ep(i),(ex(i),ey(i)),eo(i),es(i)
-    1995 next i
+        1965 ec=ec+1:if ec>1 then ec=0
+        1966 bc=bc+1:if bc>1 then bc=0
+        1970 if ec=0 then es=8 else es=9
+        1980 if bc=0 then bs=10 else bs=11
+        1990 if em=1 then PUT SPRITE ep,(ex,ey),eo,es
+        1995 if bm=1 then PUT SPRITE bp,(bx,by),bo,bs
 1999 return
 
 
@@ -392,14 +403,14 @@
 1 '     Si está acitvado el objeto 2 de matar enemigos y habilitado'
 1 '         Hacemos un sonido (re=6:4000)'
 1 '         Actualizamos la bandera de ese objeto para que no se pueda volver a utilizar'
+1 '         Repintamos los objetos (3100)
 1 '         Eliminamos al enemigo (ed=i:6600)'
-1 '         Repintamos los objetos
 1 '     Si no está activado o habilitado el objeto 1'
 1 '         Hacemos un soido (re,4000)'
 1 '         Matamos al player (5700)'
-    2000 sprite off:pc=1
-    2030 if os=2 and o2=1 then re=6:gosub 4000:o2=0:gosub 3100:ed=i:gosub 6600 else re=6:gosub 4000:gosub 5700 
-    2040 sprite on
+1 '         Volvemos apintar al player y activamos las colisiones'
+    2000 'sprite off
+    2030 if os=2 and o2=1 then re=6:gosub 4000:o2=0:gosub 3100:ed=i:gosub 6600:return else beep:gosub 5700:put sprite 0,(x,y),1,ps:'re=6:gosub 4000
 2090 return
 
 
@@ -413,7 +424,7 @@
 
 
 1 'informacion del juego que aparece en l aparte superior'
-    3000 line (24*8,0)-(256,20*8),14,bf
+    3000 line (25*8,0)-(256,20*8),14,bf
     3020 preset (26*8,1*8): print #1,"World"
     3030 preset (27*8,3*8): print #1,mw
     3040 preset (26*8,5*8): print #1,"Level"
@@ -426,7 +437,6 @@
     1 '3090 preset (24*8,21*8): print #1,fre(0)
 
 3099 return
-
 
 
 
@@ -444,13 +454,14 @@
     3150 if o5 then PUT SPRITE 26,((22*8)-4,13*8),6,17 else PUT SPRITE 26,((22*8)-4,13*8),15,17
 3190 return
 
-1 'Pintar el tiempo'
+1 'Pintar el tiempo y actualizar tile muerte'
     3200 line (26*8,18*8)-(30*8,20*8),14,bf
     1 '3200 line (25*8,18*8)-(30*8,23*8),14,bf
-    3210 tu=time/50
+    3210 tu=time/100
     3220 ta=(tm+tf)-tu
     3230 preset (26*8,(19*8)-4): print #1,ta
     1 '3240 preset (24*8,20*8): print #1,ta
+    3240 if ta mod 2=0 then vpoke 6144+(ty*32)+tx, 0 else vpoke 6144+(ty*32)+tx, 24
 3290 return
 1 'Pintar la puntuación'
     3300 line (27*8,15*8)-(31*8,16*8),14,bf
@@ -559,15 +570,14 @@
 5020 return
 1' Player muere
     1 'Le kitamos 1 vida'
-    1 'Actializamos el tiempo'
-    5700 pe=pe-1:pa=pa-pm:time=0
+    1 'Actualizamos el tiempo'
+    5700 pe=pe-1:pa=pa-pm:time=0 
     1 'inicializamos objetos
     5720 'gosub 7000
     1 ' llamamos a la tutina reposicionar player y enemigos según el mapa'
     5740 gosub 8300
     1 'Pintamos el marcador'
     5750 gosub 3000
-
 5790 return
 
 
@@ -577,54 +587,50 @@
 1 '---------------------------------------------------------'
 1 'Init'
 
-
-1 'et=turno de enemigo'
-1 'en=numero de enemigo'
 1 'Componente de posicion'
-    1 'ex=coordenada x, ey=coordenada y, ea=coordenada previa x, ei=coordenada previa y
+    1 'ex/bx=coordenada x enemigo 1, bx=coordenada x enemigo 2'
+    1 'ey/by=coordenada y enemigo 1, by=coordenada y enemigo 2'
+    1 'ea/ba=coordenada previa x ebemigo 1, ba= coordenada previa x enemigo 2'
+    1 'ei/bi=coordenada previa y enemigo 1, bi=coordenada previa y enemigo 2'
+
 1 'Componente de fisica'
-    1 'ev=velocidad enemigo eje x, el=velocidad eje y'
+    1 'ev=velocidad enemigo 1 eje x 
+    1 'bl=velocidad enemigo 2 eje y'
+    1 'et=si s 0 el enemigo 1 se morverá horizontalmente si es 1 se moverá verticalmente'
 1 'Componente de render'
-    1 'ew=ancho enemigo, eh= alto enemigo, es=enemigo sprite, ec=enemigo contador, utlizado para hacer la animación'
+    1 'es=enemigo 1 sprite, bs=enemigo 2 sprite
+    1 'ec=enemigo 1 contador, bc=enemigo 2 contador, utlizado para hacer la animación'
+    1 'eo=enemigo 1 color, bo=enemigo 2 color'
 1 'Componente RPG'
-    1 'ee=enemigo energia,et=enemigo tipo, determina su comportamiento '
-    1 'eo=enemigo color'
-    6000 em=5
-    1 ' Component position'
-    6010 DIM ex(em),ey(em),ea(em),ei(em)
-    1 ' Compenent phisics'
-    6020 DIM ev(em),el(em)
-    1 ' Component render'
-    6030 DIM ew(em),eh(em),es(em),ec(em),ep(em),et(em),eo(em)
-    6050 en=0
-6099 return
+6000 dim ex(1), eh(1), es(1),ep(1),ex(1),ey(1),ea(1),ei(1),ev(1),el(1),ec(1),et(1)
+6090 return
 
-1 ' Crear enemigo'
-    6100 en=en+1
-    6105 ex(en)=0:ey(en)=0:ea(en)=0:ei(en)=0
-    6110 ev(en)=8:el(en)=8
-    1 'los planos del enemigo serán de 10 en adelante'
-    6130 ew(en)=8:eh(en)=8:es(en)=8:ep(en)=10+en
-    6140 ee(en)=100
-    6150 et(en)=0
-    6160 ec(en)=0
-    6170 eo(en)=rnd(1)*(6-4)+4
-6190 return
 
-1 ' Rutina eliminar enemigo'
-    6600 if en<=0 then return
-    6610 ex(ed)=ex(en):ey(ed)=ey(en):ev(ed)=ev(en):el(ed)=el(en):ec(ed)=ec(en):ee(ed)=ee(en):ep(ed)=ep(en):et(ed)=et(en)
-    6620 put sprite ep(ed),(0,212),,es(ed)
-    6630 en=en-1
+1 '1 ' Crear enemigo 1'
+       6100 ew=8:eh=8:es=8:ep=10
+       6105 ex=0:ey=0:ea=0:ei=0
+       6110 ev=8
+       6160 ec=0
+       6170 eo=rnd(1)*(6-4)+4
+       6180 et=0
+       6185 en=1
+       6186 em=1
+    6190 return
+1 'Crear enemigo 2'
+        6200 bw=8:bh=8:bs=10:bp=11
+        6205 bx=0:by=0:ba=0:bi=0
+        6210 bv=8:bl=8
+        6260 bc=0
+        6270 bo=rnd(1)*(6-4)+4
+        6280 bn=1
+        6281 bm=1
+6290 return
+1 ' Rutina eliminar enemigos'
+    6600 if em=0 then ex=0:ey=212:put sprite ep,(ex,ey),,es
+    6610 if bm=0 then bx=0:by=212:put sprite bp,(bx,by),,bs
 6640 return
 
-1 'Eliminar enemigos'
-    1 'quitamos todos los sprites d ela pantalla'
-    6700 for i=0 to 10
-        6710 PUT SPRITE i,(0,212),,0
-    6720 next i
-    6780 en=0
-6790 return
+
 
 
 
@@ -654,9 +660,9 @@
     7160 if os=4 and o4=1 then  preset (0,21*8):print #1,"!Seleccionada la escalera: ":preset (0,22*8):print #1,"Puedes pasar por encima de los muros"             
     7170 if os=5 and o5=1 then  preset (0,21*8):print #1,"!Seleccionada la fuerza: " :preset (0,22*8):print #1,"Puedes mover los bloques rosas  pero solo 1 posicion."
     1 'Este es el marco que sale junto al objeto para decir que está seleccionado'
-    7175 if gs=1 then PUT SPRITE 20,((22*8)-4,oy),1,12
-
+    7175 if gs=1 then PUT SPRITE 20,((20*8),oy),1,12
 7190 return
+
 
 
 
@@ -711,42 +717,45 @@
 
 1'Rutina posicionar player y enemigos según el mapa
     1 'Eliminamos todos los enemigos si los hay'
-    8300 gosub 6700
+    8300 gosub 6600
     1 'Debug'
-    1 '8310 if mw=0 and ms=0 then x=14*8:y=5*8:gosub 6100:ex(en)=8*8:ey(en)=2*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
-    8310 if mw=0 and ms=0 then x=5*8:y=10*8:gosub 6100:ex(en)=8*8:ey(en)=2*8:et(en)=0:gosub 6100:ex(en)=12*8:ey(en)=16*8:et(en)=1
+    1 '8310 if mw=0 and ms=0 then x=14*8:y=5*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
+    8310 if mw=0 and ms=0 then x=5*8:y=10*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
     1' Debug
     1 '8320 if mw=0 and ms=1 then x=13*8:y=9*8:gosub 6100:ex(en)=10*8:ey(en)=15*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
-    8320 if mw=0 and ms=1 then x=1*8:y=18*8:gosub 6100:ex(en)=10*8:ey(en)=15*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
+    8320 if mw=0 and ms=1 then x=1*8:y=18*8:gosub 6100:ex=10*8:ey=15*8:gosub 6200:bx=7*8:by=4*8:bt=1
     1 'Debug'
     1 '8330 if mw=0 and ms=2 then x=13*8:y=10*8:gosub 6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
-    8330 if mw=0 and ms=2 then x=1*8:y=14*8:gosub 6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
+    1 '8330 if mw=0 and ms=2 then x=1*8:y=14*8:gosub 6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
     
     
     1 'LEVEL 3 O 1-0'
     1 'Debug
     1 '8340 if mw=1 and ms=0 then x=1*8:y=18*8:gosub 6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub 6100:ex(en)=17*8:ey(en)=13*8:et(en)=0 
-    8340 if mw=1 and ms=0 then x=14*8:y=7*8:gosub 6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub 6100:ex(en)=17*8:ey(en)=13*8:et(en)=0 
+    1 '8340 if mw=1 and ms=0 then x=14*8:y=7*8:gosub 6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub 6100:ex(en)=17*8:ey(en)=13*8:et(en)=0 
     1 'LEVEL 4 O 1-1'
     1 'debug'
     1 '8350 if mw=1 and ms=1 then x=11*8:y=7*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=15*8:ey(en)=12*8:et(en)=0
-    8350 if mw=1 and ms=1 then x=4*8:y=13*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=15*8:ey(en)=12*8:et(en)=0
+    1 '8350 if mw=1 and ms=1 then x=4*8:y=13*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=15*8:ey(en)=12*8:et(en)=0
     1 'LEVEL 5 O 1-2'
     1 'Debug'
     1 '8360 if mw=1 and ms=2 then x=10*8:y=9*8:gosub 6100:ex(en)=3*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=1
-    8360 if mw=1 and ms=2 then x=1*8:y=1*8:gosub 6100:ex(en)=3*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=1
+    1 '8360 if mw=1 and ms=2 then x=1*8:y=1*8:gosub 6100:ex(en)=3*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=1
     
            
     1 'LEVEL 6 O 2-0'
     1 'Debug'
     1 '8370 if mw=2 and ms=0 then x=14*8:y=17*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
-    8370 if mw=2 and ms=0 then x=12*8:y=6*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
+    1 '8370 if mw=2 and ms=0 then x=12*8:y=6*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
     1 'debug'
     1 '8380 if mw=2 and ms=1 then x=16*8:y=12*8:gosub 6100:ex(en)=16*8:ey(en)=7*8:et(en)=1:gosub 6100:ex(en)=7*8:ey(en)=15*8:et(en)=0
-    8380 if mw=2 and ms=1 then x=1*8:y=1*8:gosub 6100:ex(en)=16*8:ey(en)=7*8:et(en)=1:gosub 6100:ex(en)=7*8:ey(en)=15*8:et(en)=0
+    1 '8380 if mw=2 and ms=1 then x=1*8:y=1*8:gosub 6100:ex(en)=16*8:ey(en)=7*8:et(en)=1:gosub 6100:ex(en)=7*8:ey(en)=15*8:et(en)=0
     1 'debug'    
     1 '8390 if mw=2 and ms=2 then x=10*8:y=10*8:gosub 6100:ex(en)=5*8:ey(en)=8*8:et(en)=1:gosub 6100:ex(en)=1*8:ey(en)=10*8:et(en)=0
-    8390 if mw=2 and ms=2 then x=5*8:y=1*8:gosub 6100:ex(en)=5*8:ey(en)=8*8:et(en)=1:gosub 6100:ex(en)=1*8:ey(en)=10*8:et(en)=0
+    1 '8390 if mw=2 and ms=2 then x=5*8:y=1*8:gosub 6100:ex(en)=5*8:ey(en)=8*8:et(en)=1:gosub 6100:ex(en)=1*8:ey(en)=10*8:et(en)=0
+
+
+    8395 'put sprite 0,(x,y),1,ps:sprite on
 8399 return
 
 
@@ -755,35 +764,33 @@
 
 1 'Rutina cargar sprites con datas basic'
     1 ' vamos a meter 5 definiciones de sprites nuevos que serán 4 para el personaje y uno para la bola'
+    1 'El player será el plano 0, los sprites serán del 0 al 7
+    1 'como tenemos 2 tipos de enemigos serán el plano 1 y el 2, los sprites serán para el tipo 1 el 8 y el 9, para el tipo 2 el 10 y el 11'
+    1 'Los '
     9000 FOR I=0 TO 17:SP$=""
         9020 FOR J=1 TO 8:READ A$
             9030 SP$=SP$+CHR$(VAL("&H"+A$))
         9040 NEXT J
         9050 SPRITE$(I)=SP$
     9060 NEXT I
-    9090 DATA 03,C3,D8,3C,BD,DB,E7,7E
-    9100 DATA C0,C3,1B,3C,BD,DB,E7,7E
-    9110 DATA 76,E6,D8,BC,BC,D8,E3,73
-    9120 DATA 73,E3,D8,BC,BC,D8,E6,76
-    9130 DATA 7E,E7,DB,BD,3C,1B,C3,C0
-    9140 DATA 7E,E7,DB,BD,3C,D8,C3,03
-    9150 DATA CE,C7,1B,3D,3D,1B,67,6E
-    9160 DATA 6E,67,1B,3D,3D,1B,C7,CE
-    9170 DATA 18,3C,66,C3,C3,66,3C,18
-    9180 DATA 3C,7E,FF,E7,E7,FF,7E,3C
-    9190 DATA 81,C3,24,3C,3C,24,42,C3
-    9200 DATA 00,42,66,3C,3C,24,66,00
-    9210 DATA FF,81,81,81,81,81,81,FF
-    9220 DATA 81,42,24,18,18,24,42,81
-    9230 DATA 01,02,04,88,50,20,D0,C8
-    9240 DATA 07,0E,38,70,0E,1C,70,E0
-    9250 DATA 24,24,3C,24,24,3C,24,24
-    9260 DATA 00,23,33,FB,FB,33,23,00
-
-
-
-    
-
+    9110 DATA 03,C3,D8,3C,BD,DB,E7,7E
+    9120 DATA C0,C3,1B,3C,BD,DB,E7,7E
+    9130 DATA 76,E6,D8,BC,BC,D8,E3,73
+    9140 DATA 73,E3,D8,BC,BC,D8,E6,76
+    9150 DATA 7E,E7,DB,BD,3C,1B,C3,C0
+    9160 DATA 7E,E7,DB,BD,3C,D8,C3,03
+    9170 DATA CE,C7,1B,3D,3D,1B,67,6E
+    9180 DATA 6E,67,1B,3D,3D,1B,C7,CE
+    9190 DATA 18,3C,66,C3,C3,66,3C,18
+    9200 DATA 3C,7E,FF,E7,E7,FF,7E,3C
+    9210 DATA 81,C3,24,3C,3C,24,42,C3
+    9220 DATA 00,42,66,3C,3C,24,66,00
+    9230 DATA 00,04,06,FF,FF,06,04,00
+    9240 DATA 81,42,24,18,18,24,42,81
+    9250 DATA 01,02,04,88,50,20,D0,C8
+    9260 DATA 07,0E,38,70,0E,1C,70,E0
+    9270 DATA 24,24,3C,24,24,3C,24,24
+    9280 DATA 00,23,33,FB,FB,33,23,00
 9990 return 
 
 1' Rutina cargar gráficos
@@ -810,7 +817,7 @@
     1' Hay que recordar la estructura de la VRAM, en la VRAM están los datos que se reprentan en pantalla
     1 'Nuestro tileset son 24 tiles o de 0 hasta el 23'
     1 'Definiremos a partir de la posición 0 de la VRAM 18 tiles de 8 bytes'
-        10000 FOR I=0 TO (24*8)-1
+        10000 FOR I=0 TO (26*8)-1
         10020 READ A$
         10030 VPOKE I,VAL("&H"+A$)
         10040 VPOKE 2048+I,VAL("&H"+A$)
@@ -842,12 +849,16 @@
     10121 DATA 14,3F,54,3E,15,15,7E,14
     10122 DATA FF,A5,FF,A5,A5,FF,A5,FF
     10123 DATA FF,5A,00,5A,5A,00,5A,00
+    10124 DATA FF,C3,BD,5A,66,3C,81,D5
+    10125 DATA 7E,BD,DB,E7,E7,DB,BD,7E
+
+
 
 
 
     1 'Definición de colores, los colores se definen a partir de la dirección 8192/&h2000'
     1 'Como la memoria se divide en 3 bancos, la parte de arriba en medio y la de abajo hay que ponerlos en 3 partes'
-    10500 FOR I=0 TO (24*8)-1
+    10500 FOR I=0 TO (26*8)-1
         10520 READ A$
         10530 VPOKE 8192+I,VAL("&H"+A$): '&h2000'
         10540 VPOKE 10240+I,VAL("&H"+A$): '&h2800'
@@ -879,6 +890,8 @@
     10621 DATA A1,A1,A1,A1,A1,A1,A1,A1
     10622 DATA D1,D9,D9,D9,D9,D9,D9,D9
     10623 DATA 61,D6,D6,D6,D6,D6,D6,D6
+    10624 DATA A1,A6,A6,A6,A6,A6,A6,A6
+    10625 DATA A6,A6,A6,A6,A6,A6,A6,A6
 
 10690 return
 
@@ -891,7 +904,7 @@
     1 'la pantalla en screen 2:
     1 'El mapa se encuentra en la dirección 6144 / &h1800 - 6912 /1b00'
     1 'Eliminamos los enemigos si quedan'
-    11000 gosub 6700
+    11000 gosub 6600
     11010 md=6144
     1 'Lectora de mapa con un dígito'
     1 '11020 for f=0 to 19
@@ -938,7 +951,7 @@
 12100 data 0e00000000000004000d0707070707070708000e
 12110 data 0e000d070800000400040000000000000000000e
 12120 data 0e00040000000004000a070707070c000907070e
-12130 data 0e0004000d07070b00000000000004000000000e
+12130 data 0e0004000d07070b00000000180004000000000e
 12140 data 0e000400041400000009070c000004000000000e
 12150 data 0e0004000a07070c0000000400000a07070c000e
 12160 data 0e0004000000000400000004000000000004000e

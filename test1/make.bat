@@ -157,7 +157,7 @@ rem Esta función prepará los archivos fuente pata incluirlos en un dsk, cas
     rem java -jar tools/csv2bin/CSVFenris.jar assets/tilemap1.csv bin/tilemap1.bin
     rem java -jar tools/csv2bin/CSVFenris.jar assets/tilemap2.csv bin/tilemap2.bin
     cd
-    rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level0.tmx assets\worlds\level0.txt
+    start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level0.tmx assets\worlds\level0.txt
     rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level1.tmx assets\worlds\level1.txt
     rem tart /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level2.tmx assets\worlds\level2.txt
     rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level3.tmx assets\worlds\level3.txt
@@ -165,7 +165,7 @@ rem Esta función prepará los archivos fuente pata incluirlos en un dsk, cas
     rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level5.tmx assets\worlds\level5.txt
     rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level6.tmx assets\worlds\level6.txt
     rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level7.tmx assets\worlds\level7.txt
-    start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level8.tmx assets\worlds\level8.txt
+    rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level8.tmx assets\worlds\level8.txt
 
 
 
