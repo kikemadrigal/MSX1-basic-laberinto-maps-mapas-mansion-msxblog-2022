@@ -468,7 +468,7 @@
     3310 preset (26*8,15*8): print #1,pp
 3390 return
 1'debug
-    3400 preset (0,23*8): print #1,en" ex0 "ex(1)" ey0 "ey(1)" ex1 "ex(2)" ey1 "ey(2)
+    3400 preset (0,23*8): print #1,en
 3490 return
 
 
@@ -588,13 +588,13 @@
 1 'Init'
 
 1 'Componente de posicion'
-    1 'ex/bx=coordenada x enemigo 1, bx=coordenada x enemigo 2'
-    1 'ey/by=coordenada y enemigo 1, by=coordenada y enemigo 2'
-    1 'ea/ba=coordenada previa x ebemigo 1, ba= coordenada previa x enemigo 2'
-    1 'ei/bi=coordenada previa y enemigo 1, bi=coordenada previa y enemigo 2'
+    1 'ex/bx:  ex=coordenada x enemigo 1, bx=coordenada x enemigo 2'
+    1 'ey/by:  ey=coordenada y enemigo 1, by=coordenada y enemigo 2'
+    1 'ea/ba:  ea=coordenada previa x ebemigo 1, ba= coordenada previa x enemigo 2'
+    1 'ei/bi:  ei=coordenada previa y enemigo 1, bi=coordenada previa y enemigo 2'
 
 1 'Componente de fisica'
-    1 'ev=velocidad enemigo 1 eje x 
+    1 'ev/bv:  ev=velocidad enemigo 1 eje x 
     1 'bl=velocidad enemigo 2 eje y'
     1 'et=si s 0 el enemigo 1 se morverá horizontalmente si es 1 se moverá verticalmente'
 1 'Componente de render'
@@ -718,44 +718,42 @@
 1'Rutina posicionar player y enemigos según el mapa
     1 'Eliminamos todos los enemigos si los hay'
     8300 gosub 6600
+    1 'Eliminamos el tile de muerte'
+    8305 vpoke 6144+(ty*32)+tx, 0
     1 'Debug'
-    1 '8310 if mw=0 and ms=0 then x=14*8:y=5*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
+    1 '8310 if mw=0 and ms=0 then x=15*8:y=5*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
     8310 if mw=0 and ms=0 then x=5*8:y=10*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
     1' Debug
-    1 '8320 if mw=0 and ms=1 then x=13*8:y=9*8:gosub 6100:ex(en)=10*8:ey(en)=15*8:et(en)=0:gosub 6100:ex(en)=7*8:ey(en)=4*8:et(en)=0
-    8320 if mw=0 and ms=1 then x=1*8:y=18*8:gosub 6100:ex=10*8:ey=15*8:gosub 6200:bx=7*8:by=4*8:bt=1
+    1 '8320 if mw=0 and ms=1 then x=13*8:y=9*8:tx=10:ty=15:gosub 6100:ex=10*8:ey=15*8:gosub 6200:bx=7*8:by=4*8:bt=1
+    8320 if mw=0 and ms=1 then x=1*8:y=18*8:tx=10:ty=15:gosub 6100:ex=10*8:ey=15*8:gosub 6200:bx=7*8:by=4*8:bt=1
     1 'Debug'
-    1 '8330 if mw=0 and ms=2 then x=13*8:y=10*8:gosub 6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
-    1 '8330 if mw=0 and ms=2 then x=1*8:y=14*8:gosub 6100:ex(en)=10*8:ey(en)=1*8:et(en)=0:gosub 6100:ex(en)=10*8:ey(en)=10*8:et(en)=1
+    1 '8330 if mw=0 and ms=2 then x=13*8:y=10*8:tx=10:ty=7:gosub 6100:ex=10*8:ey=1*8:gosub 6200:bx=10*8:by=10*8:bt=0
+    8330 if mw=0 and ms=2 then x=1*8:y=14*8:tx=10:ty=7:gosub 6100:ex=10*8:ey=1*8:gosub 6200:bx=10*8:by=10*8:bt=0
     
     
-    1 'LEVEL 3 O 1-0'
-    1 'Debug
-    1 '8340 if mw=1 and ms=0 then x=1*8:y=18*8:gosub 6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub 6100:ex(en)=17*8:ey(en)=13*8:et(en)=0 
-    1 '8340 if mw=1 and ms=0 then x=14*8:y=7*8:gosub 6100:ex(en)=10*8:ey(en)=4*8:et(en)=0:gosub 6100:ex(en)=17*8:ey(en)=13*8:et(en)=0 
+    1 'LEVEL 3 O 1-0' 
+    1 '8340 if mw=1 and ms=0 then x=1*8:y=18*8:tx=10:ty=4:gosub 6100:ex=10*8:ey=4*8:gosub 6200:bx=17*8:by=13*8:bt=1
+    8340 if mw=1 and ms=0 then x=14*8:y=7*8:tx=10:ty=4:gosub 6100:ex=10*8:ey=4*8:gosub 6200:bx=17*8:by=13*8:bt=1
     1 'LEVEL 4 O 1-1'
     1 'debug'
-    1 '8350 if mw=1 and ms=1 then x=11*8:y=7*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=15*8:ey(en)=12*8:et(en)=0
-    1 '8350 if mw=1 and ms=1 then x=4*8:y=13*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=15*8:ey(en)=12*8:et(en)=0
+    1 '8350 if mw=1 and ms=1 then x=11*8:y=7*8:tx=16:ty=11:gosub 6100:ex=15*8:ey=12*8:gosub 6200:bx=1*8:by=11*8:bt=0
+    8350 if mw=1 and ms=1 then x=4*8:y=13*8:tx=16:ty=11:gosub 6100:ex=15*8:ey=12*8:gosub 6200:bx=1*8:by=11*8:bt=0
     1 'LEVEL 5 O 1-2'
     1 'Debug'
-    1 '8360 if mw=1 and ms=2 then x=10*8:y=9*8:gosub 6100:ex(en)=3*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=1
-    1 '8360 if mw=1 and ms=2 then x=1*8:y=1*8:gosub 6100:ex(en)=3*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=1
+    1 '8360 if mw=1 and ms=2 then x=10*8:y=9*8:tx=3:ty=12:gosub 6100:ex=7*8:ey=15*8:gosub 6200:bx=16*8:by=12*8:bt=0
+    8360 if mw=1 and ms=2 then x=1*8:y=1*8:tx=3:ty=12:gosub 6100:ex=7*8:ey=15*8:gosub 6200:bx=16*8:by=12*8:bt=0
     
            
     1 'LEVEL 6 O 2-0'
     1 'Debug'
-    1 '8370 if mw=2 and ms=0 then x=14*8:y=17*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
-    1 '8370 if mw=2 and ms=0 then x=12*8:y=6*8:gosub 6100:ex(en)=1*8:ey(en)=11*8:et(en)=1:gosub 6100:ex(en)=16*8:ey(en)=12*8:et(en)=0
+    1 '8370 if mw=2 and ms=0 then x=14*8:y=17*8:tx=18:ty=7:gosub 6100:ex=16*8:ey=12*8:gosub 6200:bx=1*8:by=11*8:bt=0
+    8370 if mw=2 and ms=0 then x=12*8:y=6*8:tx=18:ty=7:gosub 6100:ex=16*8:ey=12*8:gosub 6200:bx=1*8:by=11*8:bt=0
     1 'debug'
-    1 '8380 if mw=2 and ms=1 then x=16*8:y=12*8:gosub 6100:ex(en)=16*8:ey(en)=7*8:et(en)=1:gosub 6100:ex(en)=7*8:ey(en)=15*8:et(en)=0
-    1 '8380 if mw=2 and ms=1 then x=1*8:y=1*8:gosub 6100:ex(en)=16*8:ey(en)=7*8:et(en)=1:gosub 6100:ex(en)=7*8:ey(en)=15*8:et(en)=0
+    1 '8380 if mw=2 and ms=1 then x=16*8:y=12*8:tx=13:ty=11:gosub 6100:ex=7*8:ey=15*8:gosub 6200:bx=16*8:by=7*8:bt=1
+    8380 if mw=2 and ms=1 then x=1*8:y=1*8:tx=13:ty=11:gosub 6100:ex=7*8:ey=15*8:gosub 6200:bx=16*8:by=7*8:bt=1
     1 'debug'    
-    1 '8390 if mw=2 and ms=2 then x=10*8:y=10*8:gosub 6100:ex(en)=5*8:ey(en)=8*8:et(en)=1:gosub 6100:ex(en)=1*8:ey(en)=10*8:et(en)=0
-    1 '8390 if mw=2 and ms=2 then x=5*8:y=1*8:gosub 6100:ex(en)=5*8:ey(en)=8*8:et(en)=1:gosub 6100:ex(en)=1*8:ey(en)=10*8:et(en)=0
-
-
-    8395 'put sprite 0,(x,y),1,ps:sprite on
+    1 '8390 if mw=2 and ms=2 then x=10*8:y=10*8:tx=5:ty=11:gosub 6100:ex=1*8:ey=10*8:gosub 6200:bx=5*8:by=8*8:bt=0
+    8390 if mw=2 and ms=2 then x=5*8:y=1*8:tx=5:ty=11:gosub 6100:ex=1*8:ey=10*8:gosub 6200:bx=5*8:by=8*8:bt=0
 8399 return
 
 

@@ -134,7 +134,7 @@
 3300line(27*8,15*8)-(31*8,16*8),14,bf
 3310preset(26*8,15*8):print#1,pp
 3390return
-3400preset(0,23*8):print#1,en"ex0"ex(1)"ey0"ey(1)"ex1"ex(2)"ey1"ey(2)
+3400preset(0,23*8):print#1,en
 3490return
 4000a=usr2(0)
 4010ifre=1thenPLAY"O5L8V4M8000AADFG2AAAAr60GEFDCDGR8A2A2A8","o1v4cr8o2cr8o1v6cr8o2v4cr8o1cr8o2v6cr8"
@@ -192,9 +192,16 @@
 8000mw=1:ms=0:mc=0:md=0:mp=0:tn=0
 8020return
 8300gosub6600
+8305vpoke6144+(ty*32)+tx,0
 8310ifmw=0andms=0thenx=5*8:y=10*8:tx=12:ty=13:gosub6100:ex=8*8:ey=2*8:gosub6200:bx=12*8:by=16*8:bt=0
-8320ifmw=0andms=1thenx=1*8:y=18*8:gosub6100:ex=10*8:ey=15*8:gosub6200:bx=7*8:by=4*8:bt=1
-8395'putsprite0,(x,y),1,ps:spriteon
+8320ifmw=0andms=1thenx=1*8:y=18*8:tx=10:ty=15:gosub6100:ex=10*8:ey=15*8:gosub6200:bx=7*8:by=4*8:bt=1
+8330ifmw=0andms=2thenx=1*8:y=14*8:tx=10:ty=7:gosub6100:ex=10*8:ey=1*8:gosub6200:bx=10*8:by=10*8:bt=0
+8340ifmw=1andms=0thenx=14*8:y=7*8:tx=10:ty=4:gosub6100:ex=10*8:ey=4*8:gosub6200:bx=17*8:by=13*8:bt=1
+8350ifmw=1andms=1thenx=4*8:y=13*8:tx=16:ty=11:gosub6100:ex=15*8:ey=12*8:gosub6200:bx=1*8:by=11*8:bt=0
+8360ifmw=1andms=2thenx=1*8:y=1*8:tx=3:ty=12:gosub6100:ex=7*8:ey=15*8:gosub6200:bx=16*8:by=12*8:bt=0
+8370ifmw=2andms=0thenx=12*8:y=6*8:tx=18:ty=7:gosub6100:ex=16*8:ey=12*8:gosub6200:bx=1*8:by=11*8:bt=0
+8380ifmw=2andms=1thenx=1*8:y=1*8:tx=13:ty=11:gosub6100:ex=7*8:ey=15*8:gosub6200:bx=16*8:by=7*8:bt=1
+8390ifmw=2andms=2thenx=5*8:y=1*8:tx=5:ty=11:gosub6100:ex=1*8:ey=10*8:gosub6200:bx=5*8:by=8*8:bt=0
 8399return
 9000FORI=0TO17:SP$=""
 9020FORJ=1TO8:READA$
