@@ -89,7 +89,9 @@
     1 'Adorno'
     1 '285 c=c+1:LINE(0,70)-(256,75),c,bf:color 1,15,16-c:if c > 14 then c=0
     1 '288 for i=0 to 1000:next i
-    470 if strig(0)=-1 then cls:gs=1:goto 200 else goto 470
+    465 re=1:gosub 4000
+    1 'co es simplemente un contador'
+    470 co=co+1:if co>600 then co=0:goto 465 else if strig(0)=-1 then cls:gs=1:goto 200 else goto 470
 
     500 screen 2
     510 gosub 900
@@ -488,20 +490,22 @@
     1 'Melodía completa'
     1 '2300 if re=1 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A D E F G E F D C D G R8 O5 A2 A2 A8"
     1 'Comienzo juego'
-    4010 if re=1 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8","o1 v4 c r8 o2 c r8 o1 v6 c r8 o2 v4 c r8 o1 c r8 o2 v6 c r8"
+    1 '4010 if re=1 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8","o1 v4 c r8 o2 c r8 o1 v6 c r8 o2 v4 c r8 o1 c r8 o2 v6 c r8"
+    4010 if re=1 then PLAY"O5 L8 V4 M8000 CD CD CD CD CD ED ED ED ED CD CD CD CD ED ED ED ED ","o1 v2 o2 CD R2 CD R2 o3 CD R2 r2 o2 cd r2"
     1 'Level pasado'
-    4020 if re=2 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8"
-    1 'Emupujando bloque'
-    4030 if re=5 then play "l10 o4 v4 g c"
-    1 'Paquete cogido'
-    4040 if re=6 then play"t250 o5 v12 d v9 e" 
+    1 '4020 if re=2 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8"
+    4020 if re=2 then PLAY"O5 L8 V4 M8000 c d e r6 c d e r2 eed r12 eed o6 edc c d e r6 c d e r2 eed r12 eed o6 edc o3 c d e r6 c d e r2 eed r2 eed o6 edc","o1 v2 o2 r6 CD r2 cd r6 CD r2 cd  r6 CD r2 cd r6 CD r2 cd"
+    1 'Reloj'
+    4030 if re=5 then play "l10 o3 v4 g c"
+    1 'Paquete cogido  / muerte'
+    4040 if re=6 then play"t250 o4 v12 d v9 e" 
     1 'Pitido normal'
-    4050 if re=7 then play "O5 L8 V4 M8000 A A D F G2 A A A A"
+    4050 if re=7 then play "O3 L8 V4 M8000 A A D F G2 A A A A"
     1 'Cogidos puntos'
     1 '4060 if re=8 then PLAY"S1M2000T150O7C32"
     4060 if re=8 then sound 1,2:sound 8,16:sound 12,5:sound 13,9
     1 'Pasos'
-    4070 if re=9 then PLAY"o2 l64 t255 v4 m6500 c"
+    4070 if re=9 then PLAY"o3 l64 t255 v4 m6500 c"
     1 'Sound puerto, valor, para ver las notas ir a https://www.msx.org/wiki/SOUND, recuerda que el d5dh=3421 es el 34 para el tono canal a puerto 1 y en puerto 0 21'
     1 '0=Tono canal a bit menos significativo,2=tono canal b menos significativo, 4=tono canal c menos significativo de 0-255
     1 '1=Tono canal a bit mas significativo, 3=tono canal b bit mas significativo, 5=tono canal c bit mas significativo de 0 a 15 
@@ -718,8 +722,8 @@
     1 'Eliminamos el tile de muerte'
     8305 vpoke 6144+(ty*32)+tx, 0
     1 'Debug'
-    1 '8310 if mw=0 and ms=0 then x=15*8:y=5*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
-    8310 if mw=0 and ms=0 then x=5*8:y=10*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
+    8310 if mw=0 and ms=0 then x=15*8:y=5*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
+    1 '8310 if mw=0 and ms=0 then x=5*8:y=10*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
     1' Debug
     1 '8320 if mw=0 and ms=1 then x=13*8:y=9*8:tx=10:ty=15:gosub 6100:ex=10*8:ey=15*8:gosub 6200:bx=7*8:by=4*8:bt=1
     8320 if mw=0 and ms=1 then x=1*8:y=18*8:tx=10:ty=15:gosub 6100:ex=10*8:ey=15*8:gosub 6200:bx=7*8:by=4*8:bt=1

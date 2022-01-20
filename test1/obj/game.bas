@@ -30,7 +30,8 @@
     440 preset (0,140):print #1,"Solo puedes utilizarlas una vez por mundo."
     450 preset (0,160):print #1,"Pulsa stop para terminar la     partida."
     460 preset (0,180):print #1,"Pulsa espacio para continuar"
-470ifstrig(0)=-1thencls:gs=1:goto200elsegoto470
+465re=1:gosub4000
+470co=co+1:ifco>600thenco=0:goto465elseifstrig(0)=-1thencls:gs=1:goto200elsegoto470
 500screen2
 510gosub900
     520 preset (60,10):print #1,"Has ganado"
@@ -137,13 +138,13 @@
 3400preset(0,23*8):print#1,en
 3490return
 4000a=usr2(0)
-4010ifre=1thenPLAY"O5L8V4M8000AADFG2AAAAr60GEFDCDGR8A2A2A8","o1v4cr8o2cr8o1v6cr8o2v4cr8o1cr8o2v6cr8"
-4020ifre=2thenPLAY"O5L8V4M8000AADFG2AAAAr60GEFDCDGR8A2A2A8"
-4030ifre=5thenplay"l10o4v4gc"
-4040ifre=6thenplay"t250o5v12dv9e"
-4050ifre=7thenplay"O5L8V4M8000AADFG2AAAA"
+4010ifre=1thenPLAY"O5L8V4M8000CDCDCDCDCDEDEDEDEDCDCDCDCDEDEDEDED","o1v2o2CDR2CDR2o3CDR2r2o2cdr2"
+4020ifre=2thenPLAY"O5L8V4M8000cder6cder2eedr12eedo6edccder6cder2eedr12eedo6edco3cder6cder2eedr2eedo6edc","o1v2o2r6CDr2cdr6CDr2cdr6CDr2cdr6CDr2cd"
+4030ifre=5thenplay"l10o3v4gc"
+4040ifre=6thenplay"t250o4v12dv9e"
+4050ifre=7thenplay"O3L8V4M8000AADFG2AAAA"
 4060ifre=8thensound1,2:sound8,16:sound12,5:sound13,9
-4070ifre=9thenPLAY"o2l64t255v4m6500c"
+4070ifre=9thenPLAY"o3l64t255v4m6500c"
 4060ifre=10thensound1,2:sound6,25:sound8,16:sound12,1:sound13,9
 4070ifre=11thensound1,0:sound6,25:sound8,16:sound12,4:sound13,9
 4090return
@@ -189,9 +190,9 @@
 8300gosub6600
 8305vpoke6144+(ty*32)+tx,0
 8310ifmw=0andms=0thenx=15*8:y=5*8:tx=12:ty=13:gosub6100:ex=8*8:ey=2*8:gosub6200:bx=12*8:by=16*8:bt=0
-8320ifmw=0andms=1thenx=13*8:y=9*8:tx=10:ty=15:gosub6100:ex=10*8:ey=15*8:gosub6200:bx=7*8:by=4*8:bt=1
-8330ifmw=0andms=2thenx=13*8:y=10*8:tx=10:ty=7:gosub6100:ex=10*8:ey=1*8:gosub6200:bx=10*8:by=10*8:bt=0
-8340ifmw=1andms=0thenx=1*8:y=18*8:tx=10:ty=4:gosub6100:ex=10*8:ey=4*8:gosub6200:bx=17*8:by=13*8:bt=1
+8320ifmw=0andms=1thenx=1*8:y=18*8:tx=10:ty=15:gosub6100:ex=10*8:ey=15*8:gosub6200:bx=7*8:by=4*8:bt=1
+8330ifmw=0andms=2thenx=1*8:y=14*8:tx=10:ty=7:gosub6100:ex=10*8:ey=1*8:gosub6200:bx=10*8:by=10*8:bt=0
+8340ifmw=1andms=0thenx=14*8:y=7*8:tx=10:ty=4:gosub6100:ex=10*8:ey=4*8:gosub6200:bx=17*8:by=13*8:bt=1
 8350ifmw=1andms=1thenx=4*8:y=13*8:tx=16:ty=11:gosub6100:ex=15*8:ey=12*8:gosub6200:bx=1*8:by=11*8:bt=0
 8360ifmw=1andms=2thenx=1*8:y=1*8:tx=3:ty=12:gosub6100:ex=7*8:ey=15*8:gosub6200:bx=16*8:by=12*8:bt=0
 8370ifmw=2andms=0thenx=12*8:y=6*8:tx=18:ty=7:gosub6100:ex=16*8:ey=12*8:gosub6200:bx=1*8:by=11*8:bt=0
