@@ -2,7 +2,8 @@
 1 '' Program:  Mansion Madrigal
 1 '' autor:    MSX Murcia
 1 '' ******************************
-1 ''ex(em),ey(em),ea(em),ei(em),ev(em),el(em),ew(em),eh(em),es(em),ec(em),ep(em),et(em)
+1 ''ex,ey,ea,ei,ev,ew,eh,es,ec,ep
+1 ''bx,by,ba,bi,bv,bl,bw,bh,bs,bc,bp,bt
 1 ''90, 1000: tn,ta,tf,gs,st
 1 ''5000:x,y,xp,yp,pw,ph,pv,pe,pd,pp,p0,p1,p2,p3,p4,p5,p6,p7
 1 ''7000: os:oy,o1,o2,o3,o4,o5
