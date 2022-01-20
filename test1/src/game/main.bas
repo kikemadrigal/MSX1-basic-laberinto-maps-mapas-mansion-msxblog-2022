@@ -114,10 +114,11 @@
 630 for i=0 to 19:vpoke (6144+20)+i*32,3:vpoke (6144+21)+i*32,3:vpoke (6144+22)+i*32,3:vpoke (6144+23)+i*32,3:next i
 1 ' Pintamos el mapa'
 640 gosub 11000
-1 'Inicializamoz los objetos'
+1 'Inicializamos los objetos'
 650 gosub 7000
 1 'Pintamos los objetos'
 660 gosub 3100
+661 gosub 7100
 1 'posicionamos al player y enemigos tras cargar el mapa'
 680 gosub 8300
 1 'Cada segundo repintamos el tiempo'
@@ -318,7 +319,7 @@
     1775 if a=22 and os=5 and o5=1 then o5=0:gosub 3100:re=8:gosub 4000:vpoke md, 0:if pd=1 then vpoke 6144+((y/8)-1)*32+(x/8), 22 else if pd=3 then vpoke 6144+((y/8)*32)+1+(x/8),22 else if pd=5 then vpoke 6144+(((y/8)+1)*32)+(x/8),22 else if pd=7 then vpoke 6144+((y/8)*32)+(x/8)-1,22
     1 'Si es un tile empujable yno estaba activado el 05 volvemos atrás'
     1780 if a=22 then x=xp: y=yp
-    1 'Si ha tocado monedas o dolares le sumamos 10puntos'
+    1 'Si ha tocado monedas o dolares le sumamos 10 puntos'
     1 '     Lo borramos on vpoke dirección,0'
     1 '     Sumamos 10 puntos al pp=player points'    
     1 '     repintamos los objetos para que salga en blanco el selecionado (3100)''
@@ -342,11 +343,10 @@
 
 
     1 '<<<<<<<<< Enemies >>>>>>>>>>>'
-
-
         1 'Physics enemies'
         1 '---------------'
         1910 ex=ex+ev
+        1 'si bt=0 es que el enemigo 2 se mueve horizontalmentee'
         1920 if bt=0 then by=by+bl else bx=bx+bv
         1 ' Collisions enemies with the map'
         1 '-------------------------------'
@@ -354,7 +354,7 @@
         1930 md=base(5)+(ey/8)*32+(ex/8):a=vpeek(md)
         1 'Si es una pared o un bloque empujable 
             1 'le invertimos la velocidad del eje x y del eje y'
-            1 'y le volvemos a poner las coordenadas antiuas '
+            1 'y le volvemos a poner las coordenadas antiguas '
             1 'ev=velocidad x y el velocidad eje y '
             1 'ep coordenada previa x , ei=coordenada previa y'
         1940 if a>3 and a<17 or a=22 then ev=-ev:ex=ea:ey=ei
@@ -379,14 +379,16 @@
         1 '         Repintamos los objetos
         1 '     Si no está activado o habilitado el objeto 1'
         1 '         Matamos al player'
-        1 '1960 if x < ex + ew and x + pw > ex and y < ey + eh and y + ph > ey then re=6:gosub 4000:if os=2 and o2=1 then re=3:gosub 4000:o2=0:ed=i:gosub 6600:gosub 3100:return else beep:gosub 5700:return
+        1 'Colisión con enemigo 1'
+        1 ' Si hay una colisión ponemo em=0 para que no se muestre el enemigo 1'
         1960 if x < ex + ew and x + pw > ex and y < ey + eh and y + ph > ey then em=0:gosub 2000:return
+        1 'Colisión con enemigo 2'
         1961 if x < bx + bw and x + pw > bx and y < by + bh and y + ph > by then bm=0:gosub 2000:return
         
     
         1 ' Render enemies'
         1 '------------------'
-        1 'Esto es para animar los muñegotes, revuerda hacer un return cuando los elemines'
+        1 'Esto es para animar los muñegotes,ec=enemigo contador'
         1965 ec=ec+1:if ec>1 then ec=0
         1966 bc=bc+1:if bc>1 then bc=0
         1970 if ec=0 then es=8 else es=9
@@ -404,13 +406,12 @@
 1 '         Hacemos un sonido (re=6:4000)'
 1 '         Actualizamos la bandera de ese objeto para que no se pueda volver a utilizar'
 1 '         Repintamos los objetos (3100)
-1 '         Eliminamos al enemigo (ed=i:6600)'
+1 '         Eliminamos al enemigo (6600)'
 1 '     Si no está activado o habilitado el objeto 1'
 1 '         Hacemos un soido (re,4000)'
 1 '         Matamos al player (5700)'
-1 '         Volvemos apintar al player y activamos las colisiones'
-    2000 'sprite off
-    2030 if os=2 and o2=1 then re=6:gosub 4000:o2=0:gosub 3100:ed=i:gosub 6600:return else beep:gosub 5700:put sprite 0,(x,y),1,ps:'re=6:gosub 4000
+1 '         Volvemos a pintar al player'
+    2000 if os=2 and o2=1 then re=6:gosub 4000:o2=0:gosub 3100:gosub 6600:return else re=6:gosub 4000:gosub 5700:put sprite 0,(x,y),1,ps
 2090 return
 
 
@@ -435,7 +436,6 @@
     3080 preset (26*8,15*8): print #1,pp
     3085 preset (26*8,17*8): print #1,"Time"
     1 '3090 preset (24*8,21*8): print #1,fre(0)
-
 3099 return
 
 
@@ -572,8 +572,6 @@
     1 'Le kitamos 1 vida'
     1 'Actualizamos el tiempo'
     5700 pe=pe-1:pa=pa-pm:time=0 
-    1 'inicializamos objetos
-    5720 'gosub 7000
     1 ' llamamos a la tutina reposicionar player y enemigos según el mapa'
     5740 gosub 8300
     1 'Pintamos el marcador'
@@ -594,38 +592,37 @@
     1 'ei/bi:  ei=coordenada previa y enemigo 1, bi=coordenada previa y enemigo 2'
 
 1 'Componente de fisica'
-    1 'ev/bv:  ev=velocidad enemigo 1 eje x 
+    1 'ev/bv:  ev=velocidad enemigo 1 eje x, bv=velocidad enemigo 2 eje x 
     1 'bl=velocidad enemigo 2 eje y'
-    1 'et=si s 0 el enemigo 1 se morverá horizontalmente si es 1 se moverá verticalmente'
+    1 'bt=si s 0 el enemigo 2 se morverá horizontalmente si es 1 se moverá verticalmente'
 1 'Componente de render'
-    1 'es=enemigo 1 sprite, bs=enemigo 2 sprite
-    1 'ec=enemigo 1 contador, bc=enemigo 2 contador, utlizado para hacer la animación'
-    1 'eo=enemigo 1 color, bo=enemigo 2 color'
+    1 'es/bs: es=enemigo 1 sprite, bs=enemigo 2 sprite
+    1 'ec/bc: ec=enemigo 1 contador, bc=enemigo 2 contador, utlizado para hacer la animación'
+    1 'eo/bo: eo=enemigo 1 color, bo=enemigo 2 color'
+    1 'em/bm: em=determina si el sprite del enemigo 1 está eliminado (0) o no (1), bm=determina si el sprite del enemigo 2 está eliminado'
 1 'Componente RPG'
-6000 dim ex(1), eh(1), es(1),ep(1),ex(1),ey(1),ea(1),ei(1),ev(1),el(1),ec(1),et(1)
-6090 return
 
 
-1 '1 ' Crear enemigo 1'
+
+1 ' Crear enemigo 1'
        6100 ew=8:eh=8:es=8:ep=10
        6105 ex=0:ey=0:ea=0:ei=0
        6110 ev=8
        6160 ec=0
        6170 eo=rnd(1)*(6-4)+4
-       6180 et=0
-       6185 en=1
        6186 em=1
-    6190 return
+6190 return
 1 'Crear enemigo 2'
         6200 bw=8:bh=8:bs=10:bp=11
         6205 bx=0:by=0:ba=0:bi=0
         6210 bv=8:bl=8
         6260 bc=0
         6270 bo=rnd(1)*(6-4)+4
-        6280 bn=1
+        6275 bt=0
         6281 bm=1
 6290 return
 1 ' Rutina eliminar enemigos'
+    1 'la eliminación del enemigo es tan solo sacarlo de la pantalla'
     6600 if em=0 then ex=0:ey=212:put sprite ep,(ex,ey),,es
     6610 if bm=0 then bx=0:by=212:put sprite bp,(bx,by),,bs
 6640 return
@@ -732,10 +729,11 @@
     
     
     1 'LEVEL 3 O 1-0' 
+    1 'Debug'
     1 '8340 if mw=1 and ms=0 then x=1*8:y=18*8:tx=10:ty=4:gosub 6100:ex=10*8:ey=4*8:gosub 6200:bx=17*8:by=13*8:bt=1
     8340 if mw=1 and ms=0 then x=14*8:y=7*8:tx=10:ty=4:gosub 6100:ex=10*8:ey=4*8:gosub 6200:bx=17*8:by=13*8:bt=1
     1 'LEVEL 4 O 1-1'
-    1 'debug'
+    1 'Debug'
     1 '8350 if mw=1 and ms=1 then x=11*8:y=7*8:tx=16:ty=11:gosub 6100:ex=15*8:ey=12*8:gosub 6200:bx=1*8:by=11*8:bt=0
     8350 if mw=1 and ms=1 then x=4*8:y=13*8:tx=16:ty=11:gosub 6100:ex=15*8:ey=12*8:gosub 6200:bx=1*8:by=11*8:bt=0
     1 'LEVEL 5 O 1-2'
@@ -959,12 +957,12 @@
 1 'level 1'
 12200 data 000e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e00
 12210 data 0e0907070707070707070708000000000000000e
-12220 data 0e140000000000000000150000160d070708000e
+12220 data 0e140000000000000000150000000d070707160e
 12230 data 0e090707070716070716070c000004000000000e
 12240 data 0e0000000000000000000004000004000005000e
-12250 data 0e00000d07070707070c0006000004000004000e
-12260 data 0e0500040000000000041500000004000004000e
-12270 data 0e04000400001600000400000d070b000004000e
+12250 data 0e00090307070707070c0006000004000004000e
+12260 data 0e0000040000000000041500000004000004000e
+12270 data 0e05000400001600000400000d070b000004000e
 12280 data 0e0400040005000500040000041200000004000e
 12290 data 0e0400040004000400040000041300000004000e
 12300 data 0e04000400040004000400000a070716030b000e
@@ -1040,9 +1038,9 @@
 12790 data 0a0707070707070707070707070707070707070b
 1 '1-1 o level 4'
 12800 data 0d0707070707070707070707070707070707070c
-12810 data 040f0202140f0202020f0f1402020202020f0f04
-12820 data 04020202020f1502020f0f02020f02020f0f0204
-12830 data 0402020f020f020f020202020f02020f16020204
+12810 data 040f02140f0f0202020f0f1402020202020f0f04
+12820 data 040202020f0f1502020f0f02020f02020f0f0204
+12830 data 0402020f0f0f020f020202020f02020f16020204
 12840 data 040202150f0f02020f02020f02020f0202020204
 12850 data 04020f0f0f0f0f020f0f0f0f0f0f0f0f0f0f1504
 12860 data 04020f02020f0f0202020212020f0f02020f0204
@@ -1059,6 +1057,7 @@
 12970 data 04020f0f02160f02020f0f02020f0f02020f0204
 12980 data 040f0f0202020202020f0f0202150f0202021504
 12990 data 0a0707070707070707070707070707070707070b
+
 1 '1-2 o level 5'
 13000 data 0d0707070707070707070707070707070707070c
 13010 data 040202020f0f0f0f0f0f0202020f0f0202021404
