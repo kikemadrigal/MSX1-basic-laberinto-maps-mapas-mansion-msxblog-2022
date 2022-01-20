@@ -189,7 +189,7 @@
 8020return
 8300gosub6600
 8305vpoke6144+(ty*32)+tx,0
-8310ifmw=0andms=0thenx=15*8:y=5*8:tx=12:ty=13:gosub6100:ex=8*8:ey=2*8:gosub6200:bx=12*8:by=16*8:bt=0
+8310ifmw=0andms=0thenx=5*8:y=10*8:tx=12:ty=13:gosub6100:ex=8*8:ey=2*8:gosub6200:bx=12*8:by=16*8:bt=0
 8320ifmw=0andms=1thenx=1*8:y=18*8:tx=10:ty=15:gosub6100:ex=10*8:ey=15*8:gosub6200:bx=7*8:by=4*8:bt=1
 8330ifmw=0andms=2thenx=1*8:y=14*8:tx=10:ty=7:gosub6100:ex=10*8:ey=1*8:gosub6200:bx=10*8:by=10*8:bt=0
 8340ifmw=1andms=0thenx=14*8:y=7*8:tx=10:ty=4:gosub6100:ex=10*8:ey=4*8:gosub6200:bx=17*8:by=13*8:bt=1

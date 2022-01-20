@@ -722,8 +722,8 @@
     1 'Eliminamos el tile de muerte'
     8305 vpoke 6144+(ty*32)+tx, 0
     1 'Debug'
-    8310 if mw=0 and ms=0 then x=15*8:y=5*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
-    1 '8310 if mw=0 and ms=0 then x=5*8:y=10*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
+    1 '8310 if mw=0 and ms=0 then x=15*8:y=5*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
+    8310 if mw=0 and ms=0 then x=5*8:y=10*8:tx=12:ty=13:gosub 6100:ex=8*8:ey=2*8:gosub 6200:bx=12*8:by=16*8:bt=0
     1' Debug
     1 '8320 if mw=0 and ms=1 then x=13*8:y=9*8:tx=10:ty=15:gosub 6100:ex=10*8:ey=15*8:gosub 6200:bx=7*8:by=4*8:bt=1
     8320 if mw=0 and ms=1 then x=1*8:y=18*8:tx=10:ty=15:gosub 6100:ex=10*8:ey=15*8:gosub 6200:bx=7*8:by=4*8:bt=1

@@ -161,7 +161,7 @@ rem Esta función prepará los archivos fuente pata incluirlos en un dsk, cas
     rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level1.tmx assets\worlds\level1.txt
     rem tart /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level2.tmx assets\worlds\level2.txt
     rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level3.tmx assets\worlds\level3.txt
-    start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level4.tmx assets\worlds\level4.txt
+    rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level4.tmx assets\worlds\level4.txt
     rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level5.tmx assets\worlds\level5.txt
     rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level6.tmx assets\worlds\level6.txt
     rem start /wait java -jar tools\csv2hex\csv2hex.jar assets\worlds\level7.tmx assets\worlds\level7.txt
