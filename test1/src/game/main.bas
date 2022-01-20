@@ -1,5 +1,5 @@
 1 '' ******************************
-1 '' Program:  Mansion Madrigal
+1 '' Program:  Msx mansion
 1 '' autor:    MSX Murcia
 1 '' ******************************
 1 ''ex,ey,ea,ei,ev,ew,eh,es,ec,ep
