@@ -1,3 +1,4 @@
+5 rem Inicialización / initialization
 10cls:color1,15,7:keyoff
 20defusr=&h003B:a=usr(0):defusr1=&h003E:a=usr1(0):defusr2=&H90:a=usr2(0):defusr3=&h41:defusr4=&h44
 30screen2,0,0
@@ -5,15 +6,14 @@
 50open"grp:"as#1
 60gosub5000
 70gosub9000
-80'gosub6000
 90tm=40:tf=0
 100gs=0
-110'spriteon:onspritegosub2000
 120stopon:onstopgosub140
 140gosub900
 150gs=0:goto200
 160return
-200ifgs=0thengoto300
+200 rem <<<<<<<<Bucle o máquina de estados / loop or state machine>>>>>>>>>>>>>
+205ifgs=0thengoto300
 210ifgs=1thengoto600
 220ifgs=2thengoto500
 300screen2:re=1:gosub4000
@@ -41,7 +41,8 @@
     560 preset (0,90):print #1,"Muchas gracias por probar       nuestro juego     :)"
     570 preset (0,180):print #1,"Pulsa espacio para continuar"
 580ifstrig(0)=-1thengs=0:goto200elsegoto580
-600a=usr3(0)
+600 rem inicio partida / start game
+605a=usr3(0)
 610pe=3
 620gosub10000
 630fori=0to19:vpoke(6144+20)+i*32,3:vpoke(6144+21)+i*32,3:vpoke(6144+22)+i*32,3:vpoke(6144+23)+i*32,3:nexti
@@ -55,7 +56,8 @@
 710gosub3000
 720time=0:ta=1
 730a=usr4(0)
-800ifpe<=0thengosub900:gs=0:goto200
+800 rem  <<<<<< Main loop >>>>>'
+805ifpe<=0thengosub900:gs=0:goto200
 810ifta<=0thentf=0:time=0:gosub5700
 820'gosub1000
 821st=stick(0)orstick(1)orstick(2)
@@ -76,7 +78,8 @@
 890goto800
 900restore10100:intervaloff:gosub6600:PUTSPRITE0,(0,212),1,0:PUTSPRITE20,(0,212),1,0:gosub7000:mw=0:ms=0
 910return
-1760ifx<=0thenx=xp:ify<=0theny=yp
+1760 rem <<< PHYSICS, COLLISION SYSTEM & RENDER>>>>
+1761ifx<=0thenx=xp:ify<=0theny=yp
 1762ify+ph>160theny=yp
 1763ifx+pw>160thenx=xp
 1764md=6144+(y/8)*32+(x/8):a=vpeek(md)

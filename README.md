@@ -5,7 +5,13 @@
 This game is only intended to enter the MSXblog contest
 
 https://www.msxblog.es/concurso-msx-basic-9o-edicion/
+
 https://www.msxblog.es/category/concurso-msx-basic-9a-edicion/
+
+
+# Prueba el juego en MSXPEN / Try the game on MSXPEN 🕹️
+
+https://msxpen.com/codes/-MtpXQhuHSgvej18Z3ew
 
 
 # Prueba el juego pincando aquí / Try the game by clicking here 🕹️🕹️
@@ -14,7 +20,19 @@ https://kikemadrigal.github.io/MSX1-basic-laberinto-maps-mapas-mansion-msxblog-2
 
 <img src=docs/caratula.png width=200px>
 
-# Instrucciones / Instructions
+
+# Instrucciones de carga / Loading Instructions
+
+Inserta el dsk: https://github.com/kikemadrigal/MSX1-basic-laberinto-maps-mapas-mansion-msxblog-2022/blob/main/docs/laberinto.dsk
+
+en tu emulador favorito, si no se inicia solo escribe en basic: run"game.bas":
+
+<img src=docs/carga.PNG width=300px>
+
+
+
+
+# Instrucciones del juego / # Game instructions
 
 **Debes de ingeniar la forma de salir del laberinto utilizando las herramientas de:**
 

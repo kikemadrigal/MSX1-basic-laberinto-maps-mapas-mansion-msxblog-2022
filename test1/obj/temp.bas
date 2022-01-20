@@ -2,7 +2,8 @@
 1 '' Program:  Mansion Madrigal
 1 '' autor:    MSX Murcia
 1 '' ******************************
-1 ''ex(em),ey(em),ea(em),ei(em),ev(em),el(em),ew(em),eh(em),es(em),ec(em),ep(em),et(em)
+1 ''ex,ey,ea,ei,ev,ew,eh,es,ec,ep
+1 ''bx,by,ba,bi,bv,bl,bw,bh,bs,bc,bp,bt
 1 ''90, 1000: tn,ta,tf,gs,st
 1 ''5000:x,y,xp,yp,pw,ph,pv,pe,pd,pp,p0,p1,p2,p3,p4,p5,p6,p7
 1 ''7000: os:oy,o1,o2,o3,o4,o5
@@ -10,7 +11,7 @@
 1 ''gs(100),tm(90),td(90),ta(90),time(396)
 1 ''
 1 ''
-1 ''
+5 rem !Inicialización / initialization
 10 cls:color 1,15,7:key off
 1 ''
 1 ''
@@ -32,9 +33,6 @@
 60 gosub 5000
 1 'Cargamos los sprites en VRAM'
 70 gosub 9000
-1 'Inicilizamos el array y las variables de los enemigos'
-80 'gosub 6000
-
 1 'Inicializamos las variables del juego
 1 'tm=tiempo maximo'
 1 'ta=timepo actual'
@@ -42,8 +40,6 @@
 90 tm=40:tf=0
 1 'Gs=game status, si es 0 mostraremos el menu de bienvenida, si es 1 vamos al main loop, y 2, pantalla ganadora'
 100 gs=0
-1 'Habilitamos la colisión de sprites y le decimos que cuando haya una colosión salte a la rutina de gestión de colisiones de sprites'
-110 'sprite on:on sprite gosub 2000
 1 'Habilitamos la interrupción del stop
 1 'Al pulsar la tecla Stop (mayuscula o shift izquierdo + F8 en openMSX o Mayúscula + suprimir en BlueMSX) se termina el juego'
 120 stop on:on stop gosub 140
@@ -53,8 +49,8 @@
 150 gs=0:goto 200
 160 return
 
-1 '<<<<<<<<Bucle o máquina de estados>>>>>>>>>>>>>'
-    200 if gs=0 then goto 300 
+200 rem <<<<<<<<!Bucle o máquina de estados / loop or state machine>>>>>>>>>>>>>
+    205 if gs=0 then goto 300 
     210 if gs=1 then goto 600
     220 if gs=2 then goto 500
 
@@ -105,9 +101,9 @@
 1 '<<<<<<<< FInal del bucle de estados>>>>>>>>>>>>>'
 
 
-
+600 rem !inicio partida / start game
 1 'Apagamos la pantalla'
-600 a=usr3(0)
+605 a=usr3(0)
 1 'Inicializamos al player, pe=player energia son las vidas'
 610 pe=3
 1 ' Inicializamos los gráficos'
@@ -139,9 +135,9 @@
 
 
 
-1 ' <<<<<< Main loop >>>>>'
+800 rem  !<<<<<< Main loop >>>>>'
     1'Si al player no le quedan vidas llamamos a la rutina reiniciar partida (900), esa rutina también es llamada cuando se pulsa stop y cuando se gana'
-    800 if pe<=0 then gosub 900:gs=0:goto 200
+    805 if pe<=0 then gosub 900:gs=0:goto 200
     1 'si no queda tiempo reiniciamos y llamamos a la rutina player muere'
     810 if ta<=0 then tf=0:time=0:gosub 5700 
 
@@ -285,12 +281,12 @@
 
 
 
-1' '' <<< PHYSICS, COLLISION SYSTEM & RENDER>>>>
+1760 rem !<<< PHYSICS, COLLISION SYSTEM & RENDER>>>>
     1 '<<<<<<<<< Player >>>>>>>>>>>'
     1 'Collision screen'
     1 '---------------'
 
-    1760 if x<=0 then x=xp:if y<=0 then y=yp
+    1761 if x<=0 then x=xp:if y<=0 then y=yp
     1762 if y+ph>160 then y=yp
     1763 if x+pw>160 then x=xp
 
