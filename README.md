@@ -92,15 +92,14 @@ Arrow keys to move the player, space to select the tool.
 
 **Suerte. 😱 😱**
 
-# Historia / History
-
+# Historia / Histor
 **Tras recibir una carta de invitación para una RU en la mansión MSX, Kike se propuso pasar el día en este lugar para ver los aparatejos viejuners.
 
 Llegado el día se presentó en la puerta de la mansión y un inquietante portero le dio 4 regalos como agradecimiento a su asistencia.
 
 Vaya, cuando Kike estaba dentro, la puerta se cerró de repente y tuvo que buscar otra salida.
 
-Que miedo, la mansión era tan antigua que habían espiritus herrantes.**
+Que miedo, la mansión era tan antigua que habían espiritus errantes.**
 
 After receiving an invitation letter for a RU in the MSX mansion, Kike decided to spend the day in this place to see the old gadgets.
 
