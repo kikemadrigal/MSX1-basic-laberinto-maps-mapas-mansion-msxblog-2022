@@ -11,7 +11,7 @@ https://www.msxblog.es/category/concurso-msx-basic-9a-edicion/
 
 # Prueba el juego en MSXPEN / Try the game on MSXPEN 🕹️
 
-https://msxpen.com/codes/-MtpXQhuHSgvej18Z3ew
+https://msxpen.com/codes/-Mu9ox13bLQtQxFHKiBr
 
 
 # Prueba el juego pincando aquí / Try the game by clicking here 🕹️🕹️

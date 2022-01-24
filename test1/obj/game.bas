@@ -8,30 +8,37 @@
 70gosub9000
 90tm=40:tf=0
 100gs=0
+110gosub3500
 120stopon:onstopgosub140
+130gs=0:goto200
 140gosub900
 150gs=0:goto200
 160return
-200 rem <<<<<<<<Bucle o máquina de estados / loop or state machine>>>>>>>>>>>>>
-205ifgs=0thengoto300
-210ifgs=1thengoto600
-220ifgs=2thengoto500
-300screen2:re=1:gosub4000
+180gs=1:goto200
+190return
+195 rem <<<<<<<<Bucle o máquina de estados / loop or state machine>>>>>>>>>>>>>
+200ifgs=0then300
+210ifgs=1then600
+220ifgs=2then500
+300screen2:strig(0)on:onstriggosub180
 310draw("bm0,50c9r14d11r219u11r23d20l256u20c7u50r260d27l260")
 320draw("bm20,40c4e10f10r20e10f10r20e10r40f10r20e10f10r20e10f10r5h12l210g12r230l10c11d20l210u19r210")
 330a$="r5d5l5u5":draw("bm30,45xa$;"):draw("bm60,45xa$;"):draw("bm90,45xa$;"):draw("bm120,45xa$;"):draw("bm150,45xa$;"):draw("bm180,45xa$;"):draw("bm210,45xa$;")
 340draw("bm120,50r5d10l5u10")
 350paint(2,2),7,7:paint(2,65),9,9
 360paint(100,35),4,4:paint(23,55),11,11
-    370 preset (60,10):print #1,"MSX mansion"
-    380 preset (60,20):print #1,"MSX Murcia 2022"
-    390 preset (0,80):print #1,"Debes de ingeniar como salir de la mansion antes de que se te   acabe el tiempo"
-    400 preset (0,110):print #1,"Utiliza las herramientas que    tienes a tu disposicion, pulsa  espacio para elegir una."
-    440 preset (0,140):print #1,"Solo puedes utilizarlas una vez por mundo."
-    450 preset (0,160):print #1,"Pulsa stop para terminar la     partida."
-    460 preset (0,180):print #1,"Pulsa espacio para continuar"
+    370 preset (80,0):print #1,"MSX mansion"
+    380 preset (70,10):print #1,"MSX Murcia 220"
+    385 preset (30,18):print #1,"Music Gabriel Caffarena"
+    390 preset (0,70):print #1,"Debes de ingeniar como salir de la mansion antes de que se te   acabe el tiempo"
+    400 preset (0,100):print #1,"Utiliza las herramientas que    tienes a tu disposicion, pulsa  espacio para elegir una."
+    440 preset (0,130):print #1,"Solo puedes utilizarlas una vez por mundo."
+    450 preset (0,150):print #1,"Pulsa stop para terminar la     partida."
+    455 preset (0,170):print #1,"Espacio pulsado salta musica."
+    460 line (0,180)-(256,188),15,bf: preset (0,180):preset (0,180):print #1,"Espera a que termine la musica."
 465re=1:gosub4000
-470co=co+1:ifco>600thenco=0:goto465elseifstrig(0)=-1thencls:gs=1:goto200elsegoto470
+    470 for i=0 to 1000: next i:line (0,180)-(256,188),15,bf: preset (0,180):print #1,"Pulsa espacio para continuar"
+480co=co+1:ifstrig(0)=-1thengs=1:goto200elseifco<700then480elseco=0:goto460
 500screen2
 510gosub900
     520 preset (60,10):print #1,"Has ganado"
@@ -42,7 +49,7 @@
     570 preset (0,180):print #1,"Pulsa espacio para continuar"
 580ifstrig(0)=-1thengs=0:goto200elsegoto580
 600 rem inicio partida / start game
-605a=usr3(0)
+605cls:a=usr3(0)
 610pe=3
 620gosub10000
 630fori=0to19:vpoke(6144+20)+i*32,3:vpoke(6144+21)+i*32,3:vpoke(6144+22)+i*32,3:vpoke(6144+23)+i*32,3:nexti
@@ -58,7 +65,7 @@
 730a=usr4(0)
 800 rem  <<<<<< Main loop >>>>>'
 805ifpe<=0thengosub900:gs=0:goto200
-810ifta<=0thentf=0:time=0:gosub5700
+810ifta<=0thentf=1:gosub5700
 820'gosub1000
 821st=stick(0)orstick(1)orstick(2)
 822ifstick(0)>0thenxp=x:yp=y
@@ -74,10 +81,12 @@
 832x=x-pv:y=y-pv:ps=p(0):swapp(0),p(1):pd=1:goto833
 833re=10:gosub4000
 834gosub1760
-840ifmcthenms=ms+1:tf=ta:time=0:mc=0:ifmw=2andms=3thengs=2:goto200elsegosub11000:ifms=3thenmw=mw+1:ms=0:gosub7000:gosub3000:gosub3100:gosub8300elsegosub3000:gosub8300
+840ifmcthenms=ms+1:tf=ta:time=0:mc=0:putsprite0,(0,212),0,0:re=2:gosub4000:ifmw=2andms=3thengs=2:goto200elsegosub11000:ifms=3thenmw=mw+1:ms=0:gosub7000:gosub3000:gosub3100:gosub8300elsegosub3000:gosub8300
 890goto800
 900restore10100:intervaloff:gosub6600:PUTSPRITE0,(0,212),1,0:PUTSPRITE20,(0,212),1,0:gosub7000:mw=0:ms=0
-910return
+    910 screen2: re=3: gosub 4000:preset(100,100):print #1,"Game over"
+920fori=0to4000:nexti
+930return
 1760 rem <<< PHYSICS, COLLISION SYSTEM & RENDER>>>>
 1761ifx<=0thenx=xp:ify<=0theny=yp
 1762ify+ph>160theny=yp
@@ -87,10 +96,10 @@
 1775ifa=22andos=5ando5=1theno5=0:gosub3100:re=8:gosub4000:vpokemd,0:ifpd=1thenvpoke6144+((y/8)-1)*32+(x/8),22elseifpd=3thenvpoke6144+((y/8)*32)+1+(x/8),22elseifpd=5thenvpoke6144+(((y/8)+1)*32)+(x/8),22elseifpd=7thenvpoke6144+((y/8)*32)+(x/8)-1,22
 1780ifa=22thenx=xp:y=yp
 1781ifa=21thenre=11:gosub4000:vpokemd,0:pp=pp+10:gosub3100:gosub3300
-1785ifa=18ora=19thenre=2:gosub4000:mc=1
+1785ifa=18ora=19thenmc=1
 1790ifa=20thentf=ta:time=0:re=5:gosub4000:vpokemd,0
-1795ifa=24thenbeep:gosub5700
-1800putsprite0,(x,y),1,ps
+1795ifa=24thengosub5700
+1800vpoke6912,y:vpoke6913,x:vpoke6914,ps:vpoke6915,1
 1910ex=ex+ev
 1920ifbt=0thenby=by+blelsebx=bx+bv
 1930md=base(5)+(ey/8)*32+(ex/8):a=vpeek(md)
@@ -107,10 +116,10 @@
 1966bc=bc+1:ifbc>1thenbc=0
 1970ifec=0thenes=8elsees=9
 1980ifbc=0thenbs=10elsebs=11
-1990ifem=1thenPUTSPRITEep,(ex,ey),eo,es
-1995ifbm=1thenPUTSPRITEbp,(bx,by),bo,bs
+1990ifem=1thenvpoke6952,ey:vpoke6953,ex:vpoke6954,es:vpoke6955,eo
+1995ifbm=1thenvpoke6956,by:vpoke6957,bx:vpoke6958,bs:vpoke6959,bo
 1999return
-2000ifos=2ando2=1thenre=6:gosub4000:o2=0:gosub3100:gosub6600:returnelsere=6:gosub4000:gosub5700:putsprite0,(x,y),1,ps
+2000ifos=2ando2=1thenre=6:gosub4000:o2=0:gosub3100:gosub6600:returnelsegosub5700:putsprite0,(x,y),1,ps
 2090return
 3000line(25*8,0)-(256,20*8),14,bf
 3020preset(26*8,1*8):print#1,"World"
@@ -140,21 +149,36 @@
 3390return
 3400preset(0,23*8):print#1,en
 3490return
+3500remmúsica
+3510s1$="V13O1L4aaaV10aV13bbbV10bV13L2O2cdeg+"
+3520s2$="V14O4L8aV15O6cO5bO6cO4V14L8aaaV12aV14g+V15O6dcdO4V14L8g+g+g+V12g+V15O5aO6cO5babO6dcO5bO6cedcO5bebe"
+3530s3$="V13O4L2ecdeL8aO5cO4bO5cO3L8aaaV10aV13g+O5dcdO3L8g+g+g+v10g+"
+3540s4$="V13L8O1aaaaV12bbbbV11ccccV10bbbbV8aaaaV5aaaaV4aaaaV1aaaa"
+3550s5$="V13L8O2aaaaV12bbbbV11ccccV10eeeeV8aaaaV5aaaaV4aaaaV1aaaa"
+3560s6$="V13L8O3eeeeV12eeeeV11eeeeV10eeeeV8eeeeV5eeeeV4eeeeV1eeee"
+3570s7$="V15O2L8cccV11cV15cccV11cV13cccV9cV11cccV7cV9cccV5cV7cccV3cV5cccV2c"
+3580S8$="V15O4L8cgegV12cgegV10cgegV7cgegV5cgegV3cgeg"
+3590S9$="R8R8R8V10O5L8cgegV12cgegV10cgegV7cgegV5cgegV3cgeg"
+3599return
+4000remreproductordemúsica
 4000a=usr2(0)
-4010ifre=1thenPLAY"O5L8V4M8000CDCDCDCDCDEDEDEDEDCDCDCDCDEDEDEDED","o1v2o2CDR2CDR2o3CDR2r2o2cdr2"
-4020ifre=2thenPLAY"O5L8V4M8000cder6cder2eedr12eedo6edccder6cder2eedr12eedo6edco3cder6cder2eedr2eedo6edc","o1v2o2r6CDr2cdr6CDr2cdr6CDr2cdr6CDr2cd"
-4030ifre=5thenplay"l10o3v4gc"
-4040ifre=6thenplay"t250o4v12dv9e"
-4050ifre=7thenplay"O3L8V4M8000AADFG2AAAA"
-4060ifre=8thensound1,2:sound8,16:sound12,5:sound13,9
-4070ifre=9thenPLAY"o3l64t255v4m6500c"
-4060ifre=10thensound1,2:sound6,25:sound8,16:sound12,1:sound13,9
-4070ifre=11thensound1,0:sound6,25:sound8,16:sound12,4:sound13,9
-4090return
+4010PLAY"T150","T150","T150"
+4020ifre=1thenplays1$,s1$,s6$:plays1$,s2$,s6$:plays1$,s2$,s3$:plays2$,s3$,S6$:plays1$,s1$,s6$:plays4$,s5$,s6$
+4030ifre=2thenPLAYs7$,s8$,s9$
+4040ifre=3thenPLAYs4$,s5$,s6$
+4050ifre=5thenplay"l10o3v4gc"
+4060ifre=6thenplay"t250o4v12dv9e"
+4070ifre=7thenplay"O3L8V4M8000AADFG2AAAA"
+4080ifre=8thensound1,2:sound8,16:sound12,5:sound13,9
+4090ifre=9thenPLAY"o3l64t255v4m6500c"
+4100ifre=10thensound1,2:sound6,25:sound8,16:sound12,1:sound13,9
+4110ifre=11thensound1,0:sound6,25:sound8,16:sound12,4:sound13,9
+4990return
 5000x=0:y=0:xp=0:yp=0:pw=8:ph=8:pv=8:pe=3:pd=0:pp=0:pc=0
 5010dimp(7):p(0)=0:p(1)=1:p(2)=2:p(3)=3:p(4)=4:p(5)=5:p(6)=6:p(7)=7
 5020return
-5700pe=pe-1:pa=pa-pm:time=0
+5700pe=pe-1:time=1:ta=1
+5710re=6:gosub4000
 5740gosub8300
 5750gosub3000
 5790return

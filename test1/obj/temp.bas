@@ -1,5 +1,5 @@
 1 '' ******************************
-1 '' Program:  Mansion Madrigal
+1 '' Program:  Msx mansion
 1 '' autor:    MSX Murcia
 1 '' ******************************
 1 ''ex,ey,ea,ei,ev,ew,eh,es,ec,ep
@@ -40,23 +40,28 @@
 90 tm=40:tf=0
 1 'Gs=game status, si es 0 mostraremos el menu de bienvenida, si es 1 vamos al main loop, y 2, pantalla ganadora'
 100 gs=0
+1 'Inicializamos la música
+110 gosub 3500
 1 'Habilitamos la interrupción del stop
 1 'Al pulsar la tecla Stop (mayuscula o shift izquierdo + F8 en openMSX o Mayúscula + suprimir en BlueMSX) se termina el juego'
 120 stop on:on stop gosub 140
-
+130 gs=0:goto 200
 1 'Rutina reiniciar parida'
-140 gosub 900
-150 gs=0:goto 200
+    140 gosub 900
+    150 gs=0:goto 200
 160 return
 
-200 rem <<<<<<<<!Bucle o máquina de estados / loop or state machine>>>>>>>>>>>>>
-    205 if gs=0 then goto 300 
-    210 if gs=1 then goto 600
-    220 if gs=2 then goto 500
+    180 gs=1:goto 200
+190 return
+
+195 rem <<<<<<<<!Bucle o máquina de estados / loop or state machine>>>>>>>>>>>>>
+    200 if gs=0 then 300 
+    210 if gs=1 then 600
+    220 if gs=2 then 500
 
 
     1 'Mostramos la pantalla de bienvenida e instrucciones'
-    300 screen 2:re=1:gosub 4000
+    300 screen 2:strig(0) on:on strig gosub 180
     1 'Vamos a pintar la casa'
     1 'b=desplazamos el lapiz de forma absoluta y sin dibujar la trayectoria 40 pixeles eje x y 160 eje y  '
     1 'c= le ponemos el valor negro=1'
@@ -74,20 +79,21 @@
     1 'Pintamos el cielo y la tierra'
     350 paint (2,2),7,7:paint (2,65),9,9
     360 paint (100,35),4,4:paint (23,55),11,11
-    370 preset (60,10):print #1,"!MSX mansion"
-    380 preset (60,20):print #1,"!MSX Murcia 2022"
-    390 preset (0,80):print #1,"!Debes de ingeniar como salir de la mansion antes de que se te   acabe el tiempo"
-    400 preset (0,110):print #1,"!Utiliza las herramientas que    tienes a tu disposicion, pulsa  espacio para elegir una."
-    440 preset (0,140):print #1,"!Solo puedes utilizarlas una vez por mundo."
-    450 preset (0,160):print #1,"!Pulsa stop para terminar la     partida."
-    460 preset (0,180):print #1,"!Pulsa espacio para continuar"
-    1 '281 c=0
-    1 'Adorno'
-    1 '285 c=c+1:LINE(0,70)-(256,75),c,bf:color 1,15,16-c:if c > 14 then c=0
-    1 '288 for i=0 to 1000:next i
+    370 preset (80,0):print #1,"!MSX mansion"
+    380 preset (70,10):print #1,"!MSX Murcia 220"
+    385 preset (30,18):print #1,"!Music Gabriel Caffarena"
+    390 preset (0,70):print #1,"!Debes de ingeniar como salir de la mansion antes de que se te   acabe el tiempo"
+    400 preset (0,100):print #1,"!Utiliza las herramientas que    tienes a tu disposicion, pulsa  espacio para elegir una."
+    440 preset (0,130):print #1,"!Solo puedes utilizarlas una vez por mundo."
+    450 preset (0,150):print #1,"!Pulsa stop para terminar la     partida."
+    455 preset (0,170):print #1,"!Espacio pulsado salta musica."
+    460 line (0,180)-(256,188),15,bf: preset (0,180):preset (0,180):print #1,"!Espera a que termine la musica."
+
     465 re=1:gosub 4000
-    1 'co es simplemente un contador'
-    470 co=co+1:if co>600 then co=0:goto 465 else if strig(0)=-1 then cls:gs=1:goto 200 else goto 470
+    1 'Si no ponemos este for la ñultima parte de la música se corta'
+    470 for i=0 to 1000: next i:line (0,180)-(256,188),15,bf: preset (0,180):print #1,"!Pulsa espacio para continuar"
+    1 'Pasados unos segundos volverá a escucharse la música'
+    480 co=co+1:if strig(0)=-1 then gs=1:goto 200 else if co<700 then 480 else co=0:goto 460
 
     500 screen 2
     510 gosub 900
@@ -103,7 +109,7 @@
 
 600 rem !inicio partida / start game
 1 'Apagamos la pantalla'
-605 a=usr3(0)
+605 cls:a=usr3(0)
 1 'Inicializamos al player, pe=player energia son las vidas'
 610 pe=3
 1 ' Inicializamos los gráficos'
@@ -139,7 +145,7 @@
     1'Si al player no le quedan vidas llamamos a la rutina reiniciar partida (900), esa rutina también es llamada cuando se pulsa stop y cuando se gana'
     805 if pe<=0 then gosub 900:gs=0:goto 200
     1 'si no queda tiempo reiniciamos y llamamos a la rutina player muere'
-    810 if ta<=0 then tf=0:time=0:gosub 5700 
+    810 if ta<=0 then tf=1:gosub 5700 
 
 
     1 'Actualizamos el sistema de input'
@@ -165,6 +171,10 @@
     1 '440 gosub 1400
     1 'Si el mapa cambia:
     1 '     Aumentamos el ms=mapa screen'
+    1 '     Conservamos el tiempo para después sumarlo'
+    1 '     Ponemos la bandera que indica el cambio de mapa bien'
+    1 '     Sacamos al player de la pantalla'
+    1 '     Hacemos un sonido'
     1 'Si llegamos pasamos la pantalla final mostramos la pantalla ganadora'
     1 '     hacemos un sonido (re,4000)'
     1 '     Pintamos el nuevo mapa (11000)'
@@ -178,12 +188,14 @@
     1 '              Pintamos la información del nivel, mundo,etc (3000)'
     1 '              Repintamos los objetos (3100)'
     1 '480 if mc then ms=ms+1:tf=ta:time=0:gosub 11000:mc=0:if ms=3 then mw=mw+1:ms=0:gosub 7000:gosub 3000:gosub 3100:gosub 8300 else gosub 3000:gosub 8300
-    840 if mc then ms=ms+1:tf=ta:time=0:mc=0:if mw=2 and ms=3 then gs=2:goto 200 else gosub 11000 :if ms=3 then mw=mw+1:ms=0:gosub 7000:gosub 3000:gosub 3100:gosub 8300 else gosub 3000:gosub 8300
+    840 if mc then ms=ms+1:tf=ta:time=0:mc=0:put sprite 0,(0,212),0,0:re=2:gosub 4000:if mw=2 and ms=3 then gs=2:goto 200 else gosub 11000 :if ms=3 then mw=mw+1:ms=0:gosub 7000:gosub 3000:gosub 3100:gosub 8300 else gosub 3000:gosub 8300
     1 'debug'
     1 '850 gosub 3400
 890 goto 800 
 1 ' <<<<<< Final del Main loop >>>>>'
 
+
+1 'Game over'
 1 'Rutina terminar partida, llamada cuando no quedan vidas, con la tecla stop o cuando se ha ganado el juego'
 1 'Tenemos que colocar el punturo del mapa en el world0, level0'
 1 'Desactivamos el repintado y actualización del tiempo'
@@ -193,7 +205,9 @@
 1 'Volvemos los objetos a su configuración inicial (7000)'
 1 'Ponemos el mundo y el nivel a 0'
     900 restore 10100:interval off:gosub 6600:PUT SPRITE 0,(0,212),1,0:PUT SPRITE 20,(0,212),1,0:gosub 7000:mw=0:ms=0
-910 return
+    910 screen2: re=3: gosub 4000:preset(100,100):print #1,"!Game over"
+    920 for i=0 to 4000:next i
+930 return
 
 1 '1' <<<< INPUT SYSTEM con gosub>>>>
 1 '    1000 st=stick(0) or stick(1) or stick(2)
@@ -324,7 +338,7 @@
     1 '     Repitamos solo los puntos (3300)'
     1781 if a=21 then re=11:gosub 4000:vpoke md,0:pp=pp+10:gosub 3100:gosub 3300
     1 'Si hemos llegado a la casa cambiamos de nivel'
-    1785 if a=18 or a=19 then re=2:gosub 4000:mc=1
+    1785 if a=18 or a=19 then mc=1
     1 'Si tocado un reloj le sumamos al tiempo el aumento o el maximo'
         1 'Obtenmos lo que falta de tiempo y lo metemos en tf para después sumarlo en el contador de tiempo'
         1 'Hacemo una música de cogido'
@@ -332,13 +346,14 @@
     1790 if a=20 then tf=ta:time=0:re=5:gosub 4000:vpoke md,0
     1 'Si ha tocado un tile de muerte
         1 'Eliminamos al player
-    1795 if a=24 then beep:gosub 5700
+    1795 if a=24 then gosub 5700
     1 '' Render system player
     1 ' ---------------------'
-    1800 put sprite 0,(x,y),1,ps
+    1 '1800 put sprite 0,(x,y),1,ps
+    1 'posición player eje y, posición player eje x, número de sprite, color'
+    1800 vpoke 6912,y:vpoke 6913,x:vpoke 6914,ps:vpoke 6915,1
 
-
-
+    
 
     1 '<<<<<<<<< Enemies >>>>>>>>>>>'
         1 'Physics enemies'
@@ -391,8 +406,11 @@
         1966 bc=bc+1:if bc>1 then bc=0
         1970 if ec=0 then es=8 else es=9
         1980 if bc=0 then bs=10 else bs=11
-        1990 if em=1 then PUT SPRITE ep,(ex,ey),eo,es
-        1995 if bm=1 then PUT SPRITE bp,(bx,by),bo,bs
+        1 '1990 if em=1 then PUT SPRITE ep,(ex,ey),eo,es
+        1 'posición player eje y, posición player eje x, número de sprite, color'
+        1990 if em=1 then vpoke 6952,ey:vpoke 6953,ex:vpoke 6954,es:vpoke 6955,eo
+        1 '1995 if bm=1 then PUT SPRITE bp,(bx,by),bo,bs
+        1995 if bm=1 then vpoke 6956,by:vpoke 6957,bx:vpoke 6958,bs:vpoke 6959,bo
 1999 return
 
 
@@ -406,10 +424,9 @@
 1 '         Repintamos los objetos (3100)
 1 '         Eliminamos al enemigo (6600)'
 1 '     Si no está activado o habilitado el objeto 1'
-1 '         Hacemos un soido (re,4000)'
 1 '         Matamos al player (5700)'
 1 '         Volvemos a pintar al player'
-    2000 if os=2 and o2=1 then re=6:gosub 4000:o2=0:gosub 3100:gosub 6600:return else re=6:gosub 4000:gosub 5700:put sprite 0,(x,y),1,ps
+    2000 if os=2 and o2=1 then re=6:gosub 4000:o2=0:gosub 3100:gosub 6600:return else gosub 5700:put sprite 0,(x,y),1,ps
 2090 return
 
 
@@ -470,53 +487,39 @@
 3490 return
 
 
-1 'Reproductor de efectos d sonido'
-    1 'Inicializamos el psg para que no se quede con el úlyimo sonido'
+3500 rem música
+    3510 s1$="V13O1L4aaaV10aV13bbbV10bV13L2O2cdeg+"
+    3520 s2$="V14O4L8aV15O6cO5bO6cO4V14L8aaaV12aV14g+V15O6dcdO4V14L8g+g+g+V12g+V15O5aO6cO5babO6dcO5bO6cedcO5bebe"
+    3530 s3$="V13O4L2ecdeL8 aO5cO4bO5cO3L8aaaV10aV13g+O5dcdO3L8g+g+g+v10g+"
+    3540 s4$="V13L8O1aaaaV12bbbbV11ccccV10bbbbV8aaaaV5aaaaV4aaaaV1aaaa"
+    3550 s5$="V13L8O2aaaaV12bbbbV11ccccV10eeeeV8aaaaV5aaaaV4aaaaV1aaaa"
+    3560 s6$="V13L8O3eeeeV12eeeeV11eeeeV10eeeeV8eeeeV5eeeeV4eeeeV1eeee"
+    3570 s7$="V15O2L8cccV11cV15cccV11cV13cccV9cV11cccV7cV9cccV5cV7cccV3cV5cccV2c"
+    3580 S8$="V15O4L8cgegV12cgegV10cgegV7cgegV5cgegV3cgeg"
+    3590 S9$="R8R8R8V10O5L8cgegV12cgegV10cgegV7cgegV5cgegV3cgeg"
+3599 return
+4000 rem reproductor de música
     4000 a=usr2(0)
-    1 'play, c=do, d=re, e=mi, f=fa, g=sol, a=la, b=si
-    1 'xvariable$, ejecuta el string que contiene variable$'
-    1 'nx, número nota musical del do al si,siendo x un número entre 0-96, de la 0 octava (0-12) a la 8 octava (80-92), por defecto está la 4 octava (36-47) '
-    1 'on, siedo n la octava entre 0-8'
-    1 'ln, siendo n la duración de 0-64, 64 la más corta'
-    1 'rn, siendo n la pausa entre 1-64, 64 las más corta'
-    1 'tn, siendo n la velocidad de ejecución entre 32-255 (ni caso)'
-    1 'Vn, siendo v el volumen entre 0-15'
-    1 'Mn, sindo n la modulación de la envolvente entre 0-6535 (ni caso)'
-    1 'Sn, siendo n la forma de la enfolvente de 0-15, sirve para que vaya desapareciendo el sonido
-    1 'Melodía completa'
-    1 '2300 if re=1 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A D E F G E F D C D G R8 O5 A2 A2 A8"
-    1 'Comienzo juego'
-    1 '4010 if re=1 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8","o1 v4 c r8 o2 c r8 o1 v6 c r8 o2 v4 c r8 o1 c r8 o2 v6 c r8"
-    4010 if re=1 then PLAY"O5 L8 V4 M8000 CD CD CD CD CD ED ED ED ED CD CD CD CD ED ED ED ED ","o1 v2 o2 CD R2 CD R2 o3 CD R2 r2 o2 cd r2"
-    1 'Level pasado'
-    1 '4020 if re=2 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8"
-    4020 if re=2 then PLAY"O5 L8 V4 M8000 c d e r6 c d e r2 eed r12 eed o6 edc c d e r6 c d e r2 eed r12 eed o6 edc o3 c d e r6 c d e r2 eed r2 eed o6 edc","o1 v2 o2 r6 CD r2 cd r6 CD r2 cd  r6 CD r2 cd r6 CD r2 cd"
-    1 'Reloj'
-    4030 if re=5 then play "l10 o3 v4 g c"
+    4010 PLAY"T150","T150","T150"
+    1 ' Intro'
+    4020 if re=1 then play s1$,s1$,s6$:play s1$,s2$,s6$:play s1$,s2$,s3$:play s2$,s3$,S6$:play s1$,s1$,s6$:play s4$,s5$,s6$
+    1 ' Nivel terminado'
+    4030 if re=2 then PLAY s7$,s8$,s9$
+    1 ' Game over
+    4040 if re=3 then PLAY s4$,s5$,s6$
+    4050 if re=5 then play "l10 o3 v4 g c"
     1 'Paquete cogido  / muerte'
-    4040 if re=6 then play"t250 o4 v12 d v9 e" 
+    4060 if re=6 then play"t250 o4 v12 d v9 e" 
     1 'Pitido normal'
-    4050 if re=7 then play "O3 L8 V4 M8000 A A D F G2 A A A A"
+    4070 if re=7 then play "O3 L8 V4 M8000 A A D F G2 A A A A"
     1 'Cogidos puntos'
-    1 '4060 if re=8 then PLAY"S1M2000T150O7C32"
-    4060 if re=8 then sound 1,2:sound 8,16:sound 12,5:sound 13,9
+    4080 if re=8 then sound 1,2:sound 8,16:sound 12,5:sound 13,9
     1 'Pasos'
-    4070 if re=9 then PLAY"o3 l64 t255 v4 m6500 c"
-    1 'Sound puerto, valor, para ver las notas ir a https://www.msx.org/wiki/SOUND, recuerda que el d5dh=3421 es el 34 para el tono canal a puerto 1 y en puerto 0 21'
-    1 '0=Tono canal a bit menos significativo,2=tono canal b menos significativo, 4=tono canal c menos significativo de 0-255
-    1 '1=Tono canal a bit mas significativo, 3=tono canal b bit mas significativo, 5=tono canal c bit mas significativo de 0 a 15 
-    1 '6 ruido de 0-31
-    1' 7 mezlador 0-191
-    1 '8 volumen canal a, 9 volumen canal b, 10 volumen canal c de 0-16'
-    1 '12 velocidad envolvente de 0-255, 0 la más veloz
-    1 '13 forma envolmente para que desaparezca en el tiempo la nota de 0-15'
-    1 'En este ejemplo trabajamos solo con el ruido, el 6, el 8 =16 significa que vamos a variar el volumen con el 12 y el 13 para que desaparezca'
+    4090 if re=9 then PLAY"o3 l64 t255 v4 m6500 c"
     1 'Pasos'
-    4060 if re=10 then sound 1,2:sound 6,25:sound 8,16:sound 12,1:sound 13,9
-    4070 if re=11 then sound 1,0:sound 6,25:sound 8,16:sound 12,4:sound 13,9
-
-    1 'SOUND7,55:SOUND12,5:SOUND13,4'
-4090 return
+    4100 if re=10 then sound 1,2:sound 6,25:sound 8,16:sound 12,1:sound 13,9
+    4110 if re=11 then sound 1,0:sound 6,25:sound 8,16:sound 12,4:sound 13,9
+4990 return
 
 
 
@@ -571,7 +574,9 @@
 1' Player muere
     1 'Le kitamos 1 vida'
     1 'Actualizamos el tiempo'
-    5700 pe=pe-1:pa=pa-pm:time=0 
+    5700 pe=pe-1:time=1:ta=1
+    1 'Hacemos un sonido '
+    5710 re=6:gosub 4000
     1 ' llamamos a la tutina reposicionar player y enemigos según el mapa'
     5740 gosub 8300
     1 'Pintamos el marcador'
